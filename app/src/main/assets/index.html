@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Počítání na přijímačky</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=STIX+Two+Text:ital,wght@0,400..600;1,400..600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --surface:#E9EEF3; --paper:#FBFCFE; --grid:#DBE4EE; --ink:#1B2A3F; --muted:#56667B;
+  --pen:#2347B8; --pen-soft:#E3EAFB; --red:#C42F2F; --red-soft:#FBE7E5; --green:#1F7A4A; --green-soft:#E1F3E8; --line:#C6D2DF;
+  --ui:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --math:"STIX Two Text","Cambria Math",Cambria,"Times New Roman",serif;
+  color-scheme:light;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --surface:#0F151E; --paper:#162030; --grid:#21304A; --ink:#E4EAF3; --muted:#9AA9BC;
+  --pen:#93B2FF; --pen-soft:#22345C; --red:#FF8077; --red-soft:#3A2024; --green:#62D297; --green-soft:#17352A; --line:#2D3D57; color-scheme:dark;}}
+:root[data-theme="dark"]{
+  --surface:#0F151E; --paper:#162030; --grid:#21304A; --ink:#E4EAF3; --muted:#9AA9BC;
+  --pen:#93B2FF; --pen-soft:#22345C; --red:#FF8077; --red-soft:#3A2024; --green:#62D297; --green-soft:#17352A; --line:#2D3D57; color-scheme:dark;}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--surface);color:var(--ink);font-family:var(--ui);font-size:17px;line-height:1.5}
+.wrap{max-width:820px;margin:0 auto;padding:28px 18px 64px}
+h1{font-size:clamp(1.9rem,5vw,2.7rem);line-height:1.05;margin:0 0 6px;font-weight:700;letter-spacing:-.02em;font-variation-settings:"opsz" 96}
+.lede{margin:0 0 22px;color:var(--muted);max-width:60ch}
+nav.tabs{display:flex;gap:4px;flex-wrap:wrap;border-bottom:2px solid var(--line);margin-bottom:22px}
+nav.tabs a{padding:8px 14px;text-decoration:none;color:var(--muted);font-weight:600;border-bottom:3px solid transparent;margin-bottom:-2px}
+nav.tabs a[aria-current="page"]{color:var(--ink);border-bottom-color:var(--pen)}
+nav.tabs a .badge{display:inline-block;min-width:1.4em;padding:0 .35em;margin-left:4px;border-radius:9px;background:var(--red);color:var(--paper);font-size:.78em;text-align:center}
+.view[hidden]{display:none}
+.lbl{display:block;font-size:.9rem;color:var(--muted);margin:0 0 6px;font-weight:600}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px}
+.chip{font:inherit;font-size:.93rem;padding:6px 12px;border-radius:18px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--pen);border-color:var(--pen);color:var(--paper)}
+.seg{display:inline-flex;border:1.5px solid var(--line);border-radius:10px;overflow:hidden;margin-bottom:18px}
+.seg button{font:inherit;font-size:.93rem;padding:6px 14px;border:0;background:var(--paper);color:var(--ink);cursor:pointer}
+.seg button+button{border-left:1.5px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--pen);outline-offset:2px}
+
+/* the sheet */
+.sheet{position:relative;background-color:var(--paper);
+  background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+  background-size:22px 22px;background-position:-1px -1px;
+  border-radius:4px 4px 4px 4px;box-shadow:0 1px 0 var(--line),0 10px 30px -18px rgba(20,40,80,.35);
+  padding:22px 22px 24px 64px}
+.sheet::before{content:"";position:absolute;top:0;bottom:0;left:44px;width:2px;background:var(--red);opacity:.75}
+.sheet-head{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.9rem;color:var(--muted);margin-bottom:10px}
+.sheet-head b{color:var(--ink)}
+.task{margin:0 0 14px;font-weight:600}
+.prompt{font-family:var(--math);font-size:clamp(1.55rem,4.6vw,2.15rem);line-height:1.6;margin:0 0 20px;overflow-x:auto;padding:4px 0}
+.prompt .txt{font-family:var(--ui);font-size:1.15rem;line-height:1.5;display:block;max-width:56ch}
+.prompt .sys,.step .sys{display:inline-block;border-left:2px solid currentColor;padding-left:12px;line-height:1.7}
+i{font-style:italic;font-family:var(--math)}
+.fr{display:inline-flex;flex-direction:column;vertical-align:middle;text-align:center;margin:0 .1em;font-size:.86em;line-height:1.15}
+.fr>span:first-child{border-bottom:1.5px solid currentColor;padding:0 .18em .06em}
+.fr>span:last-child{padding:.06em .18em 0}
+.fr.big{font-size:1em}.fr.big>span{padding:.15em .3em}
+.fr .fr{font-size:.88em}
+.ov{border-top:1.5px solid currentColor;padding:0 .08em;margin-left:.04em}
+.answer{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-bottom:6px}
+.answer label{font-family:var(--math);font-size:1.3rem}
+.answer input{font-family:var(--math);font-size:1.4rem;color:var(--pen);background:transparent;border:0;border-bottom:2px solid var(--pen);padding:4px 4px;width:min(260px,100%);border-radius:0}
+.answer input.short{width:120px}
+.btn{font:inherit;font-weight:600;padding:9px 16px;border-radius:10px;border:2px solid var(--ink);background:var(--ink);color:var(--paper);cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+.btn:disabled{opacity:.45;cursor:default}
+.ins{display:inline-flex;gap:4px}
+.ins button{font-family:var(--math);font-size:1.05rem;min-width:36px;padding:4px 8px;border-radius:8px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
+.hint{font-size:.88rem;color:var(--muted);margin:4px 0 12px}
+.fb{min-height:1.6em;margin:6px 0 12px;font-weight:600}
+.fb.ok{color:var(--green)}.fb.bad{color:var(--red)}.fb.neutral{color:var(--muted)}
+.actions{display:flex;gap:10px;flex-wrap:wrap}
+.steps{margin:18px 0 0;padding:16px 18px;background:var(--paper);border:1.5px solid var(--line);border-radius:6px}
+.steps h3{margin:0 0 10px;font-size:1rem}
+.stp{list-style:none;counter-reset:st;margin:0;padding:0}
+.stp li{position:relative;padding-left:1.9em;margin:0 0 12px;font-family:var(--ui)}
+.stp li:not(.h){counter-increment:st}
+.stp li:not(.h)::before{content:counter(st) ".";position:absolute;left:0;top:0;font-weight:700;color:var(--muted)}
+.stp li.h{padding-left:0;margin-top:16px;font-weight:700;color:var(--pen)}
+.stp li.h:first-child{margin-top:0}
+.say{display:block;font-size:.97rem;line-height:1.5;max-width:64ch}
+.m{display:block;font-family:var(--math);font-size:1.16rem;line-height:2;overflow-x:auto;margin-top:2px}
+.sep{font-family:var(--ui);font-size:.8em;color:var(--muted);margin:0 .7em}
+.steps .result{margin:12px 0 0;font-family:var(--math);font-size:1.15rem}
+.steps .result b{color:var(--red);font-family:var(--ui)}
+.session{margin:16px 0 0;color:var(--muted);font-size:.93rem}
+
+/* worksheet */
+.ws-controls{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:end;margin-bottom:18px}
+.ws-controls select{font:inherit;padding:6px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink)}
+.worksheet{background:var(--paper);color:var(--ink);padding:26px 28px;border-radius:4px;box-shadow:0 1px 0 var(--line)}
+.worksheet h2{margin:0 0 4px;font-size:1.4rem}
+.worksheet .meta{color:var(--muted);margin:0 0 18px;font-size:.92rem}
+.ws-item{padding:10px 0 0;break-inside:avoid}
+.ws-item .q{display:flex;gap:10px;align-items:baseline}
+.ws-item .n{font-weight:700;min-width:1.6em}
+.ws-item .p{font-family:var(--math);font-size:1.35rem;line-height:1.6}
+.ws-item .p .txt{font-family:var(--ui);font-size:1.02rem}
+.ws-item .t{font-size:.85rem;color:var(--muted)}
+.ws-space{height:150px;margin:6px 0 4px 2.2em;background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);background-size:18px 18px;border:1px solid var(--grid)}
+.solutions{margin-top:30px;border-top:2px dashed var(--line);padding-top:18px}
+.solutions .stp{margin:6px 0 0 2.2em}
+.solutions .say{font-size:.9rem}.solutions .m{font-size:1.05rem}
+
+/* mistakes + stats */
+.mlist{display:grid;gap:12px}
+.mitem{background:var(--paper);border:1.5px solid var(--line);border-left:4px solid var(--red);border-radius:6px;padding:12px 14px;display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.mitem .p{font-family:var(--math);font-size:1.25rem;overflow-x:auto}
+.mitem .p .txt{font-family:var(--ui);font-size:1rem}
+.mitem small{display:block;color:var(--muted);font-size:.84rem}
+.empty{background:var(--paper);border:1.5px dashed var(--line);border-radius:6px;padding:22px;color:var(--muted)}
+table.stats{width:100%;border-collapse:collapse;background:var(--paper);border-radius:6px;overflow:hidden}
+table.stats th,table.stats td{padding:9px 12px;text-align:left;border-bottom:1px solid var(--line);font-size:.95rem}
+table.stats th{color:var(--muted);font-weight:600}
+.bar{height:8px;background:var(--grid);border-radius:4px;min-width:80px;position:relative;overflow:hidden}
+.bar span{position:absolute;inset:0 auto 0 0;background:var(--pen)}
+.note{color:var(--muted);font-size:.92rem;max-width:62ch}
+.mixl{display:inline-flex;align-items:center;gap:8px;font-size:.92rem;color:var(--muted);margin:-4px 0 16px;cursor:pointer}
+.mixl input{width:18px;height:18px;accent-color:var(--pen)}
+.ask{margin-top:14px;padding:16px 18px;background:var(--paper);border:1.5px solid var(--pen);border-radius:6px}
+.ask h3{margin:0 0 10px;font-size:1rem}
+.quick{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.askrow{display:flex;gap:10px;align-items:flex-end}
+.askrow textarea{flex:1;font:inherit;padding:8px 10px;border-radius:8px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink);resize:vertical}
+.thread{display:grid;gap:8px;margin-bottom:10px}
+.msg{padding:9px 12px;border-radius:8px;line-height:1.55;max-width:64ch}
+.msg.me{background:var(--pen-soft);justify-self:end}
+.msg.ai{background:var(--surface)}
+.msg.err{background:var(--red-soft);color:var(--red)}
+.summary{text-align:left}
+.summary h2{margin:0 0 6px;font-size:1.6rem}
+.summary .big{font-family:var(--math);font-size:3rem;line-height:1.1;margin:8px 0 4px;color:var(--pen)}
+@media (max-width:560px){.sheet{padding:18px 14px 20px 40px}.sheet::before{left:26px}.worksheet{padding:18px}}
+@media (prefers-reduced-motion:no-preference){.fb.ok{animation:pop .25s ease-out}@keyframes pop{from{transform:translateY(3px);opacity:0}to{transform:none;opacity:1}}}
+@media print{
+  body{background:#fff;color:#000;font-size:12pt}
+  :root{--paper:#fff;--ink:#000;--muted:#444;--grid:#d5dde6;--line:#bbb}
+  .no-print,nav.tabs,h1,.lede,.view:not(#v-list){display:none!important}
+  .wrap{max-width:none;padding:0}
+  .worksheet{box-shadow:none;padding:0}
+  .solutions{break-before:page;border-top:0}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Počítání na přijímačky</h1>
+  <p class="lede">Příklady se vymýšlejí pořád nové. Počítej na papír i s postupem, sem napiš jen výsledek. Pak porovnej svůj postup s tím správným.</p>
+  <nav class="tabs no-print" aria-label="Části">
+    <a href="#trenink" data-view="trenink">Trénink</a>
+    <a href="#list" data-view="list">Pracovní list</a>
+    <a href="#chyby" data-view="chyby">Sešit chyb<span class="badge" id="mbadge" hidden></span></a>
+    <a href="#prehled" data-view="prehled">Přehled</a>
+  </nav>
+
+  <section class="view" id="v-trenink">
+    <span class="lbl">Co procvičuješ</span>
+    <div class="chips" id="topicChips" role="group" aria-label="Témata"></div>
+    <label class="mixl"><input type="checkbox" id="mixToggle"> Míchat víc témat dohromady</label>
+    <span class="lbl">Obtížnost</span>
+    <div class="seg" id="levelSeg" role="group" aria-label="Obtížnost">
+      <button data-level="1">Základ</button><button data-level="2">Jako u přijímaček</button>
+    </div>
+    <article class="sheet" id="sheet">
+      <div class="sheet-head"><span><b id="tName"></b> <span id="tRef"></span></span><span id="tSrc"></span></div>
+      <p class="task" id="task"></p>
+      <div class="prompt" id="prompt"></div>
+      <div class="answer" id="answer"></div>
+      <p class="hint" id="hint"></p>
+      <div class="fb" id="fb" aria-live="polite"></div>
+      <div class="actions">
+        <button class="btn" id="checkBtn">Zkontrolovat</button>
+        <button class="btn ghost" id="showBtn">Ukázat postup</button>
+        <button class="btn ghost" id="nextBtn">Další příklad</button>
+      </div>
+      <div class="steps" id="steps" hidden></div>
+      <div class="ask" id="ask" hidden>
+        <h3>Zeptej se, čemu nerozumíš</h3>
+        <div class="quick" id="quick"></div>
+        <div class="thread" id="thread" aria-live="polite"></div>
+        <div class="askrow"><textarea id="askIn" rows="2" placeholder="Třeba: proč se tady obrací zlomek?"></textarea><button class="btn" id="askBtn" type="button">Zeptat se</button></div>
+      </div>
+    </article>
+    <div class="sheet summary" id="summary" hidden></div>
+    <p class="session" id="session"></p>
+  </section>
+
+  <section class="view" id="v-list" hidden>
+    <div class="no-print">
+      <p class="note">Vytiskni si list s příklady. Řešení je na samostatné stránce, takže ho můžeš odtrhnout a kontrolovat až potom.</p>
+      <span class="lbl">Témata</span>
+      <div class="chips" id="wsChips" role="group" aria-label="Témata pracovního listu"></div>
+      <div class="ws-controls">
+        <div><span class="lbl">Obtížnost</span><div class="seg" id="wsLevel" role="group" aria-label="Obtížnost listu" style="margin:0"><button data-level="1">Základ</button><button data-level="2">Jako u přijímaček</button></div></div>
+        <div><label class="lbl" for="wsCount">Počet příkladů</label><select id="wsCount"><option>6</option><option selected>8</option><option>10</option><option>12</option></select></div>
+        <button class="btn" id="wsMake">Vytvořit list</button>
+        <button class="btn ghost" id="wsPrint" disabled>Vytisknout</button>
+      </div>
+      <p class="note" id="wsPrintNote" hidden>Pokud se tisk neotevře, otevři aplikaci na celou stránku a dej Ctrl+P (na Macu Cmd+P).</p>
+    </div>
+    <div id="wsOut"></div>
+  </section>
+
+  <section class="view" id="v-chyby" hidden>
+    <p class="note">Sem se samy ukládají příklady, které napoprvé nevyšly. Když je později spočítáš správně napoprvé, ze sešitu zmizí.</p>
+    <div id="mlist" class="mlist"></div>
+  </section>
+
+  <section class="view" id="v-prehled" hidden>
+    <p class="note">Úspěšnost počítá jen první pokus u každého příkladu, stejně jako u přijímaček.</p>
+    <div id="statsOut"></div>
+    <p style="margin-top:18px"><button class="btn ghost" id="resetBtn">Smazat statistiky a sešit chyb</button></p>
+  </section>
+</div>
+<script>
+/* ===== Nastavení vysvětlování přes OpenRouter =====
+   Klíč NIKDY nedávej do veřejně sdílené verze stránky.
+   Prázdný klíč = tlačítko „Zeptej se“ se nezobrazí. */
+window.AI_CONFIG = {
+  apiKey: '',                       // sk-or-v1-...
+  model:  '',                       // slug modelu z openrouter.ai/models
+  url:    'https://openrouter.ai/api/v1/chat/completions'
+};
+// V Android aplikaci se klíč a model načtou z local.properties přes most AndroidCfg.
+try{ if(window.AndroidCfg){ const k=AndroidCfg.key(), m=AndroidCfg.model(); if(k) AI_CONFIG.apiKey=k; if(m) AI_CONFIG.model=m; } }catch(e){}
+</script>
+<script>
+'use strict';
+// ================= utility =================
+const MINUS = '\u2212';
+const gcd=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){const t=a%b;a=b;b=t}return a};
+const lcm=(a,b)=>Math.abs(a*b)/gcd(a,b);
+const ri=(a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const riNZ=(a,b)=>{let v;do{v=ri(a,b)}while(v===0);return v};
+const sgnR=()=>Math.random()<0.5?-1:1;
+
+function Fr(n,d){ if(d===undefined)d=1; if(d===0)throw new Error('Dělení nulou.'); if(d<0){n=-n;d=-d} const g=gcd(n,d)||1; n=n/g; if(n===0)n=0; return {n:n,d:d/g} }
+const F={
+  add:(a,b)=>Fr(a.n*b.d+b.n*a.d,a.d*b.d),
+  sub:(a,b)=>Fr(a.n*b.d-b.n*a.d,a.d*b.d),
+  mul:(a,b)=>Fr(a.n*b.n,a.d*b.d),
+  div:(a,b)=>{if(b.n===0)throw new Error('Dělení nulou.');return Fr(a.n*b.d,a.d*b.n)},
+  neg:a=>Fr(-a.n,a.d),
+  eq:(a,b)=>a.n===b.n&&a.d===b.d,
+  isZero:a=>a.n===0,
+  isInt:a=>a.d===1,
+  abs:a=>Fr(Math.abs(a.n),a.d),
+  pow:(a,k)=>{let r=Fr(1);for(let i=0;i<k;i++)r=F.mul(r,a);return r},
+  dec:s=>{s=String(s).replace(',','.');let neg=false;if(s[0]==='-'){neg=true;s=s.slice(1)}const p=s.split('.');const f=p[1]||'';const n=parseInt((p[0]||'0')+f,10);return Fr(neg?-n:n,Math.pow(10,f.length))}
+};
+
+// ================= display =================
+const V=v=>`<i>${v}</i>`;
+const intH=n=>(n<0?MINUS:'')+Math.abs(n);
+const frBox=(t,b)=>`<span class="fr"><span>${t}</span><span>${b}</span></span>`;
+function fracH(f){ if(f.d===1) return intH(f.n); return (f.n<0?MINUS:'')+frBox(Math.abs(f.n),f.d) }
+const fracHp=f=>f.n<0?`(${fracH(f)})`:fracH(f);
+function rawH(n,d){ if(d===1) return intH(n); return (n<0?MINUS:'')+frBox(Math.abs(n),d) }
+function decStr(f){
+  let k=0; while(k<9 && Math.pow(10,k)%f.d!==0) k++;
+  if(Math.pow(10,k)%f.d!==0) return null;
+  const sc=f.n*(Math.pow(10,k)/f.d); const neg=sc<0; let s=String(Math.abs(sc));
+  if(k>0){ s=s.padStart(k+1,'0'); s=s.slice(0,-k)+','+s.slice(-k); s=s.replace(/0+$/,'').replace(/,$/,'') }
+  return (neg?MINUS:'')+s;
+}
+const decHp=f=>f.n<0?`(${decStr(f)})`:decStr(f);
+const opS=op=>op==='+'?' + ':' '+MINUS+' ';
+const frP=f=>f.d===1?(f.n<0?`(${f.n})`:`${f.n}`):`(${f.n}/${f.d})`;
+const frSol=f=>f.d===1?`${f.n}`:`${f.n}/${f.d}`;
+const decP=f=>{const s=decStr(f).replace(MINUS,'-').replace(',','.');return f.n<0?`(${s})`:s};
+const decSol=f=>decStr(f).replace(MINUS,'-');
+function numSol(f){ const s=decStr(f); return s!==null? s.replace(MINUS,'-') : frSol(f) }
+function numH(f){ const s=decStr(f); return s!==null? s : fracH(f) }
+const numHp=f=>f.n<0?`(${numH(f)})`:numH(f);
+
+// ================= polynomials (array index = degree) =================
+const P={
+  norm:p=>{const r=p.map(x=>typeof x==='number'?Fr(x):x);while(r.length>1&&F.isZero(r[r.length-1]))r.pop();if(!r.length)r.push(Fr(0));return r},
+  add:(a,b)=>{const n=Math.max(a.length,b.length),r=[];for(let i=0;i<n;i++)r.push(F.add(a[i]||Fr(0),b[i]||Fr(0)));return P.norm(r)},
+  neg:a=>a.map(F.neg),
+  sub:(a,b)=>P.add(a,P.neg(b)),
+  mul:(a,b)=>{const r=[];for(let i=0;i<a.length+b.length-1;i++)r.push(Fr(0));a.forEach((x,i)=>b.forEach((y,j)=>{r[i+j]=F.add(r[i+j],F.mul(x,y))}));return P.norm(r)},
+  eq:(a,b)=>{a=P.norm(a);b=P.norm(b);return a.length===b.length&&a.every((x,i)=>F.eq(x,b[i]))},
+  nz:a=>P.norm(a).filter(c=>!F.isZero(c)).length
+};
+function monoBody(a,k,v,dec){ const one=a.n===1&&a.d===1; const cs=(k>0&&one)?'':(dec?decStr(a):fracH(a)); const vs=k===0?'':V(v)+(k===1?'':(k===2?'²':(k===3?'³':'<sup>'+k+'</sup>'))); return cs+vs }
+// list of {c:Fr,k}
+function termsH(list,v,dec){ const t=list.filter(x=>!F.isZero(x.c)); if(!t.length) return '0';
+  return t.map((x,i)=>{const neg=x.c.n<0;const body=monoBody(F.abs(x.c),x.k,v,dec);return i===0?(neg?MINUS:'')+body:(neg?' '+MINUS+' ':' + ')+body}).join('') }
+function polyTerms(p){ p=P.norm(p); const l=[]; for(let k=p.length-1;k>=0;k--) if(!F.isZero(p[k])) l.push({c:p[k],k}); return l }
+const polyH=(p,v,dec)=>termsH(polyTerms(p),v,dec);
+function polyPlain(p,v){ const l=polyTerms(p); if(!l.length) return '0'; return l.map(t=>{const cs=t.c.d===1?`${t.c.n}`:`(${t.c.n}/${t.c.d})`;return t.k===0?cs:`${cs}*${v}${t.k>1?'^'+t.k:''}`}).join('+').replace(/\+-/g,'-') }
+function polySol(p,v){ const l=polyTerms(p); if(!l.length) return '0'; return l.map((t,i)=>{const a=Math.abs(t.c.n); const cs=(t.k>0&&a===1)?'':String(a); const s=t.c.n<0?'-':(i?'+':''); return s+cs+(t.k===0?'':v+(t.k>1?'^'+t.k:''))}).join('') }
+const T=(c,k)=>({c:typeof c==='number'?Fr(c):c,k});
+const sumT=list=>{let p=[Fr(0)];list.forEach(t=>{const q=[];for(let i=0;i<t.k;i++)q.push(Fr(0));q.push(t.c);p=P.add(p,q)});return p};
+const prodT=(A,B)=>{const o=[];A.forEach(a=>B.forEach(b=>o.push(T(F.mul(a.c,b.c),a.k+b.k))));return o};
+const lin=(a,b)=>[T(a,1),T(b,0)]; // a·v + b (written order)
+const mono=(c,v)=>termsH([T(c,1)],v); // c·v
+const monoD=(c,v)=>termsH([T(c,1)],v,true);
+
+// ================= parser =================
+function tokenize(s){
+  s=String(s).replace(/[\u2212\u2013\u2014]/g,'-').replace(/[·×⋅]/g,'*').replace(/÷/g,':');
+  const toks=[];let i=0;
+  while(i<s.length){const ch=s[i];
+    if(/\s/.test(ch)){i++;continue}
+    if(/[0-9]/.test(ch)){let j=i;while(j<s.length&&/[0-9]/.test(s[j]))j++;if((s[j]===','||s[j]==='.')&&/[0-9]/.test(s[j+1]||'')){j++;while(j<s.length&&/[0-9]/.test(s[j]))j++}toks.push({t:'num',v:F.dec(s.slice(i,j))});i=j;continue}
+    if(/[a-zA-Z]/.test(ch)){toks.push({t:'var',v:ch.toLowerCase()});i++;continue}
+    if(ch==='²'){toks.push({t:'sup',v:2});i++;continue}
+    if(ch==='³'){toks.push({t:'sup',v:3});i++;continue}
+    if('+-*/:^()√'.includes(ch)){toks.push({t:ch});i++;continue}
+    throw new Error('Tomuhle znaku nerozumím: „'+ch+'“.');
+  }
+  return toks;
+}
+function parse(s){
+  const toks=tokenize(s);let pos=0;
+  const peek=()=>toks[pos],next=()=>toks[pos++];
+  function expr(){let n=term();while(peek()&&(peek().t==='+'||peek().t==='-')){const op=next().t;n={t:op==='+'?'add':'sub',a:n,b:term()}}return n}
+  function term(){let n=unary();for(;;){const p=peek();if(!p)break;
+    if(p.t==='*'){next();n={t:'mul',a:n,b:unary()}}
+    else if(p.t==='/'||p.t===':'){next();n={t:'div',a:n,b:unary()}}
+    else if(p.t==='num'||p.t==='var'||p.t==='('||p.t==='√'){n={t:'mul',a:n,b:power()}}
+    else break}return n}
+  function unary(){const p=peek();if(p&&p.t==='-'){next();return{t:'neg',a:unary()}}if(p&&p.t==='+'){next();return unary()}return power()}
+  function power(){let b=atom();for(;;){const p=peek();
+    if(p&&p.t==='^'){next();const e=next();if(!e||e.t!=='num'||e.v.d!==1||e.v.n<0||e.v.n>6)throw new Error('Mocninu napiš jako ^2 nebo ².');b={t:'pow',a:b,e:e.v.n}}
+    else if(p&&p.t==='sup'){next();b={t:'pow',a:b,e:p.v}}
+    else break}return b}
+  function atom(){const p=next();if(!p)throw new Error('Výraz nečekaně končí.');
+    if(p.t==='num')return{t:'num',v:p.v};
+    if(p.t==='var')return{t:'var',v:p.v};
+    if(p.t==='('){const e=expr();const c=next();if(!c||c.t!==')')throw new Error('Chybí zavírací závorka.');return{t:'par',a:e}}
+    if(p.t==='√')return{t:'sqrt',a:atom()};
+    if(p.t===')')throw new Error('Přebývá zavírací závorka.');
+    throw new Error('Na tomhle místě nečekám „'+p.t+'“.')}
+  if(!toks.length)throw new Error('Napiš výsledek.');
+  const r=expr();if(pos<toks.length)throw new Error(toks[pos].t===')'?'Přebývá zavírací závorka.':'Zápisu nerozumím, zkontroluj ho.');return r;
+}
+function isqrt(n){if(n<0)return null;const r=Math.round(Math.sqrt(n));return r*r===n?r:null}
+function evalAst(n,ctx){
+  switch(n.t){
+    case 'num':return[n.v];
+    case 'var':ctx.vars.add(n.v);return[Fr(0),Fr(1)];
+    case 'add':return P.add(evalAst(n.a,ctx),evalAst(n.b,ctx));
+    case 'sub':return P.sub(evalAst(n.a,ctx),evalAst(n.b,ctx));
+    case 'mul':return P.mul(evalAst(n.a,ctx),evalAst(n.b,ctx));
+    case 'neg':return P.neg(evalAst(n.a,ctx));
+    case 'par':return evalAst(n.a,ctx);
+    case 'div':{const d=P.norm(evalAst(n.b,ctx));if(d.length>1)throw new Error('Dělit tu jde jen číslem.');if(F.isZero(d[0]))throw new Error('Dělení nulou.');return evalAst(n.a,ctx).map(c=>F.div(c,d[0]))}
+    case 'pow':{const b=evalAst(n.a,ctx);let r=[Fr(1)];for(let i=0;i<n.e;i++)r=P.mul(r,b);return r}
+    case 'sqrt':{const v=P.norm(evalAst(n.a,ctx));if(v.length>1)throw new Error('Odmocninu napiš jako číslo.');const a=isqrt(v[0].n),b=isqrt(v[0].d);if(a===null||b===null)throw new Error('Tuhle odmocninu neumím, napiš výsledek jako číslo.');return[Fr(a,b)]}
+  }
+  throw new Error('Zápisu nerozumím.');
+}
+function analyze(s){const ast=parse(s);const ctx={vars:new Set()};const poly=evalAst(ast,ctx);return{ast,poly:P.norm(poly),vars:[...ctx.vars]}}
+function countTerms(n){if(n.t==='add'||n.t==='sub')return countTerms(n.a)+countTerms(n.b);if(n.t==='neg')return countTerms(n.a);return 1}
+function factorsOf(n){
+  if(n.t==='mul')return factorsOf(n.a).concat(factorsOf(n.b));
+  if(n.t==='pow'){const f=factorsOf(n.a);let r=[];for(let i=0;i<n.e;i++)r=r.concat(f);return r}
+  if(n.t==='neg')return[{t:'num',v:Fr(-1)}].concat(factorsOf(n.a));
+  if(n.t==='par'){const i=n.a;if(i.t==='mul'||i.t==='pow'||i.t==='neg'||i.t==='par')return factorsOf(i);return[n]}
+  return[n];
+}
+
+// ================= checking =================
+const normIn=s=>String(s==null?'':s).trim().replace(/[\u2212\u2013\u2014]/g,'-');
+function checkNumber(raw,ans,opts){
+  opts=opts||{};
+  let s=normIn(raw).replace(/\s+/g,'');
+  if(opts.unit) s=s.replace(/(%|kč|kc|korun|let|lidí|žáků|km|cm|m)$/i,'');
+  if(!s) return{format:true,msg:'Napiš výsledek.'};
+  if(!/^-?\d+([.,]\d+)?(\/-?\d+)?$/.test(s)) return{format:true,msg:'Sem napiš jen výsledné číslo, třeba −7/8 nebo 2,5.'};
+  let r;try{r=analyze(s)}catch(e){return{format:true,msg:e.message}}
+  if(!F.eq(r.poly[0],ans)) return{ok:false,msg:'Výsledek nesedí.'};
+  if(opts.fraction){
+    if(/[.,]/.test(s)) return{ok:false,near:true,msg:'Hodnota sedí, ale výsledek zapiš zlomkem.'};
+    const m=s.match(/^-?(\d+)\/-?(\d+)$/);
+    if(m&&gcd(+m[1],+m[2])>1&&+m[2]!==1) return{ok:false,near:true,msg:'Hodnota sedí, ale zlomek jde ještě zkrátit. U přijímaček chtějí základní tvar.'};
+  }
+  return{ok:true};
+}
+function checkPoly(raw,prob){
+  const s=normIn(raw);if(!s)return{format:true,msg:'Napiš výsledek.'};
+  let r;try{r=analyze(s)}catch(e){return{format:true,msg:e.message}}
+  const bad=r.vars.filter(x=>x!==prob.v);if(bad.length)return{format:true,msg:`V příkladu je proměnná ${prob.v}, ne ${bad[0]}.`};
+  if(!P.eq(r.poly,prob.ans))return{ok:false,msg:'Výsledek nesedí.'};
+  if(/[()]/.test(s))return{ok:false,near:true,msg:'Hodnota sedí, ale výsledek má být bez závorek.'};
+  if(countTerms(r.ast)>Math.max(1,P.nz(r.poly)))return{ok:false,near:true,msg:'Skoro. Ještě sečti členy se stejnou mocninou.'};
+  return{ok:true};
+}
+function checkFactor(raw,prob){
+  const s=normIn(raw);if(!s)return{format:true,msg:'Napiš výsledek.'};
+  let r;try{r=analyze(s)}catch(e){return{format:true,msg:e.message}}
+  const bad=r.vars.filter(x=>x!==prob.v);if(bad.length)return{format:true,msg:`V příkladu je proměnná ${prob.v}, ne ${bad[0]}.`};
+  if(!P.eq(r.poly,prob.ans))return{ok:false,msg:'Výsledek nesedí. Zkus svůj součin roznásobit, má vyjít zadaný výraz.'};
+  const root=r.ast;
+  if(root.t==='add'||root.t==='sub')return{ok:false,near:true,msg:'Hodnota sedí, ale výraz má být zapsaný jako součin.'};
+  const fs=factorsOf(root).map(f=>P.norm(evalAst(f,{vars:new Set()})));
+  if(prob.mode==='common'){
+    const multi=fs.filter(p=>P.nz(p)>=2);
+    if(multi.length!==1)return{ok:false,near:true,msg:'Vytkni společného činitele před jednu závorku.'};
+    const m=multi[0];
+    if(!m.every(c=>c.d===1)||m.reduce((g,c)=>gcd(g,c.n),0)>1)return{ok:false,near:true,msg:'Hodnota sedí, ale ze závorky jde ještě vytknout číslo.'};
+    if(F.isZero(m[0]))return{ok:false,near:true,msg:'Hodnota sedí, ale ze závorky jde ještě vytknout '+prob.v+'.'};
+  }else{
+    const nc=fs.filter(p=>p.length>1);
+    if(nc.length<2||nc.some(p=>p.length>2))return{ok:false,near:true,msg:'Hodnota sedí, ale rozlož výraz až na součin dvou závorek.'};
+  }
+  return{ok:true};
+}
+function check(prob,inputs){
+  switch(prob.kind){
+    case 'num':return checkNumber(inputs[0],prob.ans,{fraction:prob.fraction,unit:prob.unit});
+    case 'poly':return checkPoly(inputs[0],prob);
+    case 'factor':return checkFactor(inputs[0],prob);
+    case 'eq':{const s=normIn(inputs[0]).replace(/\s+/g,'').replace(new RegExp('^'+prob.v+'=','i'),'');return checkNumber(s,prob.ans,{})}
+    case 'sys':{
+      const a=checkNumber(normIn(inputs[0]).replace(/\s+/g,'').replace(/^x=/i,''),prob.ans.x,{});
+      const b=checkNumber(normIn(inputs[1]).replace(/\s+/g,'').replace(/^y=/i,''),prob.ans.y,{});
+      if(a.format)return{format:true,msg:'U x: '+a.msg};
+      if(b.format)return{format:true,msg:'U y: '+b.msg};
+      if(a.ok&&b.ok)return{ok:true};
+      if(a.ok)return{ok:false,msg:'x sedí, y ne. Zkontroluj dosazení.'};
+      if(b.ok)return{ok:false,msg:'y sedí, x ne.'};
+      return{ok:false,msg:'Ani jedna neznámá nesedí.'};
+    }
+  }
+  return{ok:false,msg:'?'};
+}
+
+// ================= generators =================
+function rfr(maxD,maxN){maxN=maxN||maxD*2;for(;;){const d=ri(2,maxD),n=ri(1,maxN);if(gcd(n,d)===1)return Fr(n,d)}}
+const S=(say,math)=>`<span class="say">${say}</span>`+(math?`<span class="m">${math}</span>`:'');
+const H=t=>'#H#'+t;
+const SEP='<span class="sep">a</span>';
+function addSub(a,b,op){
+  const L=lcm(a.d,b.d),ka=L/a.d,kb=L/b.d,an=a.n*ka,bn=b.n*kb,rn=op==='+'?an+bn:an-bn,res=Fr(rn,L);
+  const steps=[];
+  if(a.d!==b.d){
+    const ints=a.d===1||b.d===1;
+    if(!ints) steps.push(S(a.d===L||b.d===L
+      ?`Zlomky mají různé jmenovatele (${a.d} a ${b.d}), takže je nejdřív musíme převést na stejný. Číslo ${L} jde vydělit ${a.d} i ${b.d}, proto bude společný jmenovatel ${L}.`
+      :`Zlomky mají různé jmenovatele (${a.d} a ${b.d}), takže je nejdřív musíme převést na stejný. Hledáme nejmenší číslo, které jde vydělit ${a.d} i ${b.d}. To je ${L}, bude to společný jmenovatel.`));
+    const ext=(f,k)=>f.d===1?`${intH(f.n)} = ${rawH(f.n*L,L)}`:(k===1?null:`${fracH(f)} = ${(f.n<0?MINUS:'')+frBox(Math.abs(f.n)+' · '+k,f.d+' · '+k)} = ${rawH(f.n*k,L)}`);
+    const ex=[ext(a,ka),ext(b,kb)].filter(Boolean);
+    const who=[];if(a.d!==1&&ka!==1)who.push(`${fracH(a)} číslem ${ka}`);if(b.d!==1&&kb!==1)who.push(`${fracH(b)} číslem ${kb}`);
+    steps.push(S(ints?`Celé číslo zapíšeme jako zlomek se jmenovatelem ${L}.`
+      :`Zlomky rozšíříme na jmenovatele ${L}. Rozšířit znamená vynásobit čitatel i jmenovatel stejným číslem, hodnota zlomku se tím nezmění. Rozšiřujeme ${who.join(' a ')}.`,ex.join(SEP)));
+  }
+  steps.push(S(`${op==='+'?'Sečteme':'Odečteme'} čitatele (čísla nahoře). Jmenovatel ${L} zůstane stejný, ten se ${op==='+'?'nesčítá':'neodečítá'}.`,
+    `${rawH(an,L)}${opS(op)}${rawH(bn,L)} = ${frBox(intH(an)+opS(op)+(bn<0?'('+intH(bn)+')':bn),L)} = ${rawH(rn,L)}`));
+  if(res.d!==L&&rn!==0){const g=gcd(rn,L);steps.push(S(`Výsledek zkrátíme. Krátit znamená vydělit čitatel i jmenovatel stejným číslem. ${Math.abs(rn)} i ${L} jdou vydělit ${g}, takže: čitatel ${Math.abs(rn)} : ${g} = ${Math.abs(rn)/g}, jmenovatel ${L} : ${g} = ${L/g}.`,`${rawH(rn,L)} = ${(rn<0?MINUS:'')+frBox(Math.abs(rn)+' : '+g,L+' : '+g)} = ${fracH(res)}`))}
+  return{res,steps,L};
+}
+function mulSteps(x,y,say){
+  const res=F.mul(x,y);const sg=((x.n<0)!==(y.n<0)&&res.n!==0)?MINUS:'';
+  const rn=Math.abs(x.n*y.n),rd=x.d*y.d;const steps=[];
+  if(x.d===1&&y.d===1){steps.push(S('Vynásobíme.',`${fracHp(x)} · ${fracHp(y)} = ${fracH(res)}`));return{res,steps}}
+  const top=`${Math.abs(x.n)} · ${Math.abs(y.n)}`,bot=[x.d,y.d].filter(d=>d!==1).join(' · ');
+  steps.push(S(say||`Násobíme zlomky: čitatel krát čitatel (nahoře), jmenovatel krát jmenovatel (dole).${sg?' Jedno číslo je záporné a druhé kladné, proto vyjde záporný výsledek.':''}`,
+    `${fracHp(x)} · ${fracHp(y)} = ${sg}${frBox(top,bot)} = ${sg}${rawH(rn,rd)}`));
+  if(rn===0)return{res,steps};
+  const g=gcd(rn,rd);
+  if(g>1){
+    steps.push(S(`Výsledek zkrátíme. Krátit znamená vydělit čitatel i jmenovatel stejným číslem. ${rn} i ${rd} jdou vydělit ${g}, takže: čitatel ${rn} : ${g} = ${rn/g}, jmenovatel ${rd} : ${g} = ${rd/g}.`,`${sg}${rawH(rn,rd)} = ${sg}${frBox(rn+' : '+g,rd+' : '+g)} = ${fracH(res)}`));
+    const c1=gcd(Math.abs(x.n),y.d),c2=gcd(Math.abs(y.n),x.d);const pr=[];
+    if(c1>1)pr.push(`${Math.abs(x.n)} nahoře a ${y.d} dole vydělit ${c1}`);if(c2>1)pr.push(`${Math.abs(y.n)} nahoře a ${x.d} dole vydělit ${c2}`);
+    if(pr.length)steps.push(S(`Tip na příště: krátit jde už před násobením, „do kříže“. Tady stačí ${pr.join(' a ')}. Pak se násobí menší čísla a je menší šance udělat chybu.`));
+  }
+  return{res,steps};
+}
+function divSteps(x,y){
+  const r=Fr(y.d,y.n);
+  const steps=[S(`Dělit zlomkem znamená násobit jeho převrácenou hodnotou. Převrácenou hodnotu dostaneme tak, že prohodíme čitatel a jmenovatel: z ${fracH(y)} je ${fracH(r)}. První číslo zůstane, jak je.`,`${fracHp(x)} : ${fracHp(y)} = ${fracHp(x)} · ${fracHp(r)}`)];
+  const m=mulSteps(x,r);return{res:m.res,steps:steps.concat(m.steps)};
+}
+const okFr=(f,lim)=>f.n!==0&&Math.abs(f.n)<=lim&&f.d<=lim;
+const TASKF='Vypočtěte a výsledek zapište zlomkem v základním tvaru.';
+
+function genZlomky(level){
+  for(let t=0;t<3000;t++){
+    const tp=level===1?pick(['as','as','md']):pick(['p31','p31','prec','pm']);
+    if(tp==='as'){const a=rfr(9,12),b=rfr(9,12);if(a.d===b.d)continue;const op=pick(['+','-']);const s=addSub(a,b,op);if(!okFr(s.res,60))continue;
+      return{kind:'num',fraction:true,ans:s.res,task:TASKF,prompt:`${fracH(a)}${opS(op)}${fracH(b)} =`,steps:s.steps,plain:`${frP(a)}${op}${frP(b)}`}}
+    if(tp==='md'){const a=rfr(9,12),b=rfr(9,12);const op=pick(['*',':']);const s=op==='*'?mulSteps(a,b):divSteps(a,b);if(!okFr(s.res,60)||s.res.d===1)continue;
+      return{kind:'num',fraction:true,ans:s.res,task:TASKF,prompt:`${fracH(a)} ${op==='*'?'·':':'} ${fracH(b)} =`,steps:s.steps,plain:`${frP(a)}${op}(${frP(b)})`}}
+    if(tp==='p31'){const a=rfr(9,12),b=rfr(9,12);if(a.d===b.d)continue;const op=pick(['+','-']);const s=addSub(a,b,op);if(F.isZero(s.res))continue;const e=rfr(7,9);const op2=pick([':',':','*']);
+      const m=op2===':'?divSteps(s.res,e):mulSteps(s.res,e);if(!okFr(m.res,50))continue;
+      return{kind:'num',fraction:true,ans:m.res,task:TASKF,prompt:`(${fracH(a)}${opS(op)}${fracH(b)}) ${op2==='*'?'·':':'} ${fracH(e)} =`,
+        steps:[H('Nejdřív závorka, ta má vždycky přednost'),...s.steps,H(`Teď výsledek závorky ${op2===':'?'vydělíme':'vynásobíme'} zlomkem ${fracH(e)}`),...m.steps],
+        plain:`(${frP(a)}${op}${frP(b)})${op2}(${frP(e)})`}}
+    if(tp==='prec'){const a=rfr(9,12),c=rfr(8,10),e=rfr(8,10);const m=mulSteps(c,e);const op=pick(['+','-']);if(m.res.d===1)continue;const s=addSub(a,m.res,op);if(!okFr(s.res,60))continue;
+      return{kind:'num',fraction:true,ans:s.res,task:TASKF,prompt:`${fracH(a)}${opS(op)}${fracH(c)} · ${fracH(e)} =`,
+        steps:[H('Nejdřív násobení, má přednost před sčítáním a odčítáním'),...m.steps,H(`Teď ${op==='+'?'přičteme':'odečteme'} výsledek násobení`),...s.steps],plain:`${frP(a)}${op}${frP(c)}*${frP(e)}`}}
+    if(tp==='pm'){const a=rfr(6,8),b=rfr(6,8),c=rfr(6,8),d=rfr(6,8);if(a.d===b.d||c.d===d.d)continue;const s1=addSub(a,b,'+'),s2=addSub(c,d,'-');if(F.isZero(s2.res))continue;const m=mulSteps(s1.res,s2.res);if(!okFr(m.res,40))continue;
+      return{kind:'num',fraction:true,ans:m.res,task:TASKF,prompt:`(${fracH(a)} + ${fracH(b)}) · (${fracH(c)} ${MINUS} ${fracH(d)}) =`,
+        steps:[H('První závorka'),...s1.steps,H('Druhá závorka'),...s2.steps,H('Výsledky obou závorek vynásobíme'),...m.steps],plain:`(${frP(a)}+${frP(b)})*(${frP(c)}-${frP(d)})`}}
+  }
+}
+
+// ---- složené zlomky
+function blkSingle(){const a=rfr(9,12);return{html:fracH(a),plain:frP(a),val:a,steps:[],single:true}}
+function blkInt(){const k=ri(2,9);return{html:`${k}`,plain:`${k}`,val:Fr(k),steps:[],single:true}}
+function blkAddSub(){for(;;){const a=rfr(8,10),b=rfr(8,10);if(a.d===b.d)continue;const op=pick(['+','-']);const s=addSub(a,b,op);if(F.isZero(s.res))continue;return{html:`${fracH(a)}${opS(op)}${fracH(b)}`,plain:`${frP(a)}${op}${frP(b)}`,val:s.res,steps:s.steps}}}
+function blkPowMul(){
+  const p=pick([1,1,2]),r=ri(2,7),op=pick(['+','-']);
+  const q=Fr(op==='+'?p*r+1:p*r-1,r);const sq=F.pow(q,2);
+  const sqn=q.n*q.n;const divs=[];for(let i=2;i<=12;i++)if(sqn%i===0)divs.push(i);
+  const m=r*pick([1,1,2]),n=divs.length&&Math.random()<0.8?pick(divs):ri(2,9);const mf=Fr(m,n);
+  if(mf.d===1)return null;
+  const ms=mulSteps(sq,mf);
+  return{html:`(${p}${opS(op)}${frBox(1,r)})² · ${fracH(mf)}`,plain:`(${p}${op}1/${r})^2*${frP(mf)}`,val:ms.res,
+    steps:[S(`Nejdřív závorka. Číslo ${p} zapíšeme jako zlomek se jmenovatelem ${r} (${p} = ${frBox(p*r,r)}) a ${op==='+'?'sečteme':'odečteme'} čitatele.`,`${p}${opS(op)}${frBox(1,r)} = ${rawH(p*r,r)}${opS(op)}${frBox(1,r)} = ${fracH(q)}`),
+      S('Zlomek umocníme na druhou: na druhou umocníme zvlášť čitatel a zvlášť jmenovatel.',`(${fracH(q)})² = ${frBox(q.n+'²',q.d+'²')} = ${fracH(sq)}`),...ms.steps]}
+}
+function blkAddMul(){const a=rfr(6,8),c=rfr(6,8),e=rfr(6,8);const m=mulSteps(c,e);const op=pick(['+','-']);if(m.res.d===1)return null;const s=addSub(a,m.res,op);if(F.isZero(s.res))return null;
+  return{html:`${fracH(a)}${opS(op)}${fracH(c)} · ${fracH(e)}`,plain:`${frP(a)}${op}${frP(c)}*${frP(e)}`,val:s.res,steps:[S('Násobení má přednost před sčítáním a odčítáním, takže začneme jím.'),...m.steps,...s.steps]}}
+function blkRootSq(){const s=ri(2,10),t=ri(2,4),u=ri(2,9),Tt=t*t;if(Tt%u===0||gcd(Tt,u)>1)return null;const op=pick(['-','+']);const r=addSub(Fr(s),Fr(Tt,u),op);if(F.isZero(r.res))return null;
+  return{html:`√<span class="ov">${s*s}</span>${opS(op)}${frBox(t+'²',u)}`,plain:`√${s*s}${op}${t}^2/${u}`,val:r.res,
+    steps:[S(`Nejdřív odmocnina a mocnina. Odmocnina z ${s*s} je ${s}, protože ${s} · ${s} = ${s*s}. A ${t}² = ${t} · ${t} = ${Tt}.`,`√${s*s} = ${s}${SEP}${frBox(t+'²',u)} = ${frBox(Tt,u)}`),...r.steps]}}
+function blkRootFrac(){const a=ri(1,6),b=ri(2,9);if(gcd(a,b)>1)return null;const c=rfr(6,8);const op=pick(['+','-']);const r=addSub(Fr(a,b),c,op);if(F.isZero(r.res))return null;
+  return{html:`√<span class="ov">${frBox(a*a,b*b)}</span>${opS(op)}${fracH(c)}`,plain:`√(${a*a}/${b*b})${op}${frP(c)}`,val:r.res,
+    steps:[S(`Odmocninu ze zlomku spočítáme tak, že odmocníme zvlášť čitatel a zvlášť jmenovatel: √${a*a} = ${a} a √${b*b} = ${b}.`,`√<span class="ov">${frBox(a*a,b*b)}</span> = ${frBox(a,b)}`),...r.steps]}}
+function blkIntMinus(){const k=ri(1,5),f=rfr(7,9);const op=pick(['-','+']);const r=addSub(Fr(k),f,op);if(F.isZero(r.res))return null;return{html:`${k}${opS(op)}${fracH(f)}`,plain:`${k}${op}${frP(f)}`,val:r.res,steps:r.steps}}
+function genSlozene(level){
+  for(let t=0;t<5000;t++){
+    let N,D;
+    if(level===1){N=pick([blkAddSub,blkSingle])();D=N.single?blkAddSub():pick([blkSingle,blkInt,blkAddSub])()}
+    else{N=pick([blkPowMul,blkPowMul,blkAddMul])();D=pick([blkRootSq,blkRootSq,blkRootFrac,blkIntMinus])()}
+    if(!N||!D||F.isZero(D.val)||F.isZero(N.val))continue;
+    const d=divSteps(N.val,D.val);if(!okFr(d.res,level===1?40:30))continue;
+    const steps=[S('Složený zlomek počítáme po částech: nejdřív zvlášť všechno nad hlavní zlomkovou čarou, pak zvlášť všechno pod ní, a nakonec obojí vydělíme.')];
+    if(N.steps.length)steps.push(H('Čitatel (nad hlavní čarou)'),...N.steps);
+    if(D.steps.length)steps.push(H('Jmenovatel (pod hlavní čarou)'),...D.steps);
+    steps.push(H(`Teď máme ${fracH(N.val)} nad čarou a ${fracH(D.val)} pod čarou. Hlavní zlomková čára znamená dělení`),...d.steps);
+    return{kind:'num',fraction:true,ans:d.res,task:'Vypočtěte a výsledek zapište zlomkem v základním tvaru. Na papír piš celý postup.',
+      prompt:`<span class="fr big"><span>${N.html}</span><span>${D.html}</span></span> =`,steps,plain:`(${N.plain})/(${D.plain})`};
+  }
+}
+
+// ---- desetinná čísla
+const d1=(a,b)=>Fr(ri(a,b),10);
+function genDesetinna(level){
+  const divs=[Fr(2),Fr(4),Fr(5),Fr(1,2),Fr(1,5),Fr(2,5),Fr(1,4),Fr(3,10)];
+  for(let t=0;t<3000;t++){
+    const tp=level===1?pick(['abc','aqv','abpc']):pick(['xyzwv','xyvwz','xyzwv']);
+    const task='Vypočtěte. Dodržuj přednost operací.';
+    if(tp==='abc'){const a=d1(5,99),b=pick([Fr(ri(2,9)),d1(2,19)]),c=d1(2,59);const op=pick(['+','-']);const m=F.mul(b,c),r=op==='+'?F.add(a,m):F.sub(a,m);
+      return{kind:'num',ans:r,task,prompt:`${decStr(a)}${opS(op)}${decStr(b)} · ${decStr(c)} =`,steps:[`Násobení má přednost: ${decStr(b)} · ${decStr(c)} = ${decStr(m)}`,`${decStr(a)}${opS(op)}${decStr(m)} = ${decStr(r)}`],plain:`${decP(a)}${op}${decP(b)}*${decP(c)}`}}
+    if(tp==='aqv'){const v=pick(divs),q=d1(2,40),w=F.mul(q,v),a=d1(5,99);const op=pick(['+','-']);const r=op==='+'?F.add(a,q):F.sub(a,q);
+      return{kind:'num',ans:r,task,prompt:`${decStr(a)}${opS(op)}${decStr(w)} : ${decStr(v)} =`,steps:[`Dělení má přednost: ${decStr(w)} : ${decStr(v)} = ${decStr(q)}`,`${decStr(a)}${opS(op)}${decStr(q)} = ${decStr(r)}`],plain:`${decP(a)}${op}${decP(w)}:${decP(v)}`}}
+    if(tp==='abpc'){const a=pick([Fr(ri(2,9)),d1(2,9)]),b=d1(10,60),c=d1(2,40);const op=pick(['+','-']);const s=op==='+'?F.add(b,c):F.sub(b,c);const r=F.mul(a,s);
+      return{kind:'num',ans:r,task,prompt:`${decStr(a)} · (${decStr(b)}${opS(op)}${decStr(c)}) =`,steps:[`Nejdřív závorka: ${decStr(b)}${opS(op)}${decStr(c)} = ${decStr(s)}`,`${decStr(a)} · ${decHp(s)} = ${decStr(r)}`],plain:`${decP(a)}*(${decP(b)}${op}${decP(c)})`}}
+    if(tp==='xyzwv'){const x=d1(2,9),y=d1(5,60),z=d1(5,60);const s=F.sub(y,z);if(F.isZero(s))continue;const m=F.mul(x,s);const v=pick(divs),q=d1(2,30),w=F.mul(q,v);const op=pick(['+','-']);const r=op==='+'?F.add(m,q):F.sub(m,q);
+      return{kind:'num',ans:r,task,prompt:`${decStr(x)} · (${decStr(y)} ${MINUS} ${decStr(z)})${opS(op)}${decStr(w)} : ${decStr(v)} =`,
+        steps:[`Nejdřív závorka: ${decStr(y)} ${MINUS} ${decStr(z)} = ${decStr(s)}`,`Pak násobení a dělení: ${decStr(x)} · ${decHp(s)} = ${decStr(m)} a ${decStr(w)} : ${decStr(v)} = ${decStr(q)}`,`Nakonec: ${decStr(m)}${opS(op)}${decStr(q)} = ${decStr(r)}`],
+        plain:`${decP(x)}*(${decP(y)}-${decP(z)})${op}${decP(w)}:${decP(v)}`}}
+    if(tp==='xyvwz'){const v=pick(divs),q=d1(-30,40);if(F.isZero(q))continue;const y=d1(2,50),x=F.add(F.mul(q,v),y);if(x.n<=0)continue;const w=d1(2,9),z=d1(2,30),m=F.mul(w,z),r=F.sub(q,m);const xy=F.sub(x,y);
+      return{kind:'num',ans:r,task,prompt:`(${decStr(x)} ${MINUS} ${decStr(y)}) : ${decStr(v)} ${MINUS} ${decStr(w)} · ${decStr(z)} =`,
+        steps:[`Nejdřív závorka: ${decStr(x)} ${MINUS} ${decStr(y)} = ${decStr(xy)}`,`Pak dělení a násobení: ${decHp(xy)} : ${decStr(v)} = ${decStr(q)} a ${decStr(w)} · ${decStr(z)} = ${decStr(m)}`,`Nakonec: ${decStr(q)} ${MINUS} ${decStr(m)} = ${decStr(r)}`],
+        plain:`(${decP(x)}-${decP(y)}):${decP(v)}-${decP(w)}*${decP(z)}`}}
+  }
+}
+
+// ---- mocniny a odmocniny
+const MT={
+  sq:()=>{const k=ri(2,15);return{html:`${k}²`,plain:`${k}^2`,val:Fr(k*k),expl:`${k}² = ${k} · ${k} = ${k*k}`}},
+  cube:()=>{const k=ri(2,5);return{html:`${k}³`,plain:`${k}^3`,val:Fr(k*k*k),expl:`${k}³ = ${k} · ${k} · ${k} = ${k*k*k}`}},
+  root:()=>{const k=ri(2,20);return{html:`√<span class="ov">${k*k}</span>`,plain:`√${k*k}`,val:Fr(k),expl:`√${k*k} = ${k}, protože ${k}² = ${k*k}`}},
+  negPar:()=>{const k=ri(2,9);return{html:`(${MINUS}${k})²`,plain:`(-${k})^2`,val:Fr(k*k),expl:`(${MINUS}${k})² = (${MINUS}${k}) · (${MINUS}${k}) = ${k*k}, mínus krát mínus je plus`}},
+  negCube:()=>{const k=ri(2,4);return{html:`(${MINUS}${k})³`,plain:`(-${k})^3`,val:Fr(-k*k*k),expl:`(${MINUS}${k})³ = (${MINUS}${k}) · (${MINUS}${k}) · (${MINUS}${k}) = ${MINUS}${k*k*k}, lichá mocnina záporného čísla je záporná`}},
+  prod:()=>{const c=ri(2,5),k=ri(2,6);return{html:`${c} · ${k}²`,plain:`${c}*${k}^2`,val:Fr(c*k*k),expl:`nejdřív mocnina, pak násobení: ${c} · ${k}² = ${c} · ${k*k} = ${c*k*k}`}},
+  fracSq:()=>{const f=rfr(6,7);const s=F.pow(f,2);return{html:`(${fracH(f)})²`,plain:`${frP(f)}^2`,val:s,expl:`(${fracH(f)})² = ${frBox(f.n+'²',f.d+'²')} = ${fracH(s)}`}},
+  rootFrac:()=>{let a,b;do{a=ri(1,9);b=ri(2,10)}while(gcd(a,b)>1);return{html:`√<span class="ov">${frBox(a*a,b*b)}</span>`,plain:`√(${a*a}/${b*b})`,val:Fr(a,b),expl:`√<span class="ov">${frBox(a*a,b*b)}</span> = ${frBox(a,b)}, odmocníme zvlášť čitatel i jmenovatel`}},
+  decSq:()=>{const k=ri(1,9),f=Fr(k,10),s=F.pow(f,2);return{html:`0,${k}²`,plain:`0.${k}^2`,val:s,expl:`0,${k}² = 0,${k} · 0,${k} = ${decStr(s)}, desetinná místa se sčítají`}},
+  leadNeg:()=>{const k=ri(2,9);return{html:`${MINUS}${k}²`,plain:`-${k}^2`,val:Fr(-k*k),expl:`${MINUS}${k}² = ${MINUS}${k*k}. Pozor: mínus není v závorce, takže se nemocní`}}
+};
+function genMocniny(level){
+  for(let t=0;t<2000;t++){
+    let terms,fmt=numH,fmtP=numHp;
+    if(level===1){terms=[0,1,2].map(()=>MT[pick(['sq','sq','root','root','cube'])]())}
+    else{const g=pick(['int','int','frac','dec']);
+      if(g==='int'){terms=[MT[pick(['leadNeg','root','sq','prod'])]()];for(let i=0;i<pick([2,3]);i++)terms.push(MT[pick(['negPar','negCube','root','prod','sq'])]())}
+      else if(g==='frac'){fmt=fracH;fmtP=fracHp;terms=[MT.fracSq(),MT[pick(['rootFrac','root','fracSq'])]()];if(Math.random()<0.5)terms.push(MT.rootFrac())}
+      else{terms=[MT.decSq(),MT[pick(['root','sq'])]()];if(Math.random()<0.5)terms.push(MT.decSq())}}
+    const ops=terms.map((_,i)=>i===0?'+':pick(['+','-']));
+    let res=Fr(0);terms.forEach((x,i)=>{res=ops[i]==='+'?F.add(res,x.val):F.sub(res,x.val)});
+    if(Math.abs(res.n)>999||res.d>200)continue;
+    if(fmt===numH&&decStr(res)===null){fmt=fracH;fmtP=fracHp}
+    const prompt=terms.map((x,i)=>i===0?x.html:opS(ops[i])+x.html).join('')+' =';
+    const plain=terms.map((x,i)=>i===0?x.plain:ops[i]+x.plain).join('');
+    const sum=terms.map((x,i)=>i===0?fmt(x.val):opS(ops[i])+fmtP(x.val)).join('');
+    return{kind:'num',ans:res,task:'Vypočtěte.',prompt,steps:terms.map(x=>x.expl).concat([`Dosadíme a spočítáme: ${sum} = ${fmt(res)}`]),plain,solFmt:fmt===fracH?'frac':'dec'};
+  }
+}
+
+// ---- procenta
+function genProcenta(level){
+  const nice=[5,10,15,20,25,30,40,50,60,75,12,35,45,80];
+  for(let t=0;t<3000;t++){
+    const tp=level===1?pick(['cast','kolik','zvys','sniz']):pick(['cast','kolik','zcelku','puvodni','okolik','zvys']);
+    if(tp==='cast'){const p=pick(nice);const base=100/gcd(p,100);const Z=base*ri(1,Math.floor(2000/base));if(Z<20)continue;const r=Z*p/100;const one=Fr(Z,100);
+      const ctx=pick([`Kolik je ${p} % z ${Z}?`,`Ve škole je ${Z} žáků a ${p} % z nich dojíždí autobusem. Kolik žáků dojíždí?`,`Nemocnice má ${Z} lůžek, ${p} % z nich je na interně. Kolik lůžek je na interně?`]);
+      return{kind:'num',unit:true,ans:Fr(r),task:'Vypočtěte.',prompt:`<span class="txt">${ctx}</span>`,steps:[`1 % z ${Z} je ${Z} : 100 = ${decStr(one)}`,`${p} % je ${p} · ${decStr(one)} = ${r}`,`Jinak: ${p} % = ${decStr(Fr(p,100))}, takže ${decStr(Fr(p,100))} · ${Z} = ${r}`]}}
+    if(tp==='kolik'){const B=pick([20,25,40,50,80,120,150,200,250,300,400,500,800]);const opts=[];for(let p=5;p<=95;p+=5)if(B*p%100===0)opts.push(p);const p=pick(opts);const A=B*p/100;
+      const ctx=pick([`Kolik procent je ${A} z ${B}?`,`V testu bylo ${B} bodů a Bára získala ${A}. Kolik procent bodů získala?`]);
+      return{kind:'num',unit:true,ans:Fr(p),task:'Vypočtěte.',prompt:`<span class="txt">${ctx}</span>`,steps:[`Část vydělíme celkem: ${A} : ${B} = ${decStr(Fr(A,B))}`,`${decStr(Fr(A,B))} je ${p} %, protože 1 = 100 %`]}}
+    if(tp==='zvys'||tp==='sniz'){const p=pick(nice);const base=100/gcd(p,100);const Z=base*ri(1,Math.floor(3000/base));if(Z<50)continue;const ch=Z*p/100;const r=tp==='zvys'?Z+ch:Z-ch;
+      const ctx=tp==='zvys'?`Cena ${Z} Kč se zvýšila o ${p} %. Kolik korun stojí zboží teď?`:`Bunda stála ${Z} Kč, teď je ve slevě ${p} %. Kolik korun stojí po slevě?`;
+      const k=tp==='zvys'?Fr(100+p,100):Fr(100-p,100);
+      return{kind:'num',unit:true,ans:Fr(r),task:'Vypočtěte.',prompt:`<span class="txt">${ctx}</span>`,steps:[`${p} % z ${Z} je ${Z} : 100 · ${p} = ${ch}`,tp==='zvys'?`${Z} + ${ch} = ${r} Kč`:`${Z} ${MINUS} ${ch} = ${r} Kč`,`Rychleji: ${tp==='zvys'?'nová cena je':'po slevě platíme'} ${tp==='zvys'?100+p:100-p} % původní ceny, tedy ${Z} · ${decStr(k)} = ${r}`]}}
+    if(tp==='zcelku'){const p=pick(nice);const base=100/gcd(p,100);const X=base*ri(1,Math.floor(1500/base));if(X<20)continue;const A=X*p/100;
+      return{kind:'num',unit:true,ans:Fr(X),task:'Vypočtěte.',prompt:`<span class="txt">${p} % neznámého čísla je ${A}. Jaké je to číslo?</span>`,steps:[`${p} % … ${A}, takže 1 % … ${A} : ${p} = ${numH(Fr(A,p))}`,`100 % … ${numH(Fr(A,p))} · 100 = ${X}`]}}
+    if(tp==='puvodni'){const p=pick([10,20,25,30,40,50,15]);const base=100/gcd(100-p,100);const X=base*ri(1,Math.floor(3000/base));if(X<50)continue;const C=X*(100-p)/100;
+      return{kind:'num',unit:true,ans:Fr(X),task:'Vypočtěte.',prompt:`<span class="txt">Po slevě ${p} % stojí boty ${C} Kč. Kolik korun stály před slevou?</span>`,
+        steps:[`Po slevě ${p} % platíme ${100-p} % původní ceny, takže ${100-p} % … ${C} Kč`,`1 % … ${C} : ${100-p} = ${numH(Fr(C,100-p))} Kč`,`100 % … ${numH(Fr(C,100-p))} · 100 = ${X} Kč`,`Pozor, nejde jen přičíst ${p} % k ${C}. Procenta se počítají z původní ceny.`]}}
+    if(tp==='okolik'){const p=pick(nice);const base=100/gcd(p,100);const B=base*ri(1,Math.floor(800/base));if(B<10)continue;const A=B+B*p/100;
+      return{kind:'num',unit:true,ans:Fr(p),task:'Vypočtěte.',prompt:`<span class="txt">O kolik procent je číslo ${A} větší než číslo ${B}?</span>`,
+        steps:[`Rozdíl: ${A} ${MINUS} ${B} = ${A-B}`,`Porovnáváme s číslem ${B} (to je 100 %): ${A-B} : ${B} = ${decStr(Fr(A-B,B))}, tedy ${p} %`]}}
+  }
+}
+
+// ---- roznásobování
+const VARS=['x','y','a','k'];
+function genRoznasobovani(level){
+  for(let t=0;t<3000;t++){
+    const v=pick(VARS);const task='Upravte na co nejjednodušší tvar bez závorek.';
+    const tp=level===1?pick(['r1','r2','r3']):pick(['r4','r5','r6','r5']);
+    if(tp==='r1'){const a=ri(2,7),b=ri(1,6),c=riNZ(-9,9),d=ri(2,7),e=ri(1,6),f=riNZ(-9,9);
+      const B=lin(b,c),E=lin(e,f);const p1=prodT([T(a,0)],B),p2=prodT([T(-d,0)],E);const res=sumT(p1.concat(p2));if(P.nz(res)===0)continue;
+      return{kind:'poly',v,ans:res,task,prompt:`${a} · (${termsH(B,v)}) ${MINUS} ${d} · (${termsH(E,v)}) =`,
+        steps:[`${a} · (${termsH(B,v)}) = ${termsH(p1,v)}`,`${MINUS}${d} · (${termsH(E,v)}) = ${termsH(p2,v)}. Mínus před číslem násobí oba členy v závorce.`,`Sečteme členy se stejnou mocninou: ${termsH(p1.concat(p2),v)} = ${polyH(res,v)}`],plain:`${a}*(${polyPlain(sumT(B),v)})-${d}*(${polyPlain(sumT(E),v)})`}}
+    if(tp==='r2'||tp==='r3'){const a=tp==='r2'?1:ri(2,5),c=tp==='r2'?1:ri(1,4),b=riNZ(-9,9),d=riNZ(-9,9);const A=lin(a,b),B=lin(c,d);const pr=prodT(A,B);const res=sumT(pr);
+      return{kind:'poly',v,ans:res,task,prompt:`(${termsH(A,v)}) · (${termsH(B,v)}) =`,steps:[`Každý člen první závorky vynásobíme každým členem druhé: ${termsH(pr,v)}`,`Sečteme členy se stejnou mocninou: ${polyH(res,v)}`],plain:`(${polyPlain(sumT(A),v)})*(${polyPlain(sumT(B),v)})`}}
+    if(tp==='r4'){const a=riNZ(-9,9),b=ri(1,9),c=ri(2,5);const A=lin(1,a),B=lin(1,-b);const sq=[T(1,2),T(2*a,1),T(a*a,0)];const pr=prodT(B,[T(c,1)]);const res=sumT(sq.concat(pr));
+      return{kind:'poly',v,ans:res,task,prompt:`(${termsH(A,v)})² + (${termsH(B,v)}) · ${c}${V(v)} =`,
+        steps:[`Podle vzorce (a ${a>0?'+':MINUS} b)² = a² ${a>0?'+':MINUS} 2ab + b²: (${termsH(A,v)})² = ${termsH(sq,v)}`,`(${termsH(B,v)}) · ${c}${V(v)} = ${termsH(pr,v)}`,`Sečteme: ${termsH(sq.concat(pr),v)} = ${polyH(res,v)}`],
+        plain:`(${polyPlain(sumT(A),v)})^2+(${polyPlain(sumT(B),v)})*${c}*${v}`}}
+    if(tp==='r5'){const a=ri(2,15),m=ri(1,3),c=ri(1,4),b=c+m,d=ri(2,6),e=ri(2,9),p=-ri(2,5),q=ri(1,-p-1),s=p+q,g=ri(1,9);
+      const A=lin(1,-a),D=lin(d,-e);const p1=prodT(A,[T(m,1)]);const p2=prodT([T(-s,0)],D);const all=p1.concat(p2,[T(-g,0)]);const res=sumT(all);
+      return{kind:'poly',v,ans:res,task,prompt:`(${termsH(A,v)}) · (${b}${V(v)} ${MINUS} ${c===1?'':c}${V(v)}) ${MINUS} (${termsH(D,v)}) · (${MINUS}${-p} + ${q}) ${MINUS} ${g} =`,
+        steps:[`Nejdřív zjednodušíme obsah závorek: ${b}${V(v)} ${MINUS} ${c===1?'':c}${V(v)} = ${mono(Fr(m),v)} a ${MINUS}${-p} + ${q} = ${MINUS}${-s}`,
+          `(${termsH(A,v)}) · ${mono(Fr(m),v)} = ${termsH(p1,v)}`,
+          `${MINUS}(${termsH(D,v)}) · (${MINUS}${-s}) = ${termsH(p2,v)}. Mínus krát mínus dává plus.`,
+          `Sečteme vše i s posledním ${MINUS}${g}: ${termsH(all,v)} = ${polyH(res,v)}`],
+        plain:`(${polyPlain(sumT(A),v)})*(${b}*${v}-${c}*${v})-(${polyPlain(sumT(D),v)})*(${p}+${q})-${g}`}}
+    if(tp==='r6'){const a=ri(2,4),b=riNZ(-9,9),c=ri(1,9),d=riNZ(-9,9);const A=lin(a,b),B=lin(1,-c),Dd=lin(1,d);const p1=prodT(A,B);const sq=[T(1,2),T(2*d,1),T(d*d,0)];const nsq=sq.map(x=>T(F.neg(x.c),x.k));const res=sumT(p1.concat(nsq));
+      return{kind:'poly',v,ans:res,task,prompt:`(${termsH(A,v)}) · (${termsH(B,v)}) ${MINUS} (${termsH(Dd,v)})² =`,
+        steps:[`(${termsH(A,v)}) · (${termsH(B,v)}) = ${termsH(p1,v)} = ${polyH(sumT(p1),v)}`,`(${termsH(Dd,v)})² = ${termsH(sq,v)}. Výsledek nech v závorce, protože před ní je mínus.`,`${MINUS}(${termsH(sq,v)}) = ${termsH(nsq,v)}. Mínus před závorkou změní všechna znaménka.`,`Sečteme: ${polyH(sumT(p1),v)} ${termsH(nsq,v).startsWith(MINUS)?'':'+ '}${termsH(nsq,v)} = ${polyH(res,v)}`],
+        plain:`(${polyPlain(sumT(A),v)})*(${polyPlain(sumT(B),v)})-(${polyPlain(sumT(Dd),v)})^2`}}
+  }
+}
+
+// ---- vytýkání
+function genVytykani(level){
+  for(let t=0;t<3000;t++){
+    const v=pick(VARS);const tp=level===1?pick(['k','k','x']):pick(['kx','k3','kx3','kx']);
+    let k=ri(2,9),withX=false,inner;
+    if(tp==='k'){const a=ri(1,9),b=riNZ(-9,9);if(gcd(a,b)>1)continue;inner=[Fr(b),Fr(a)]}
+    else if(tp==='x'){k=1;withX=true;const a=ri(2,9),b=riNZ(-9,9);if(gcd(a,b)>1)continue;inner=[Fr(b),Fr(a)]}
+    else if(tp==='kx'){withX=true;const a=ri(1,7),b=riNZ(-9,9);if(gcd(a,b)>1)continue;inner=[Fr(b),Fr(a)]}
+    else if(tp==='k3'){const a=ri(1,5),b=riNZ(-9,9),c=riNZ(-9,9);if(gcd(gcd(a,b),c)>1)continue;inner=[Fr(c),Fr(b),Fr(a)]}
+    else{withX=true;const a=ri(1,5),b=riNZ(-7,7),c=riNZ(-7,7);if(gcd(gcd(a,b),c)>1)continue;inner=[Fr(c),Fr(b),Fr(a)]}
+    const outer=withX?[Fr(0),Fr(k)]:[Fr(k)];const exp=P.mul(outer,inner);
+    const outH=(k===1?'':k)+(withX?V(v):'');const outS=(k===1?'':k)+(withX?v:'');
+    const coefs=polyTerms(exp).map(x=>Math.abs(x.c.n));
+    const steps=[];
+    if(k>1)steps.push(`Největší společný dělitel čísel ${coefs.join(', ')} je ${k}.`);
+    if(withX)steps.push(`Každý člen obsahuje ${V(v)}, takže vytkneme i ${V(v)}.`);
+    steps.push(`Každý člen vydělíme činitelem ${outH} a výsledky napíšeme do závorky: ${polyH(exp,v)} = ${outH}(${polyH(inner,v)})`);
+    steps.push(`Kontrola: když závorku roznásobíš, musí vyjít zadaný výraz.`);
+    return{kind:'factor',mode:'common',v,ans:exp,task:'Vytkněte před závorku co nejvíc (číslo i proměnnou).',prompt:`${polyH(exp,v)} =`,steps,sol:`${outS}(${polySol(inner,v)})`,plain:polyPlain(exp,v)};
+  }
+}
+
+// ---- vzorce
+function genVzorce(level){
+  for(let t=0;t<3000;t++){
+    const v=pick(VARS);const tp=level===1?pick(['e1','e2','f1','e1','f1']):pick(['e3','e4','f2','f3','f4','f4']);
+    const pv=(b)=>b===1?V(v):`${b}${V(v)}`;const pq=(b)=>b===1?`${V(v)}²`:`(${b}${V(v)})²`;
+    if(tp==='e1'||tp==='e3'){const b=tp==='e1'?1:ri(2,5),a=ri(1,9),s=pick([1,-1]);if(gcd(a,b)>1&&tp==='e3')continue;const res=[Fr(a*a),Fr(2*a*b*s),Fr(b*b)];const sg=s>0?'+':MINUS;
+      return{kind:'poly',v,ans:res,task:'Umocněte podle vzorce.',prompt:`(${pv(b)} ${sg} ${a})² =`,steps:[`Vzorec: (a ${sg} b)² = a² ${sg} 2ab + b²`,`${pq(b)} ${sg} 2 · ${pv(b)} · ${a} + ${a}² = ${polyH(res,v)}`],plain:`(${b}*${v}${s>0?'+':'-'}${a})^2`}}
+    if(tp==='e2'||tp==='e4'){const b=tp==='e2'?1:ri(2,5),a=ri(1,12);const res=[Fr(-a*a),Fr(0),Fr(b*b)];const first=pick([0,1]);
+      const f1=`(${pv(b)} + ${a})`,f2=`(${pv(b)} ${MINUS} ${a})`;
+      return{kind:'poly',v,ans:res,task:'Roznásobte podle vzorce.',prompt:`${first?f1+' · '+f2:f2+' · '+f1} =`,steps:[`Vzorec: (a + b)(a ${MINUS} b) = a² ${MINUS} b²`,`${pq(b)} ${MINUS} ${a}² = ${polyH(res,v)}`],plain:`(${b}*${v}+${a})*(${b}*${v}-${a})`}}
+    if(tp==='f1'||tp==='f2'){const b=tp==='f1'?1:ri(2,5),a=ri(1,12);if(gcd(a,b)>1)continue;const exp=[Fr(-a*a),Fr(0),Fr(b*b)];
+      return{kind:'factor',mode:'formula',v,ans:exp,task:'Rozložte na součin pomocí vzorce.',prompt:`${polyH(exp,v)} =`,steps:[`Vzorec: a² ${MINUS} b² = (a + b)(a ${MINUS} b)`,`${polyH(exp,v)} = ${pq(b)} ${MINUS} ${a}² = (${pv(b)} + ${a})(${pv(b)} ${MINUS} ${a})`],sol:`(${b===1?'':b}${v}+${a})(${b===1?'':b}${v}-${a})`,plain:polyPlain(exp,v)}}
+    if(tp==='f3'){const b=pick([1,1,2,3]),a=ri(1,9),s=pick([1,-1]);if(gcd(a,b)>1)continue;const exp=[Fr(a*a),Fr(2*a*b*s),Fr(b*b)];const sg=s>0?'+':MINUS;
+      return{kind:'factor',mode:'formula',v,ans:exp,task:'Rozložte na součin pomocí vzorce.',prompt:`${polyH(exp,v)} =`,steps:[`Vzorec: a² ${sg} 2ab + b² = (a ${sg} b)²`,`${polyH(exp,v)} = ${pq(b)} ${sg} 2 · ${pv(b)} · ${a} + ${a}² = (${pv(b)} ${sg} ${a})²`],sol:`(${b===1?'':b}${v}${s>0?'+':'-'}${a})^2`,plain:polyPlain(exp,v)}}
+    if(tp==='f4'){const n=ri(4,15),N=n*n;const ds=[];for(let a=2;a<=30;a++)if(N%a===0&&a!==n&&N/a<=40&&N/a>=2)ds.push(a);if(!ds.length)continue;const a=pick(ds),b=N/a;const plus=Math.random()<0.5;
+      const exp=[Fr(-N),Fr(0),Fr(1)];
+      const prompt=plus?`${V(v)} · (${V(v)} + ${a}) ${MINUS} ${a} · (${V(v)} + ${b}) =`:`${V(v)} · (${V(v)} ${MINUS} ${a}) + ${a} · (${V(v)} ${MINUS} ${b}) =`;
+      const ex=plus?`${V(v)}² + ${a}${V(v)} ${MINUS} ${a}${V(v)} ${MINUS} ${N}`:`${V(v)}² ${MINUS} ${a}${V(v)} + ${a}${V(v)} ${MINUS} ${N}`;
+      return{kind:'factor',mode:'formula',v,ans:exp,task:'Upravte a výsledný výraz rozložte na součin pomocí vzorce.',prompt,steps:[`Roznásobíme závorky: ${ex}`,`Členy s ${V(v)} se odečtou: ${V(v)}² ${MINUS} ${N}`,`Vzorec a² ${MINUS} b²: ${V(v)}² ${MINUS} ${n}² = (${V(v)} + ${n})(${V(v)} ${MINUS} ${n})`],sol:`(${v}+${n})(${v}-${n})`,
+        plain:plus?`${v}*(${v}+${a})-${a}*(${v}+${b})`:`${v}*(${v}-${a})+${a}*(${v}-${b})`}}
+  }
+}
+
+// ---- rovnice
+function linSolve(A,C,v,dec){ // A·v = C → steps
+  const f=dec?(x=>decStr(x)):(x=>fracH(x)); const x=F.div(C,A);
+  if(F.eq(A,Fr(1))) return {x,steps:[]};
+  if(F.eq(A,Fr(-1))) return {x,steps:[`Vynásobíme obě strany (${MINUS}1): ${V(v)} = ${numH(x)}`]};
+  return {x,steps:[`Vydělíme obě strany číslem ${dec?decHp(A):fracHp(A)}: ${V(v)} = ${f(C)} : ${dec?decHp(A):fracHp(A)} = ${numH(x)}`]};
+}
+const signed=(c,body)=>c.n<0?` ${MINUS} ${body}`:` + ${body}`;
+function genRovnice(level){
+  for(let t=0;t<5000;t++){
+    const v='x';const tp=level===1?pick(['e1','e2']):pick(['e3','e3','e4']);
+    const task='Řešte rovnici. Na papír piš celý postup, zkoušku zapisovat nemusíš.';
+    if(tp==='e1'){const a=riNZ(-9,9),c=riNZ(-9,9);if(a===c)continue;const x0=ri(-9,12),b=riNZ(-15,15),d=(a-c)*x0+b;
+      const L=[T(a,1),T(b,0)],R=[T(c,1),T(d,0)];const A=Fr(a-c),C=Fr(d-b);const s=linSolve(A,C,v);
+      return{kind:'eq',v,ans:Fr(x0),task,prompt:`${termsH(L,v)} = ${termsH(R,v)}`,
+        steps:[`Členy s ${V(v)} převedeme na levou stranu, čísla na pravou. Při převodu se mění znaménko: ${termsH([T(a,1),T(-c,1)],v)} = ${termsH([T(d,0),T(-b,0)],v)}`,`${mono(A,v)} = ${fracH(C)}`].concat(s.steps),
+        plain:`${polyPlain(sumT(L),v)}=${polyPlain(sumT(R),v)}`}}
+    if(tp==='e2'){const a=ri(2,6),b=riNZ(-9,9),c=riNZ(-12,12),d=riNZ(-6,6);if(a===d)continue;const x0=ri(-8,10);const B=-a*b+c;const E=(a-d)*x0+B;
+      const R=[T(d,1),T(E,0)];const exp=[T(a,1),T(-a*b,0),T(c,0)];const A=Fr(a-d),C=Fr(E-B);const s=linSolve(A,C,v);
+      return{kind:'eq',v,ans:Fr(x0),task,prompt:`${a} · (${termsH(lin(1,-b),v)})${signed(Fr(c),Math.abs(c))} = ${termsH(R,v)}`,
+        steps:[`Roznásobíme závorku: ${termsH(exp,v)} = ${termsH(R,v)}`,`Sečteme čísla na levé straně: ${termsH([T(a,1),T(B,0)],v)} = ${termsH(R,v)}`,`Převedeme ${V(v)} doleva a čísla doprava: ${termsH([T(a,1),T(-d,1)],v)} = ${termsH([T(E,0),T(-B,0)],v)}`,`${mono(A,v)} = ${fracH(C)}`].concat(s.steps),
+        plain:`${a}*(${v}-(${b}))+(${c})=${polyPlain(sumT(R),v)}`}}
+    if(tp==='e3'){const p=Fr(ri(1,9),10),q=ri(2,5),r=pick([2,4,5,6,8,10,12,15,20]).valueOf();const rr=Fr(r,100);const s=Fr(ri(10,60),10);const TT=pick([Fr(1),Fr(1),Fr(1,2),Fr(2)]);
+      const qr=F.mul(Fr(q),rr),qs=F.mul(Fr(q),s),A=F.add(p,qr),u=F.sub(TT,A);if(u.n<=0||F.isZero(u)||decStr(u)===null)continue;
+      let x0=ri(-10,30);if(TT.d===2&&x0%2)x0++;const tt=F.sub(F.mul(TT,Fr(x0)),qs);
+      const rhs=termsH([T(tt,0),T(F.neg(u),1)],v,true);
+      const sl=linSolve(TT,F.add(tt,qs),v,true);
+      return{kind:'eq',v,ans:Fr(x0),task,prompt:`${monoD(p,v)} + ${q} · (${monoD(rr,v)} ${MINUS} ${decStr(s)}) = ${rhs}`,
+        steps:[`Roznásobíme závorku: ${q} · (${monoD(rr,v)} ${MINUS} ${decStr(s)}) = ${monoD(qr,v)} ${MINUS} ${decStr(qs)}`,
+          `${monoD(p,v)} + ${monoD(qr,v)} ${MINUS} ${decStr(qs)} = ${rhs}`,
+          `Sečteme členy s ${V(v)}: ${monoD(A,v)} ${MINUS} ${decStr(qs)} = ${rhs}`,
+          `K oběma stranám přičteme ${monoD(u,v)} a ${decStr(qs)}: ${monoD(TT,v)} = ${decStr(tt)} + ${decStr(qs)} = ${decStr(F.add(tt,qs))}`].concat(sl.steps),
+        plain:`${decP(p)}*x+${q}*(${decP(rr)}*x-${decP(s)})=${decP(tt)}-${decP(u)}*x`}}
+    if(tp==='e4'){const b=ri(2,6),d=ri(2,6);if(b===d)continue;const a=riNZ(-9,9),c=riNZ(-9,9),x0=ri(-10,15);const e=F.sub(Fr(x0+a,b),Fr(x0-c,d));if(e.d!==1)continue;
+      const L=lcm(b,d),m1=L/b,m2=L/d;const eL=e.n*L;
+      const n1=termsH(lin(1,a),v),n2=termsH(lin(1,-c),v);
+      const expd=[T(m1,1),T(m1*a,0),T(-m2,1),T(m2*c,0)];
+      const A=Fr(m1-m2),B=m1*a+m2*c,C=Fr(eL-B);const sl=linSolve(A,C,v);
+      const br=(m,s)=>m===1?`(${s})`:`${m} · (${s})`;
+      return{kind:'eq',v,ans:Fr(x0),task,prompt:`${frBox(n1,b)} ${MINUS} ${frBox(n2,d)} = ${intH(e.n)}`,
+        steps:[`Celou rovnici vynásobíme společným jmenovatelem ${L}. Čitatele dáme do závorek: ${br(m1,n1)} ${MINUS} ${br(m2,n2)} = ${intH(eL)}`,
+          `Roznásobíme. Pozor, mínus před druhou závorkou mění obě znaménka: ${termsH(expd,v)} = ${intH(eL)}`,
+          `Sloučíme: ${termsH([T(A,1),T(B,0)],v)} = ${intH(eL)}`,`Číslo převedeme doprava: ${mono(A,v)} = ${fracH(C)}`].concat(sl.steps),
+        plain:`(x+(${a}))/${b}-(x-(${c}))/${d}=${e.n}`}}
+  }
+}
+
+// ---- soustavy
+const xyT=(a,b)=>{const l=[];if(a)l.push({c:Fr(a),v:'x'});if(b)l.push({c:Fr(b),v:'y'});return l.map((t,i)=>{const neg=t.c.n<0,ab=Math.abs(t.c.n),body=(ab===1?'':ab)+V(t.v);return i===0?(neg?MINUS:'')+body:(neg?' '+MINUS+' ':' + ')+body}).join('')||'0'};
+const eqXY=(a,b,c)=>`${xyT(a,b)} = ${intH(c)}`;
+function genSoustavy(level){
+  for(let t=0;t<5000;t++){
+    const tp=level===1?pick(['s1','s2','s2']):pick(['s3','s3','s4']);
+    const task='Řešte soustavu rovnic. Na papír piš celý postup, zkoušku zapisovat nemusíš.';
+    const x0=ri(-6,9),y0=ri(-8,9);
+    if(tp==='s1'){const S=x0+y0,D=x0-y0;
+      return{kind:'sys',ans:{x:Fr(x0),y:Fr(y0)},task,prompt:`<span class="sys">${eqXY(1,1,S)}<br>${eqXY(1,-1,D)}</span>`,
+        steps:[`Rovnice sečteme, ${V('y')} se odečte: 2${V('x')} = ${intH(S)} + ${D<0?'('+intH(D)+')':D} = ${intH(S+D)}`,`${V('x')} = ${intH(S+D)} : 2 = ${intH(x0)}`,`Dosadíme do první rovnice: ${intH(x0)} + ${V('y')} = ${intH(S)}, takže ${V('y')} = ${intH(S)} ${MINUS} ${x0<0?'('+intH(x0)+')':x0} = ${intH(y0)}`],
+        eqs:[`x+y=${S}`,`x-y=${D}`]}}
+    if(tp==='s2'){const a=riNZ(-4,4),c=riNZ(-5,5),d=riNZ(-5,5);if(c+d*a===0)continue;const b=y0-a*x0,e=c*x0+d*y0;
+      const yH=termsH([T(a,1),T(b,0)],'x');const ex=[T(c,1),T(d*a,1),T(d*b,0)];const A=Fr(c+d*a),B=d*b;const sl=linSolve(A,Fr(e-B),'x');
+      return{kind:'sys',ans:{x:Fr(x0),y:Fr(y0)},task,prompt:`<span class="sys">${V('y')} = ${yH}<br>${eqXY(c,d,e)}</span>`,
+        steps:[`Z první rovnice dosadíme za ${V('y')} do druhé: ${xyT(c,0)}${d<0?' '+MINUS+' ':' + '}${Math.abs(d)===1?'':Math.abs(d)+' · '}(${yH}) = ${intH(e)}`,
+          `Roznásobíme: ${termsH(ex.map(x=>x),'x')} = ${intH(e)}`,`Sloučíme a číslo převedeme doprava: ${mono(A,'x')} = ${intH(e-B)}`].concat(sl.steps,[`Dosadíme do první rovnice: ${V('y')} = ${a===1?'':a===-1?MINUS:a+' · '}${a===1||a===-1?(x0<0?'('+intH(x0)+')':x0):(x0<0?'('+intH(x0)+')':x0)}${b===0?'':(b<0?' '+MINUS+' '+(-b):' + '+b)} = ${intH(y0)}`]),
+        eqs:[`y=${polyPlain(sumT([T(a,1),T(b,0)]),'x')}`,`${c}*x+(${d})*y=${e}`]}}
+    if(tp==='s3'){const a=ri(2,6),d=ri(1,5);if(a===d)continue;const b=riNZ(-5,5);const c=a*x0-(y0+b),n=y0-d*x0;
+      const eq2=`${termsH([T(d,1),T(n,0)],'x')} = ${V('y')}`;const inner=termsH([T(d,1),T(n,0)],'x');const inner2=termsH([T(d,1),T(n+b,0)],'x');
+      const A=Fr(a-d),B=-(n+b);const sl=linSolve(A,Fr(c-B),'x');
+      return{kind:'sys',ans:{x:Fr(x0),y:Fr(y0)},task,prompt:`<span class="sys">${a}${V('x')} ${MINUS} (${V('y')}${b<0?' '+MINUS+' '+(-b):' + '+b}) = ${intH(c)}<br>${eq2}</span>`,
+        steps:[`Druhá rovnice už má vyjádřené ${V('y')} = ${inner}. Dosadíme do první:`,
+          `${a}${V('x')} ${MINUS} (${inner}${b<0?' '+MINUS+' '+(-b):' + '+b}) = ${intH(c)}`,
+          `Upravíme závorku: ${a}${V('x')} ${MINUS} (${inner2}) = ${intH(c)}`,
+          `Odstraníme závorku, mínus před ní mění znaménka: ${termsH([T(a,1),T(-d,1),T(B,0)],'x')} = ${intH(c)}`,
+          `${termsH([T(A,1),T(B,0)],'x')} = ${intH(c)}, takže ${mono(A,'x')} = ${intH(c-B)}`].concat(sl.steps,[`Dosadíme ${V('x')} = ${intH(x0)} do druhé rovnice: ${V('y')} = ${d===1?'':d+' · '}${x0<0?'('+intH(x0)+')':x0}${n===0?'':(n<0?' '+MINUS+' '+(-n):' + '+n)} = ${intH(y0)}`]),
+        eqs:[`${a}*x-(y+(${b}))=${c}`,`${d}*x+(${n})=y`]}}
+    if(tp==='s4'){const a1=riNZ(-5,5),b1=riNZ(-5,5),a2=riNZ(-5,5),b2=riNZ(-5,5);if(a1*b2-a2*b1===0)continue;if(Math.abs(b1)===1&&Math.abs(b2)===1&&Math.random()<0.5)continue;
+      const c1=a1*x0+b1*y0,c2=a2*x0+b2*y0;const l=lcm(Math.abs(b1),Math.abs(b2));let k1=l/b1,k2=-l/b2;if(k1<0){k1=-k1;k2=-k2}
+      const A=k1*a1+k2*a2,C=k1*c1+k2*c2;if(A===0)continue;const sl=linSolve(Fr(A),Fr(C),'x');
+      const kH=k=>k<0?`(${MINUS}${-k})`:k;
+      const steps=[];
+      if(k1===1&&k2===1){steps.push(`Koeficienty u ${V('y')} jsou opačná čísla, takže rovnice můžeme rovnou sečíst a ${V('y')} se odečte.`)}
+      else{steps.push(`Chceme, aby se při sečtení rovnic odečetlo ${V('y')}. ${k1===1?'První rovnici necháme':'První rovnici vynásobíme číslem '+kH(k1)}, ${k2===1?'druhou necháme':'druhou vynásobíme číslem '+kH(k2)}:`);
+      steps.push(`${eqXY(k1*a1,k1*b1,k1*c1)}<br>${eqXY(k2*a2,k2*b2,k2*c2)}`);}
+      steps.push(`Sečteme rovnice: ${mono(Fr(A),'x')} = ${intH(C)}`);
+      steps.push(...sl.steps);
+      steps.push(`Dosadíme do první rovnice: ${a1===1?'':a1===-1?MINUS:a1+' · '}${x0<0?'('+intH(x0)+')':x0}${b1<0?' '+MINUS+' ':' + '}${Math.abs(b1)===1?'':Math.abs(b1)}${V('y')} = ${intH(c1)}, takže ${termsH([T(b1,1)],'y')} = ${intH(c1-a1*x0)} a ${V('y')} = ${intH(y0)}`);
+      return{kind:'sys',ans:{x:Fr(x0),y:Fr(y0)},task,prompt:`<span class="sys">${eqXY(a1,b1,c1)}<br>${eqXY(a2,b2,c2)}</span>`,steps,eqs:[`${a1}*x+(${b1})*y=${c1}`,`${a2}*x+(${b2})*y=${c2}`]}}
+  }
+}
+
+const TOPICS=[
+  {id:'zlomky',name:'Zlomky',ref:'jako úloha 3.1',gen:genZlomky},
+  {id:'slozene',name:'Složené zlomky',ref:'jako úloha 3.2',gen:genSlozene},
+  {id:'desetinna',name:'Desetinná čísla',ref:'přednost operací',gen:genDesetinna},
+  {id:'mocniny',name:'Mocniny a odmocniny',ref:'základ pro všechno ostatní',gen:genMocniny},
+  {id:'procenta',name:'Procenta',ref:'slovní úlohy',gen:genProcenta},
+  {id:'roznasobovani',name:'Roznásobování',ref:'jako úlohy 4.1 a 4.3',gen:genRoznasobovani},
+  {id:'vytykani',name:'Vytýkání',ref:'rozklad na součin',gen:genVytykani},
+  {id:'vzorce',name:'Vzorce',ref:'jako úloha 4.2',gen:genVzorce},
+  {id:'rovnice',name:'Rovnice',ref:'jako úloha 5.1',gen:genRovnice},
+  {id:'soustavy',name:'Soustavy rovnic',ref:'jako úloha 5.2',gen:genSoustavy}
+];
+function generate(topicId,level){
+  const tp=TOPICS.find(t=>t.id===topicId);const p=tp.gen(level);
+  p.topic=topicId;p.level=level;p.id=Date.now().toString(36)+Math.random().toString(36).slice(2,7);
+  if(!p.sol){
+    if(p.kind==='num') p.sol=p.fraction||p.solFmt==='frac'?frSol(p.ans):numSol(p.ans);
+    else if(p.kind==='poly') p.sol=polySol(p.ans,p.v);
+    else if(p.kind==='eq') p.sol=numSol(p.ans);
+    else if(p.kind==='sys') p.sol=[numSol(p.ans.x),numSol(p.ans.y)];
+  }
+  if(p.kind==='num') p.solH=p.fraction||p.solFmt==='frac'?fracH(p.ans):numH(p.ans);
+  else if(p.kind==='poly') p.solH=polyH(p.ans,p.v);
+  else if(p.kind==='factor') p.solH=p.sol.replace(/-/g,MINUS).replace(/\^2/g,'²').replace(new RegExp(p.v,'g'),V(p.v));
+  else if(p.kind==='eq') p.solH=`${V(p.v)} = ${numH(p.ans)}`;
+  else p.solH=`${V('x')} = ${numH(p.ans.x)}, ${V('y')} = ${numH(p.ans.y)}`;
+  return p;
+}
+function stepHTML(s){
+  if(s.startsWith('#H#')) return `<li class="h">${s.slice(3)}</li>`;
+  if(s.includes('class="say"')) return `<li>${s}</li>`;
+  const m=s.match(/^([\s\S]*?[^\s]):\s([\s\S]+)$/);
+  if(m) return `<li><span class="say">${m[1]}.</span><span class="m">${m[2]}</span></li>`;
+  if(!s.replace(/<[^>]+>/g,'').includes('=')) return `<li><span class="say">${s}</span></li>`;
+  return `<li><span class="m">${s}</span></li>`;
+}
+
+
+</script>
+<script>
+(function(){
+'use strict';
+const KEY='barunka-matika-v1';
+let store={stats:{},mistakes:[],days:{}};
+try{const raw=localStorage.getItem(KEY);if(raw){const s=JSON.parse(raw);store=Object.assign(store,s)}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){}}
+const today=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate()};
+
+const $=id=>document.getElementById(id);
+const SERIES=10;
+const state={topics:new Set(store.topics||['zlomky']),mix:!!store.mix,level:store.level||1,cur:null,attempts:0,counted:false,solved:false,shown:false,fromMistake:false,lastAnswer:'',chat:[],series:{i:0,ok:0}};
+if(!state.mix&&state.topics.size>1)state.topics=new Set([[...state.topics][0]]);
+const ws={topics:new Set(store.wsTopics||['zlomky','rovnice']),level:store.wsLevel||1};
+
+// ---------- chips ----------
+function renderChips(el,set,onChange,multi){
+  el.innerHTML='';
+  TOPICS.forEach(t=>{const b=document.createElement('button');b.className='chip';b.type='button';b.textContent=t.name;b.setAttribute('aria-pressed',set.has(t.id));
+    b.onclick=()=>{if(multi&&!multi()){if(set.size===1&&set.has(t.id))return;set.clear();set.add(t.id)}else if(set.has(t.id)){if(set.size>1)set.delete(t.id)}else set.add(t.id);[...el.children].forEach((c,i)=>c.setAttribute('aria-pressed',set.has(TOPICS[i].id)));onChange()};
+    el.appendChild(b)});
+}
+function renderSeg(el,get,set){[...el.querySelectorAll('button')].forEach(b=>{b.setAttribute('aria-pressed',+b.dataset.level===get());b.onclick=()=>{set(+b.dataset.level);[...el.querySelectorAll('button')].forEach(x=>x.setAttribute('aria-pressed',+x.dataset.level===get()))}})}
+
+// ---------- trainer ----------
+function newProblem(fromMistake){
+  if(!fromMistake&&state.series.i>=SERIES){showSummary();return}
+  $('sheet').hidden=false;$('summary').hidden=true;
+  let p;
+  if(fromMistake){p=fromMistake;state.fromMistake=true}
+  else{const ids=[...state.topics];p=generate(pick(ids),state.level);state.fromMistake=false;state.series.i++}
+  state.cur=p;state.attempts=0;state.counted=false;state.solved=false;state.shown=false;
+  const t=TOPICS.find(x=>x.id===p.topic);
+  $('tName').textContent=t.name;$('tRef').textContent=t.ref;
+  $('tSrc').textContent=fromMistake?'ze sešitu chyb':`příklad ${state.series.i} z ${SERIES}`;
+  state.lastAnswer='';state.chat=[];$('ask').hidden=true;$('thread').innerHTML='';$('askIn').value='';
+  $('nextBtn').textContent=(!fromMistake&&state.series.i>=SERIES)?'Ukázat výsledek série':'Další příklad';
+  $('task').textContent=p.task;
+  $('prompt').innerHTML=p.prompt;
+  const a=$('answer');a.innerHTML='';
+  const mk=(lab,id,cls)=>{const l=document.createElement('label');l.htmlFor=id;l.innerHTML=lab;const i=document.createElement('input');i.id=id;i.type='text';i.autocomplete='off';i.spellcheck=false;i.setAttribute('autocapitalize','off');if(cls)i.className=cls;i.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(state.solved)newProblem();else doCheck()}});a.appendChild(l);a.appendChild(i);return i};
+  let first;
+  if(p.kind==='sys'){first=mk('<i>x</i> =','in0','short');mk('<i>y</i> =','in1','short')}
+  else if(p.kind==='eq'){first=mk('<i>'+p.v+'</i> =','in0','short')}
+  else{first=mk('Výsledek:','in0')}
+  if(p.kind==='poly'||p.kind==='factor'){const box=document.createElement('span');box.className='ins';[['²','²'],['(','('],[')',')']].forEach(([lab,txt])=>{const b=document.createElement('button');b.type='button';b.textContent=lab;b.setAttribute('aria-label','Vložit '+lab);b.onclick=()=>insertAt(first,txt);box.appendChild(b)});a.appendChild(box)}
+  const hints={num:p.fraction?'Zlomek piš s lomítkem, třeba −7/8. Celé číslo napiš normálně.':(p.unit?'Napiš jen číslo, jednotku nepiš.':'Napiš číslo. Desetinná čárka i tečka fungují, zlomek s lomítkem.'),
+    poly:'Mocninu napiš jako ^2 nebo tlačítkem ². Třeba 3'+p.v+'^2 − 5'+p.v+' + 1.',
+    factor:p.mode==='common'?'Napiš jako součin, třeba 3'+p.v+'(2'+p.v+' − 5).':'Napiš jako součin závorek, třeba ('+p.v+' + 3)('+p.v+' − 3) nebo ('+p.v+' − 2)².',
+    eq:'Napiš jen hodnotu '+p.v+'.',sys:'Napiš hodnotu x a hodnotu y.'};
+  $('hint').textContent=hints[p.kind];
+  $('fb').textContent='';$('fb').className='fb';
+  $('steps').hidden=true;$('steps').innerHTML='';
+  $('checkBtn').disabled=false;$('showBtn').disabled=false;
+  setTimeout(()=>first.focus({preventScroll:true}),0);
+}
+function insertAt(inp,txt){const s=inp.selectionStart??inp.value.length,e=inp.selectionEnd??inp.value.length;inp.value=inp.value.slice(0,s)+txt+inp.value.slice(e);inp.focus();inp.selectionStart=inp.selectionEnd=s+txt.length}
+function record(ok){
+  if(state.counted)return;state.counted=true;
+  const p=state.cur;const s=store.stats[p.topic]||(store.stats[p.topic]={ok:0,n:0});s.n++;if(ok)s.ok++;
+  const d=today();const day=store.days[d]||(store.days[d]={ok:0,n:0});day.n++;if(ok)day.ok++;
+  if(!state.fromMistake&&ok)state.series.ok++;
+  if(state.fromMistake&&ok){store.mistakes=store.mistakes.filter(m=>m.id!==p.id)}
+  if(!ok&&!store.mistakes.some(m=>m.id===p.id)){store.mistakes.push(p);if(store.mistakes.length>60)store.mistakes.shift()}
+  save();updateBadge();updateSession();
+}
+function doCheck(){
+  if(state.solved)return;
+  const p=state.cur;const ins=p.kind==='sys'?[$('in0').value,$('in1').value]:[$('in0').value];
+  const r=check(p,ins);const fb=$('fb');
+  if(!r.format)state.lastAnswer=p.kind==='sys'?`x = ${ins[0]}, y = ${ins[1]}`:ins[0];
+  if(r.format){fb.className='fb neutral';fb.textContent=r.msg;return}
+  state.attempts++;
+  if(r.ok){
+    record(true);state.solved=true;
+    fb.className='fb ok';fb.textContent=state.attempts===1&&!state.shown?'Správně.':'Správně, tentokrát napodruhé. Do statistiky se počítá první pokus.';
+    if(state.fromMistake&&state.attempts===1&&!state.shown)fb.textContent='Správně. Příklad jsem vyřadil ze sešitu chyb.';
+    showSteps('Porovnej se svým postupem');
+    $('checkBtn').disabled=true;$('nextBtn').focus();
+  }else{
+    record(false);
+    fb.className='fb bad';fb.textContent=r.msg+(r.near?'':' Zkus to znovu, nebo si ukaž postup.');
+  }
+}
+function showSteps(title){
+  const p=state.cur;const box=$('steps');
+  box.innerHTML=`<h3>${title}</h3><ol class="stp">${p.steps.map(stepHTML).join('')}</ol><p class="result"><b>Výsledek:</b> ${p.solH}</p>`;
+  box.hidden=false;
+  showAsk();
+}
+function showSummary(){
+  const s=state.series;$('sheet').hidden=true;const el=$('summary');el.hidden=false;
+  const msg=s.ok===SERIES?'Celá série bez chyby.':(s.ok>=SERIES*0.7?'Dobrá série. Chyby najdeš v sešitu chyb.':'Tohle téma chce ještě trénink. Projdi si sešit chyb a zkus další sérii.');
+  el.innerHTML=`<h2>Série hotová</h2><p class="big">${s.ok} z ${SERIES}</p><p>správně napoprvé. ${msg}</p><div class="actions"><button class="btn" id="againBtn" type="button">Další série</button><a class="btn ghost" href="#chyby" style="text-decoration:none">Sešit chyb</a></div>`;
+  $('againBtn').onclick=()=>{state.series={i:0,ok:0};newProblem()};$('againBtn').focus();
+}
+function resetSeries(){state.series={i:0,ok:0};newProblem()}
+
+// ---------- AI vysvětlování ----------
+const AI=window.AI_CONFIG||{};
+const aiOn=()=>!!(AI.apiKey&&AI.model);
+function htmlToText(h){
+  if(h.startsWith('#H#'))return '\n'+htmlToText(h.slice(3))+':';
+  const d=document.createElement('div');d.innerHTML=h.replace(/<br\s*\/?>/g,'\n');
+  Array.from(d.querySelectorAll('.fr')).reverse().forEach(f=>{const t=f.children[0].textContent,b=f.children[1].textContent;const w=x=>/^[−-]?[\d,]+$/.test(x.trim())?x.trim():'('+x.trim()+')';f.replaceWith(w(t)+'/'+w(b))});
+  d.querySelectorAll('.ov').forEach(o=>o.replaceWith('('+o.textContent+')'));
+  d.querySelectorAll('sup').forEach(o=>o.replaceWith('^'+o.textContent));
+  d.querySelectorAll('.say').forEach(o=>o.append(' '));
+  d.querySelectorAll('.sep').forEach(o=>o.replaceWith(' a '));
+  return d.textContent.replace(/[ \t]+/g,' ').trim();
+}
+function problemContext(){
+  const p=state.cur;const t=TOPICS.find(x=>x.id===p.topic);
+  return `Téma: ${t.name}\nZadání: ${p.task}\n${htmlToText(p.prompt)}\n\nOvěřený správný postup:\n${p.steps.map((s,i)=>'- '+htmlToText(s)).join('\n')}\n\nSprávný výsledek: ${htmlToText(p.solH)}\nOdpověď žákyně: ${state.lastAnswer||'(zatím nic nenapsala)'}`;
+}
+const SYS='Jsi trpělivý doučovatel matematiky. Mluvíš s žákyní 9. třídy, která se připravuje na přijímací zkoušky z matematiky (CERMAT) a matematika jí moc nejde. Vysvětluj česky, jednoduše a krátce (nejvýš asi 150 slov), po malých krocích, ke každému kroku řekni proč se dělá. Postup a výsledek, které dostaneš, jsou ověřené a správné: neměň je a nepočítej jinak. Když se ptá, kde udělala chybu, porovnej její odpověď se správným postupem a řekni, ve kterém kroku se chyba nejspíš stala. Nevyčítej, povzbuď. Když něčemu nerozumí, zkus to vysvětlit jinak než v postupu, třeba na jednodušším příkladu s malými čísly. Matematiku piš prostým textem: zlomky jako 3/4, mocniny jako x², násobení jako ·. Nepoužívej LaTeX, tabulky ani nadpisy.';
+function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
+function fmtAI(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>')}
+function addMsg(cls,html){const d=document.createElement('div');d.className='msg '+cls;d.innerHTML=html;$('thread').appendChild(d);return d}
+function showAsk(){
+  if(!aiOn())return;
+  $('ask').hidden=false;const q=$('quick');q.innerHTML='';
+  const opts=['Vysvětli mi postup podrobněji','Proč se to dělá zrovna takhle?'];
+  if(state.lastAnswer&&!state.solved)opts.unshift('Kde jsem udělala chybu?');
+  opts.forEach(o=>{const b=document.createElement('button');b.type='button';b.className='chip';b.textContent=o;b.onclick=()=>askAI(o);q.appendChild(b)});
+}
+async function askAI(text){
+  text=(text||'').trim();if(!text)return;
+  const btn=$('askBtn');btn.disabled=true;$('askIn').value='';
+  addMsg('me',esc(text));
+  if(!state.chat.length)state.chat.push({role:'user',content:problemContext()+'\n\nOtázka žákyně: '+text});
+  else state.chat.push({role:'user',content:text});
+  const wait=addMsg('ai','Přemýšlím…');
+  try{
+    const r=await fetch(AI.url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+AI.apiKey,'X-Title':'Pocitani na prijimacky'},
+      body:JSON.stringify({model:AI.model,messages:[{role:'system',content:SYS}].concat(state.chat),max_tokens:700,temperature:0.3})});
+    const data=await r.json();
+    if(!r.ok)throw new Error((data&&data.error&&data.error.message)||('HTTP '+r.status));
+    const ans=data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content||'';
+    if(!ans)throw new Error('Model nevrátil žádnou odpověď.');
+    state.chat.push({role:'assistant',content:ans});
+    wait.innerHTML=fmtAI(ans);
+  }catch(e){
+    state.chat.pop();wait.className='msg err';wait.textContent='Vysvětlení se nepodařilo načíst: '+e.message+'. Zkontroluj připojení k internetu.';
+  }finally{btn.disabled=false}
+}
+$('askBtn').onclick=()=>askAI($('askIn').value);
+$('askIn').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();askAI($('askIn').value)}});
+$('checkBtn').onclick=doCheck;
+$('nextBtn').onclick=()=>newProblem();
+$('showBtn').onclick=()=>{if(!state.solved&&!state.counted){record(false)}state.shown=true;showSteps('Správný postup');$('showBtn').disabled=true};
+$('mixToggle').checked=state.mix;
+$('mixToggle').onchange=()=>{state.mix=$('mixToggle').checked;store.mix=state.mix;if(!state.mix&&state.topics.size>1){const f=[...state.topics][0];state.topics.clear();state.topics.add(f);renderTopicChips()}store.topics=[...state.topics];save()};
+function updateSession(){const d=store.days[today()];$('session').textContent=d&&d.n?`Dnes: ${d.ok} z ${d.n} správně napoprvé.`:'Dnes zatím žádný příklad.'}
+
+// ---------- worksheet ----------
+function makeWorksheet(){
+  const n=+$('wsCount').value;const ids=[...ws.topics];const list=[];
+  for(let i=0;i<n;i++)list.push(generate(ids[i%ids.length],ws.level));
+  const d=new Date();const date=`${d.getDate()}. ${d.getMonth()+1}. ${d.getFullYear()}`;
+  const names=ids.map(id=>TOPICS.find(t=>t.id===id).name.toLowerCase()).join(', ');
+  const item=(p,i)=>`<div class="ws-item"><div class="q"><span class="n">${i+1}.</span><div><div class="t">${p.task}</div><div class="p">${p.prompt}</div></div></div><div class="ws-space"></div></div>`;
+  const sol=(p,i)=>`<div class="ws-item"><div class="q"><span class="n">${i+1}.</span><div class="p">${p.prompt}</div></div><ol class="stp">${p.steps.map(stepHTML).join('')}</ol><p style="margin:4px 0 0 2.2em"><b>Výsledek:</b> <span style="font-family:var(--math)">${p.solH}</span></p></div>`;
+  $('wsOut').innerHTML=`<div class="worksheet"><h2>Pracovní list</h2><p class="meta">${date}, ${names}, ${ws.level===1?'základ':'úroveň přijímaček'}</p>${list.map(item).join('')}<div class="solutions"><h2>Řešení</h2>${list.map(sol).join('')}</div></div>`;
+  $('wsPrint').disabled=false;
+}
+$('wsMake').onclick=makeWorksheet;
+$('wsPrint').onclick=()=>{try{if(window.AndroidCfg&&AndroidCfg.print){AndroidCfg.print();return}}catch(e){}$('wsPrintNote').hidden=false;try{window.print()}catch(e){}};
+
+// ---------- mistakes ----------
+function updateBadge(){const b=$('mbadge');const n=store.mistakes.length;b.hidden=!n;b.textContent=n}
+function renderMistakes(){
+  const el=$('mlist');
+  if(!store.mistakes.length){el.innerHTML='<div class="empty">Sešit chyb je prázdný. Příklady, které napoprvé nevyjdou, se sem uloží samy.</div>';return}
+  el.innerHTML='';
+  store.mistakes.slice().reverse().forEach(p=>{const t=TOPICS.find(x=>x.id===p.topic);const d=document.createElement('div');d.className='mitem';
+    d.innerHTML=`<div><small>${t.name}</small><div class="p">${p.prompt}</div></div><div class="actions"><button class="btn" type="button">Spočítat znovu</button><button class="btn ghost" type="button">Odebrat</button></div>`;
+    const [again,del]=d.querySelectorAll('button');
+    again.onclick=()=>{location.hash='trenink';setTimeout(()=>newProblem(p),0)};
+    del.onclick=()=>{store.mistakes=store.mistakes.filter(m=>m.id!==p.id);save();updateBadge();renderMistakes()};
+    el.appendChild(d)});
+}
+
+// ---------- stats ----------
+function renderStats(){
+  const rows=TOPICS.map(t=>{const s=store.stats[t.id]||{ok:0,n:0};const pc=s.n?Math.round(100*s.ok/s.n):0;
+    return `<tr><td>${t.name}</td><td>${s.n}</td><td>${s.n?pc+' %':'–'}</td><td><div class="bar" role="img" aria-label="${pc} procent"><span style="width:${pc}%"></span></div></td></tr>`}).join('');
+  const days=Object.keys(store.days).length;
+  $('statsOut').innerHTML=`<table class="stats"><thead><tr><th>Téma</th><th>Příkladů</th><th>Napoprvé</th><th></th></tr></thead><tbody>${rows}</tbody></table><p class="note">Trénovala jsi ${days} ${days===1?'den':(days>=2&&days<=4?'dny':'dní')}. V sešitu chyb ${store.mistakes.length===1?'je':'je'} ${store.mistakes.length} ${store.mistakes.length===1?'příklad':(store.mistakes.length>=2&&store.mistakes.length<=4?'příklady':'příkladů')}.</p>`;
+}
+let resetArmed=false;
+$('resetBtn').onclick=()=>{if(!resetArmed){resetArmed=true;$('resetBtn').textContent='Opravdu smazat? Klikni znovu.';setTimeout(()=>{resetArmed=false;$('resetBtn').textContent='Smazat statistiky a sešit chyb'},4000);return}
+  store.stats={};store.mistakes=[];store.days={};save();resetArmed=false;$('resetBtn').textContent='Smazat statistiky a sešit chyb';updateBadge();renderStats();updateSession()};
+
+// ---------- routing ----------
+const VIEWS=['trenink','list','chyby','prehled'];
+function route(){
+  const h=(location.hash||'').slice(1);const v=VIEWS.includes(h)?h:'trenink';
+  VIEWS.forEach(x=>{$('v-'+x).hidden=x!==v});
+  document.querySelectorAll('nav.tabs a').forEach(a=>{if(a.dataset.view===v)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
+  if(v==='chyby')renderMistakes();if(v==='prehled')renderStats();
+}
+window.addEventListener('hashchange',route);
+
+function renderTopicChips(){renderChips($('topicChips'),state.topics,()=>{store.topics=[...state.topics];save();resetSeries()},()=>state.mix)}
+renderTopicChips();
+renderSeg($('levelSeg'),()=>state.level,l=>{state.level=l;store.level=l;save();resetSeries()});
+renderChips($('wsChips'),ws.topics,()=>{store.wsTopics=[...ws.topics];save()});
+renderSeg($('wsLevel'),()=>ws.level,l=>{ws.level=l;store.wsLevel=l;save()});
+updateBadge();updateSession();newProblem();route();
+})();
+</script>
+</body>
+</html>

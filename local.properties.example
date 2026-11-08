@@ -1,0 +1,4 @@
+# Zkopíruj jako local.properties (ten se necommituje) a doplň:
+sdk.dir=/cesta/k/Android/Sdk
+OPENROUTER_KEY=sk-or-v1-...
+OPENROUTER_MODEL=slug-modelu-z-openrouter.ai/models
