@@ -1,8 +1,8 @@
 local.properties
+*.jks
 .gradle/
+.kotlin/
 build/
 app/build/
 .idea/
 *.iml
-
-.kotlin/

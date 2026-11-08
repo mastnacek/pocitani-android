@@ -24,11 +24,24 @@ android {
         buildConfigField("String", "OPENROUTER_KEY", "\"${lp("OPENROUTER_KEY")}\"")
         buildConfigField("String", "OPENROUTER_MODEL", "\"${lp("OPENROUTER_MODEL")}\"")
     }
+
+    // Stejná konvence jako spai_log: keystore <app>.jks v kořenu projektu,
+    // hesla z local.properties/env, výchozí "android".
+    fun signingSecret(key: String): String =
+        localProps.getProperty(key) ?: System.getenv(key.uppercase().replace('.', '_')) ?: "android"
+    signingConfigs {
+        create("release") {
+            storeFile = rootProject.file("matika.jks")
+            storePassword = signingSecret("matika.storePassword")
+            keyAlias = "matika"
+            keyPassword = signingSecret("matika.keyPassword")
+        }
+    }
     buildFeatures { buildConfig = true }
     buildTypes {
         release {
             isMinifyEnabled = false
-            signingConfig = signingConfigs.getByName("debug") // rodinné použití, žádný Play Store
+            signingConfig = signingConfigs.getByName("release") // rodinné použití, žádný Play Store
         }
     }
     compileOptions {
