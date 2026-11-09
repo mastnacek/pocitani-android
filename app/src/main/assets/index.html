@@ -42,6 +42,12 @@ nav.tabs a .badge{display:inline-block;min-width:1.4em;padding:0 .35em;margin-le
 .seg button+button{border-left:1.5px solid var(--line)}
 .seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
 button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--pen);outline-offset:2px}
+nav.tabs .tab-btn{margin-left:auto;padding:8px 12px;border:0;background:none;font:inherit;font-weight:600;font-size:1.15rem;line-height:1;color:var(--muted);cursor:pointer}
+nav.tabs .tab-btn:hover,nav.tabs .tab-btn[aria-expanded="true"]{color:var(--ink)}
+dialog{border:2px solid var(--line);border-radius:14px;background:var(--paper);color:var(--ink);padding:22px;width:min(92vw,30rem);max-height:min(86vh,44rem);overflow:auto;box-shadow:0 24px 70px -24px rgba(10,25,50,.5)}
+dialog::backdrop{background:rgba(8,18,38,.5)}
+dialog h2{margin:0 0 10px;font-size:1.3rem}
+dialog input{display:block;width:100%;font:inherit;padding:9px 11px;border-radius:9px;border:1.5px solid var(--line);background:var(--paper);color:var(--ink)}
 
 /* the sheet */
 .sheet{position:relative;background-color:var(--paper);
@@ -157,7 +163,28 @@ table.stats th{color:var(--muted);font-weight:600}
     <a href="#list" data-view="list">Pracovní list</a>
     <a href="#chyby" data-view="chyby">Sešit chyb<span class="badge" id="mbadge" hidden></span></a>
     <a href="#prehled" data-view="prehled">Přehled</a>
+    <button class="tab-btn" id="settingsBtn" type="button" aria-haspopup="dialog" aria-label="Nastavení vysvětlování">⚙</button>
   </nav>
+
+  <dialog id="aiDialog" class="no-print" aria-labelledby="aiDlgTitle">
+    <h2 id="aiDlgTitle">Vysvětlování přes AI</h2>
+    <p class="note">Klíč si opatři na <a href="https://openrouter.ai/keys" target="_blank" rel="noopener">openrouter.ai/keys</a> a nastav mu kreditní limit. Uloží se jen do tohoto zařízení (localStorage), do aplikace ani do GitHubu se nedostane. Bez klíče se tlačítko „Zeptej se“ nezobrazí.</p>
+    <label class="lbl" for="aiKey">API klíč</label>
+    <input type="password" id="aiKey" placeholder="sk-or-v1-…" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <label class="lbl" for="aiModel" style="margin-top:12px">Model</label>
+    <input type="text" id="aiModel" list="aiModels" placeholder="google/gemini-2.5-flash" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <datalist id="aiModels">
+      <option value="google/gemini-2.5-flash"></option>
+      <option value="google/gemini-2.5-pro"></option>
+      <option value="openai/gpt-4o-mini"></option>
+      <option value="anthropic/claude-3.5-haiku"></option>
+    </datalist>
+    <p class="note">Slug modelu najdeš v katalogu na <a href="https://openrouter.ai/models" target="_blank" rel="noopener">openrouter.ai/models</a>.</p>
+    <div class="actions" style="margin-top:16px">
+      <button class="btn ghost" id="aiCancel" type="button">Zrušit</button>
+      <button class="btn" id="aiSave" type="button">Uložit</button>
+    </div>
+  </dialog>
 
   <section class="view" id="v-trenink">
     <span class="lbl">Co procvičuješ</span>
@@ -981,6 +1008,23 @@ async function askAI(text){
 }
 $('askBtn').onclick=()=>askAI($('askIn').value);
 $('askIn').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();askAI($('askIn').value)}});
+
+// ---------- nastavení klíče a modelu přímo v aplikaci ----------
+// Zadaný klíč/model se ukládá do localStorage zařízení a má přednost před local.properties (most AndroidCfg).
+const AIKEY='barunka-matika-ai';
+try{const raw=localStorage.getItem(AIKEY);if(raw){const s=JSON.parse(raw);if(s.key)AI.apiKey=s.key;if(s.model)AI.model=s.model}}catch(e){}
+const aiDlg=$('aiDialog');
+function syncAsk(){if(!aiOn()){$('ask').hidden=true}else if(!$('steps').hidden)showAsk()}
+$('settingsBtn').onclick=()=>{$('aiKey').value=AI.apiKey||'';$('aiModel').value=AI.model||'';$('settingsBtn').setAttribute('aria-expanded','true');aiDlg.showModal();setTimeout(()=>$('aiKey').focus(),50)};
+$('aiCancel').onclick=()=>aiDlg.close();
+aiDlg.addEventListener('click',e=>{if(e.target===aiDlg)aiDlg.close()});
+aiDlg.addEventListener('close',()=>$('settingsBtn').setAttribute('aria-expanded','false'));
+$('aiSave').onclick=()=>{
+  const k=$('aiKey').value.trim(),m=$('aiModel').value.trim();
+  AI.apiKey=k;AI.model=m;
+  try{localStorage.setItem(AIKEY,JSON.stringify({key:k,model:m}))}catch(e){}
+  aiDlg.close();syncAsk();
+};
 $('checkBtn').onclick=doCheck;
 $('nextBtn').onclick=()=>newProblem();
 $('showBtn').onclick=()=>{if(!state.solved&&!state.counted){record(false)}state.shown=true;showSteps('Správný postup');$('showBtn').disabled=true};

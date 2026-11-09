@@ -5,10 +5,12 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
-val localProps = Properties().apply {
-    val f = rootProject.file("local.properties")
-    if (f.exists()) f.inputStream().use { load(it) }
-}
+val localProps =
+    Properties().apply {
+        val f = rootProject.file("local.properties")
+        if (f.exists()) f.inputStream().use { load(it) }
+    }
+
 fun lp(key: String) = (localProps.getProperty(key) ?: "").replace("\"", "")
 
 android {
@@ -19,16 +21,15 @@ android {
         applicationId = "cz.jarda.matika"
         minSdk = 26
         targetSdk = 35
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "1.1"
         buildConfigField("String", "OPENROUTER_KEY", "\"${lp("OPENROUTER_KEY")}\"")
         buildConfigField("String", "OPENROUTER_MODEL", "\"${lp("OPENROUTER_MODEL")}\"")
     }
 
     // Stejná konvence jako spai_log: keystore <app>.jks v kořenu projektu,
     // hesla z local.properties/env, výchozí "android".
-    fun signingSecret(key: String): String =
-        localProps.getProperty(key) ?: System.getenv(key.uppercase().replace('.', '_')) ?: "android"
+    fun signingSecret(key: String): String = localProps.getProperty(key) ?: System.getenv(key.uppercase().replace('.', '_')) ?: "android"
     signingConfigs {
         create("release") {
             storeFile = rootProject.file("matika.jks")

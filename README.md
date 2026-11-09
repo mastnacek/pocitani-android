@@ -11,8 +11,9 @@ internet je potřeba jen pro vysvětlování přes OpenRouter (a pro webové fon
 Verze AGP/Kotlinu/knihoven jsou z doby psaní; pokud Studio nabídne novější, klidně aktualizuj.
 
 ## Klíč
-- Klíč je v `local.properties` → `BuildConfig`, ne v HTML ani v gitu.
-- Z APK se dá vytáhnout. Na openrouter.ai nastav u klíče **kreditní limit** a APK nikam nesdílej.
+- Klíč lze od verze 1.1 zadat přímo v aplikaci: tlačítko ⚙ v pravém horním rohu („Vysvětlování přes AI“). Uloží se do localStorage zařízení, má přednost před `local.properties` a do gitu ani APK se nedostane.
+- Alternativně (stejně jako dřív) se dá klíč i model zapsat do `local.properties` → `BuildConfig`; z APK se ale dají vytáhnout.
+- Na openrouter.ai nastav u klíče **kreditní limit**.
 
 ## Aktualizace stránky
 Novou verzi HTML stačí nakopírovat přes `app/src/main/assets/index.html` a znovu sestavit.
