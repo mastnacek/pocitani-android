@@ -142,7 +142,34 @@ table.stats th{color:var(--muted);font-weight:600}
 .summary{text-align:left}
 .summary h2{margin:0 0 6px;font-size:1.6rem}
 .summary .big{font-family:var(--math);font-size:3rem;line-height:1.1;margin:8px 0 4px;color:var(--pen)}
-@media (max-width:560px){.sheet{padding:18px 14px 20px 40px}.sheet::before{left:26px}.worksheet{padding:18px}}
+@media (max-width:560px){
+  .wrap{padding:14px 12px 40px}
+  h1{font-size:1.45rem;letter-spacing:-.01em}
+  .lede{font-size:.92rem;margin:0 0 14px}
+  nav.tabs{margin-bottom:14px}nav.tabs a{padding:6px 10px}nav.tabs .tab-btn{padding:6px 10px;font-size:1.05rem}
+  .chips{gap:5px;margin-bottom:10px}.chip{padding:4px 10px;font-size:.87rem}
+  .mixl{margin:-2px 0 12px;font-size:.88rem}.mixl input{width:16px;height:16px}
+  .lbl{font-size:.84rem}
+  .seg{margin-bottom:12px}.seg button{padding:5px 10px;font-size:.9rem}
+  .sheet{padding:16px 12px 18px 34px}.sheet::before{left:22px}
+  .sheet-head{font-size:.82rem}
+  .task{margin-bottom:10px}
+  .prompt{font-size:clamp(1.3rem,5.5vw,1.7rem);margin-bottom:14px}
+  .answer{gap:8px 10px;margin-bottom:4px}.answer input{font-size:1.25rem}.answer input.short{width:104px}
+  .hint{font-size:.82rem;margin:2px 0 10px}
+  .fb{margin:4px 0 10px}
+  .btn{padding:8px 13px}
+  .actions{gap:8px}
+  .steps{margin:12px 0 0;padding:12px}.stp li{margin-bottom:8px}
+  .ask{margin-top:10px;padding:10px 12px}
+  .ask h3{margin:0 0 6px;font-size:.95rem}
+  .quick{gap:5px;margin-bottom:8px}.quick .chip{padding:4px 10px;font-size:.84rem}
+  .askrow{gap:8px}.askrow textarea{padding:7px 9px}
+  .thread{gap:6px;margin-bottom:8px}
+  .msg{padding:8px 10px;font-size:.95rem;max-width:none}.msg.me{max-width:92%}
+  .session{margin:12px 0 0;font-size:.88rem}
+  .worksheet{padding:18px}
+}
 @media (prefers-reduced-motion:no-preference){.fb.ok{animation:pop .25s ease-out}@keyframes pop{from{transform:translateY(3px);opacity:0}to{transform:none;opacity:1}}}
 @media print{
   body{background:#fff;color:#000;font-size:12pt}
@@ -172,9 +199,10 @@ table.stats th{color:var(--muted);font-weight:600}
     <label class="lbl" for="aiKey">API klíč</label>
     <input type="password" id="aiKey" placeholder="sk-or-v1-…" autocomplete="off" autocapitalize="off" spellcheck="false">
     <label class="lbl" for="aiModel" style="margin-top:12px">Model</label>
-    <input type="text" id="aiModel" list="aiModels" placeholder="google/gemini-2.5-flash" autocomplete="off" autocapitalize="off" spellcheck="false">
+    <input type="text" id="aiModel" list="aiModels" placeholder="google/gemini-3.8-flash" autocomplete="off" autocapitalize="off" spellcheck="false">
     <datalist id="aiModels">
-      <option value="google/gemini-2.5-flash"></option>
+      <option value="google/gemini-3.8-flash"></option>
+      <option value="google/gemini-3.8-pro"></option>
       <option value="google/gemini-2.5-pro"></option>
       <option value="openai/gpt-4o-mini"></option>
       <option value="anthropic/claude-3.5-haiku"></option>
@@ -993,15 +1021,19 @@ async function askAI(text){
   if(!state.chat.length)state.chat.push({role:'user',content:problemContext()+'\n\nOtázka žákyně: '+text});
   else state.chat.push({role:'user',content:text});
   const wait=addMsg('ai','Přemýšlím…');
+  wait.scrollIntoView({block:'nearest'});
   try{
     const r=await fetch(AI.url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+AI.apiKey,'X-Title':'Pocitani na prijimacky'},
-      body:JSON.stringify({model:AI.model,messages:[{role:'system',content:SYS}].concat(state.chat),max_tokens:700,temperature:0.3})});
+      body:JSON.stringify({model:AI.model,messages:[{role:'system',content:SYS}].concat(state.chat),max_tokens:4000,temperature:0.3,reasoning:{effort:'high'}})});
     const data=await r.json();
     if(!r.ok)throw new Error((data&&data.error&&data.error.message)||('HTTP '+r.status));
-    const ans=data.choices&&data.choices[0]&&data.choices[0].message&&data.choices[0].message.content||'';
+    const ch=data.choices&&data.choices[0]||{};
+    const ans=ch.message&&ch.message.content||'';
     if(!ans)throw new Error('Model nevrátil žádnou odpověď.');
     state.chat.push({role:'assistant',content:ans});
     wait.innerHTML=fmtAI(ans);
+    if(ch.finish_reason==='length')wait.innerHTML+='<p class="note" style="margin:8px 0 0">(Odpověď se ořízla – dosáhla limitu tokenů. Napiš „pokračuj“ nebo se zeptej konkrétněji.)</p>';
+    wait.scrollIntoView({block:'nearest'});
   }catch(e){
     state.chat.pop();wait.className='msg err';wait.textContent='Vysvětlení se nepodařilo načíst: '+e.message+'. Zkontroluj připojení k internetu.';
   }finally{btn.disabled=false}
