@@ -1058,7 +1058,7 @@ const aiDlg=$('aiDialog');
 function syncAsk(){if(!aiOn()){$('ask').hidden=true}else if(!$('steps').hidden)showAsk()}
 $('settingsBtn').onclick=()=>{$('aiKey').value=AI.apiKey||'';$('aiModel').value=AI.model||'';$('settingsBtn').setAttribute('aria-expanded','true');aiDlg.showModal();setTimeout(()=>$('aiKey').focus(),50)};
 $('aiCancel').onclick=()=>aiDlg.close();
-aiDlg.addEventListener('click',e=>{if(e.target===aiDlg)aiDlg.close()});
+aiDlg.addEventListener('click',e=>{if(e.target!==aiDlg)return;const r=aiDlg.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)aiDlg.close()});
 aiDlg.addEventListener('close',()=>$('settingsBtn').setAttribute('aria-expanded','false'));
 $('aiSave').onclick=()=>{
   const k=$('aiKey').value.trim(),m=$('aiModel').value.trim();

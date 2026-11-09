@@ -1,6 +1,8 @@
 package cz.jarda.matika
 
 import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.os.Bundle
 import android.print.PrintAttributes
 import android.print.PrintManager
@@ -54,6 +56,20 @@ class MainActivity : ComponentActivity() {
                             view: WebView,
                             request: WebResourceRequest,
                         ): WebResourceResponse? = loader.shouldInterceptRequest(request.url)
+
+                        // Odkazy mimo aplikaci (třeba openrouter.ai/keys v nastavení) otevíráme
+                        // v externím prohlížeči; WebView by je jinak načetl do sebe.
+                        override fun shouldOverrideUrlLoading(
+                            view: WebView,
+                            request: WebResourceRequest,
+                        ): Boolean {
+                            if (request.url.host == "appassets.androidplatform.net") return false
+                            try {
+                                startActivity(Intent(Intent.ACTION_VIEW, request.url))
+                            } catch (_: ActivityNotFoundException) {
+                            }
+                            return true
+                        }
                     }
             }
         setContentView(web)
