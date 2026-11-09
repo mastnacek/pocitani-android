@@ -194,6 +194,33 @@ details.guide[open]>summary::before{content:"▾ ";}
   table.stats th,table.stats td{padding:5px 6px;font-size:.8rem}
   .bar{min-width:36px}
 }
+/* zarovnání na čtverečky: řádky textu jsou násobky --g, mezery pod bloky dorovná gridSnap() */
+.sheet{--g:22px;line-height:var(--g);padding:var(--g) var(--g) var(--g) calc(3 * var(--g))}
+.sheet::before{left:calc(2 * var(--g) - 1px)}
+.sheet>*{margin-top:0}
+.sheet>.sheet-head{line-height:var(--g);margin-bottom:0}
+.sheet>.task{line-height:var(--g);margin-bottom:11px}
+.sheet>details.guide{margin:0 0 11px;border:0;box-shadow:inset 0 0 0 1.5px var(--line);line-height:1.5}
+.sheet>details.guide>summary{padding:11px 12px;line-height:var(--g)}
+.sheet>.prompt{line-height:calc(2 * var(--g));padding:0;margin-bottom:0}
+.sheet>.prompt .txt{line-height:var(--g)}
+.sheet>.prompt .sys{line-height:calc(2 * var(--g))}
+.sheet>.answer{gap:0 14px;margin-bottom:0;min-height:calc(2 * var(--g))}
+.sheet>.answer label{line-height:calc(2 * var(--g))}
+.sheet>.answer input{height:calc(2 * var(--g));padding:0 4px;line-height:normal}
+.sheet>.hint{line-height:var(--g);margin:0}
+.sheet>.fb{line-height:var(--g);min-height:var(--g);margin:0}
+.sheet .btn{padding:9px 16px;line-height:var(--g)}
+.sheet>.actions{margin-bottom:0}
+.sheet>.steps,.sheet>.ask{line-height:1.5;margin-bottom:0}
+.sheet.summary h2{line-height:calc(2 * var(--g));margin-bottom:0}
+.sheet.summary .big{line-height:calc(3 * var(--g));margin:0}
+.sheet.summary p{margin:0 0 var(--g)}
+@media (max-width:560px){
+  .sheet{padding:var(--g) 11px var(--g) calc(2 * var(--g))}
+  .sheet::before{left:calc(var(--g) - 1px)}
+  .sheet .btn{padding:9px 13px}
+}
 @media (prefers-reduced-motion:no-preference){.fb.ok{animation:pop .25s ease-out}@keyframes pop{from{transform:translateY(3px);opacity:0}to{transform:none;opacity:1}}}
 @media print{
   body{background:#fff;color:#000;font-size:12pt}
@@ -1056,9 +1083,9 @@ const TOPICS=[
   {id:'desetinna',name:'Desetinná čísla',ref:'přednost operací',gen:genDesetinna},
   {id:'mocniny',name:'Mocniny a odmocniny',ref:'základ pro všechno ostatní',gen:genMocniny},
   {id:'procenta',name:'Procenta',ref:'slovní úlohy',gen:genProcenta},
-  {id:'roznasobovani',name:'Roznásobování',ref:'jako úlohy 4.1 a 4.3',gen:genRoznasobovani},
+  {id:'roznasobovani',name:'Roznásobování',ref:'jako úloha 4.3',gen:genRoznasobovani},
   {id:'vytykani',name:'Vytýkání',ref:'rozklad na součin',gen:genVytykani},
-  {id:'vzorce',name:'Vzorce',ref:'jako úloha 4.2',gen:genVzorce},
+  {id:'vzorce',name:'Vzorce',ref:'jako úlohy 4.1 a 4.2',gen:genVzorce},
   {id:'rovnice',name:'Rovnice',ref:'jako úloha 5.1',gen:genRovnice},
   {id:'soustavy',name:'Soustavy rovnic',ref:'jako úloha 5.2',gen:genSoustavy}
 ];
@@ -1097,9 +1124,10 @@ function stepHTML(s){
 const GUIDE_GENERAL={title:'Jak přijímačky z matematiky fungují',items:[
  'Test má 16 úloh a dohromady 50 bodů. Čas na řešení je napsaný na záznamovém archu.',
  'Povolené jsou jen psací a rýsovací potřeby. <b>Kalkulačka ne</b>, všechno se počítá ručně.',
- 'V testovém sešitu jsou vytištěné <b>druhé mocniny čísel 11 až 20</b>, <b>vzorce pro rozklad na součin</b> (a² + 2ab + b², a² − 2ab + b², a² − b²) a obvod a obsah kruhu. Nemusíš je umět nazpaměť, ale musíš je umět použít.',
+ 'V testovém sešitu jsou vytištěné <b>druhé mocniny čísel 11 až 20</b>, <b>vzorce pro rozklad na součin</b> (a² + 2ab + b², a² − 2ab + b², a² − b²), obvod a obsah kruhu a přibližné hodnoty π (3,14 a 22/7). Nemusíš je umět nazpaměť, ale musíš je umět použít.',
  'Odpovědi se píšou do <b>záznamového archu</b> modře nebo černě píšící propiskou. Konstrukce rýsuj tužkou a pak obtáhni propiskou.',
  'U každé úlohy je napsáno, jestli chtějí <b>celý postup</b>, nebo <b>jen výsledek</b>. Když chtějí postup a napíšeš jen výsledek, dostaneš <b>0 bodů</b>, i když je výsledek správně.',
+ 'Zadání do archu opisovat nemusíš. Ale správný výsledek napsaný hned za opsané zadání se za postup <b>nepočítá</b>.',
  'Chybu přeškrtni a správné řešení napiš znovu do stejného pole.',
  'Za špatnou odpověď se body neodečítají. <b>Uzavřené úlohy (A až E, ano/ne) nikdy nenechávej prázdné.</b>',
  'U rovnic se <b>zkouška nezapisuje</b>. Udělat si ji můžeš na kraji, ale do archu ji nepiš.',
@@ -1167,7 +1195,7 @@ rovnice:{title:'Rovnice (úloha 5)',
  how:['Roznásob závorky (u druhé mocniny podle vzorce).','Členy s x převeď na jednu stranu, čísla na druhou. Co přejde na druhou stranu, změní znaménko.','Sečti obě strany.','Vyděl obě strany číslem u x.','Když se členy s x úplně odečtou: zbude 0 = 0 (rovnice má nekonečně mnoho řešení), nebo 0 = jiné číslo (rovnice nemá řešení).'],
  write:['Každou úpravu na nový řádek, rovnítka pod sebe.','Úpravu můžeš psát za svislou čáru na konec řádku (| −2x, | : 4). Není to povinné, ale pomáhá ti to neudělat chybu.','Na konci napiš výsledek: x = 20. U zvláštních rovnic závěr slovy: „Rovnice nemá řešení.“ nebo „Rovnice má nekonečně mnoho řešení.“','Zkoušku nezapisuj.'],
  full:['Správný výsledek a správný postup: 2 body.'],
- minus:['Právě jeden člen upravený chybně, třeba zapomenuté znaménko při převodu.','Chybí poslední krok: zůstane třeba 4x = 12 bez vydělení.','Jedna početní chyba.','U rovnice bez řešení chybí závěr, nebo je špatný.'],
+ minus:['Právě jeden člen upravený chybně, třeba zapomenuté znaménko při převodu.','Chybí poslední krok: zůstane třeba 4x = 12 bez vydělení.','Jedna početní chyba.','U rovnice bez řešení chybí závěr, nebo je špatný.','Po správném výsledku je napsaný chybný závěr (třeba „rovnice nemá řešení“).'],
  zero:['Chybná úprava rovnice, třeba vynásobíš jen některé členy nebo vydělíš jen jednu stranu.','Víc než jedna chyba.'],
  traps:['Při převodu na druhou stranu se znaménko mění, při roznásobení závorky ne (kromě mínus před závorkou).','Když se x² na obou stranách odečte, nevadí to. Zbude obyčejná rovnice.','Když se odečte i x, nehledej chybu a napiš závěr.']},
 'rovnice-zlomky':{title:'Rovnice se zlomky (úloha 5)',
@@ -1182,7 +1210,7 @@ soustavy:{title:'Soustavy rovnic (úloha 5)',
  write:['Rovnice si můžeš očíslovat (I, II) a psát, co s nimi děláš.','Na konci napiš obě hodnoty: x = 2, y = −5. Zkoušku nezapisuj.'],
  full:['Obě neznámé správně a správný postup: 2 body.'],
  minus:['Právě jeden člen upravený chybně a pak už bez chyby.','Jedna neznámá je správně a druhá chybí nebo je špatně.','Hodnoty x a y jsou prohozené.'],
- zero:['Chybná úprava rovnic.','Víc než jedna chyba u první neznámé.'],
+ zero:['Velmi závažná chyba, třeba algoritmicky chybná úprava rovnic.','Víc než jedna chyba.'],
  traps:['Při dosazování dej dosazovaný výraz do závorky.','Nezapomeň dopočítat druhou neznámou.']}
 };
 function guideHTML(g,trap,open){
@@ -1447,6 +1475,35 @@ renderSeg($('levelSeg'),()=>state.level,l=>{state.level=l;store.level=l;save();r
 renderChips($('wsChips'),ws.topics,()=>{store.wsTopics=[...ws.topics];save()});
 renderSeg($('wsLevel'),()=>ws.level,l=>{ws.level=l;store.wsLevel=l;save()});
 updateBadge();updateSession();newProblem();route();
+
+// Zarovnání na čtverečky: každý blok v listu musí začínat na čáře mřížky.
+// Zlomky, tlačítka a zalomené řádky mají libovolnou výšku, proto se mezera pod blokem dorovná na násobek čtverečku.
+function gridSnap(){
+  document.querySelectorAll('.sheet').forEach(sh=>{
+    if(!sh.getClientRects().length)return;
+    const G=parseFloat(getComputedStyle(sh).getPropertyValue('--g'))||22;
+    for(const c of sh.children){
+      c.style.marginBottom='';
+      const cs=getComputedStyle(c);if(cs.display==='none'||cs.position==='absolute')continue;
+      const mb=parseFloat(cs.marginBottom)||0;
+      // horní hranu listu měříme pokaždé znovu: prohlížeč může mezitím posunout stránku (scroll anchoring)
+      const rem=((c.getBoundingClientRect().bottom-sh.getBoundingClientRect().top+mb)%G+G)%G;
+      if(rem>0.5&&G-rem>0.5)c.style.marginBottom=(mb+G-rem)+'px';
+    }
+  });
+}
+let snapRaf=0;const snapSoon=()=>{cancelAnimationFrame(snapRaf);snapRaf=requestAnimationFrame(gridSnap)};
+if(window.ResizeObserver){
+  // Sledují se jen bloky uvnitř listu (ne list sám): změna okrajů jejich velikost nemění, takže nevznikne smyčka.
+  const ro=new ResizeObserver(gridSnap);
+  const watch=()=>document.querySelectorAll('.sheet > *').forEach(el=>ro.observe(el));
+  watch();
+  const mo=new MutationObserver(()=>{watch();snapSoon()});
+  document.querySelectorAll('.sheet').forEach(sh=>mo.observe(sh,{childList:true,attributes:true,attributeFilter:['hidden']}));
+}
+window.addEventListener('hashchange',snapSoon);
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(snapSoon);
+snapSoon();
 })();
 </script>
 </body>
