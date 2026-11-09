@@ -1041,6 +1041,15 @@ async function askAI(text){
 $('askBtn').onclick=()=>askAI($('askIn').value);
 $('askIn').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();askAI($('askIn').value)}});
 
+// Když se na mobilu otevře klávesnice, rolováme zaměřené pole do středu viditelné
+// plochy, aby nezůstalo schované pod klávesnicí (WebView se zmenší až během animace).
+document.addEventListener('focusin',e=>{
+  const el=e.target;
+  if(!el||!el.matches||!el.matches('input:not([type=checkbox]),textarea'))return;
+  const go=()=>{try{el.scrollIntoView({block:'center',behavior:'smooth'})}catch(_){el.scrollIntoView()}};
+  setTimeout(go,250);setTimeout(go,700);
+});
+
 // ---------- nastavení klíče a modelu přímo v aplikaci ----------
 // Zadaný klíč/model se ukládá do localStorage zařízení a má přednost před local.properties (most AndroidCfg).
 const AIKEY='barunka-matika-ai';

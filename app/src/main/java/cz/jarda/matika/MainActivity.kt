@@ -21,11 +21,14 @@ class MainActivity : ComponentActivity() {
     /** Most do stránky: klíč a model z local.properties (přes BuildConfig) a tisk pracovního listu. */
     inner class Bridge {
         @JavascriptInterface fun key(): String = BuildConfig.OPENROUTER_KEY
+
         @JavascriptInterface fun model(): String = BuildConfig.OPENROUTER_MODEL
-        @JavascriptInterface fun print() = runOnUiThread {
-            val pm = getSystemService(PRINT_SERVICE) as PrintManager
-            pm.print("Pracovní list", web.createPrintDocumentAdapter("Pracovni-list"), PrintAttributes.Builder().build())
-        }
+
+        @JavascriptInterface fun print() =
+            runOnUiThread {
+                val pm = getSystemService(PRINT_SERVICE) as PrintManager
+                pm.print("Pracovní list", web.createPrintDocumentAdapter("Pracovni-list"), PrintAttributes.Builder().build())
+            }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -33,35 +36,54 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
         // Stránka běží z https://appassets.androidplatform.net -> funguje localStorage i fetch na OpenRouter.
-        val loader = WebViewAssetLoader.Builder()
-            .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(this))
-            .build()
+        val loader =
+            WebViewAssetLoader
+                .Builder()
+                .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(this))
+                .build()
 
-        web = WebView(this).apply {
-            settings.javaScriptEnabled = true
-            settings.domStorageEnabled = true
-            settings.allowFileAccess = false
-            addJavascriptInterface(Bridge(), "AndroidCfg")
-            webViewClient = object : WebViewClient() {
-                override fun shouldInterceptRequest(view: WebView, request: WebResourceRequest): WebResourceResponse? =
-                    loader.shouldInterceptRequest(request.url)
+        web =
+            WebView(this).apply {
+                settings.javaScriptEnabled = true
+                settings.domStorageEnabled = true
+                settings.allowFileAccess = false
+                addJavascriptInterface(Bridge(), "AndroidCfg")
+                webViewClient =
+                    object : WebViewClient() {
+                        override fun shouldInterceptRequest(
+                            view: WebView,
+                            request: WebResourceRequest,
+                        ): WebResourceResponse? = loader.shouldInterceptRequest(request.url)
+                    }
             }
-        }
         setContentView(web)
 
-        // targetSdk 35 = edge-to-edge; odsadíme obsah od systémových lišt a klávesnice.
+        // targetSdk 35 = edge-to-edge. WebView ignoruje setPadding (obsah by se kreslil za
+        // lišty i klávesnici), proto systémové lišty a klávesnici řešíme jako okraje
+        // (margins) – WebView se skutečně zmenší a stránka končí nad klávesnicí.
         ViewCompat.setOnApplyWindowInsetsListener(web) { v, insets ->
-            val b = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.ime())
-            v.setPadding(b.left, b.top, b.right, b.bottom)
+            val sys = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            val ime = insets.getInsets(WindowInsetsCompat.Type.ime())
+            val lp = v.layoutParams as android.widget.FrameLayout.LayoutParams
+            lp.setMargins(sys.left, sys.top, sys.right, maxOf(sys.bottom, ime.bottom))
+            v.requestLayout()
             insets
         }
 
-        if (savedInstanceState == null) web.loadUrl("https://appassets.androidplatform.net/assets/index.html")
-        else web.restoreState(savedInstanceState)
+        if (savedInstanceState == null) {
+            web.loadUrl("https://appassets.androidplatform.net/assets/index.html")
+        } else {
+            web.restoreState(savedInstanceState)
+        }
 
-        onBackPressedDispatcher.addCallback(this, object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() { if (web.canGoBack()) web.goBack() else finish() }
-        })
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (web.canGoBack()) web.goBack() else finish()
+                }
+            },
+        )
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
