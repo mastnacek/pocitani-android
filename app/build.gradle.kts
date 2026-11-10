@@ -21,8 +21,8 @@ android {
         applicationId = "cz.jarda.matika"
         minSdk = 26
         targetSdk = 35
-        versionCode = 13
-        versionName = "1.12"
+        versionCode = 14
+        versionName = "1.13"
         buildConfigField("String", "OPENROUTER_KEY", "\"${lp("OPENROUTER_KEY")}\"")
         buildConfigField("String", "OPENROUTER_MODEL", "\"${lp("OPENROUTER_MODEL")}\"")
     }
