@@ -143,6 +143,8 @@ nav.tabs a .badge[hidden]{display:none}
 .mcbox{display:inline-flex;gap:8px;flex-wrap:wrap}
 .mcbtn{font:inherit;font-weight:700;min-width:44px;height:44px;border-radius:10px;border:2px solid var(--line);background:var(--paper);color:var(--ink);cursor:pointer}
 .mcbtn[aria-pressed="true"]{background:var(--pen);border-color:var(--pen);color:var(--paper)}
+.sheet>.answer.rows{display:grid;grid-template-columns:auto 1fr;gap:0 12px;align-items:center}
+.sheet>.answer.rows input{width:100%}
 mark.pod{background:linear-gradient(transparent 55%,var(--hl) 55%);color:inherit;text-decoration:underline;text-decoration-color:var(--red);text-decoration-thickness:2px;text-underline-offset:3px}
 /* po správné odpovědi: tlačítko Další příklad zezelená a jemně pulzuje */
 .btn.go{background:var(--green);border-color:var(--green);color:var(--paper);animation:go-pulse 1.8s ease-in-out infinite}
@@ -590,6 +592,21 @@ function check(prob,inputs){
         if(v)for(const c of Object.values(prob.chyby))if(c.fr&&F.eq(v,c.fr))return{ok:false,msg:c.rada,pod:c.pod};
       }
       return r;
+    }
+    case 'promenna':{
+      // a), b) výraz s proměnnou: uzná se každý ekvivalentní zápis; c) číslo
+      const zpr=[];let vse=true,pod;
+      for(let i=0;i<2;i++){const s=normIn(inputs[i]),cast=i?'b)':'a)';
+        if(!s)return{format:true,msg:`Doplň výraz do části ${cast}`};
+        let r;try{r=analyze(s)}catch(e){return{format:true,msg:`${cast} ${e.message}`}}
+        const bad=r.vars.filter(x=>x!==prob.v);if(bad.length)return{format:true,msg:`${cast} V úloze je proměnná ${prob.v}, ne ${bad[0]}.`};
+        if(P.eq(r.poly,prob.e[i])){zpr.push(`${cast} sedí.`);continue}
+        vse=false;const ch=(prob.chybyV[i]||[]).find(c=>P.eq(r.poly,c.p));zpr.push(`${cast} nesedí. `+(ch?ch.rada:'Zkontroluj, co přesně říká věta v zadání.'));
+      }
+      const c=checkNumber(inputs[2],prob.ans,{unit:true});
+      if(c.format)return{format:true,msg:'c) '+c.msg};
+      if(c.ok)zpr.push('c) sedí.');else{vse=false;zpr.push('c) nesedí. Sestav rovnici z výrazů a vyřeš ji.')}
+      return vse?{ok:true}:{ok:false,msg:zpr.join(' ')};
     }
     case 'mc':{
       const v=String(inputs[0]||'');if(!v)return{format:true,msg:'Vyber jednu možnost A až E.'};
@@ -1326,6 +1343,98 @@ function genSlovni(level){
   return p;
 }
 
+// ---- slovní úloha s proměnnou (v testech 2023–2026 v 11 ze 16): a), b) vyjádři výrazem, c) dopočítej
+const LP=(a,b)=>P.norm([typeof b==='number'?Fr(b):b,typeof a==='number'?Fr(a):a]); // a·v + b
+const ZLOMKY_SLOVY={2:'polovinu',3:'třetinu',4:'čtvrtinu',5:'pětinu',6:'šestinu'};
+const KRAT={2:'dvakrát',3:'třikrát',4:'čtyřikrát'};
+const cap=s=>s.charAt(0).toUpperCase()+s.slice(1);
+const evalP=(p,x)=>P.norm(p).reduce((s,c,i)=>F.add(s,F.mul(c,F.pow(x,i))),Fr(0));
+// kroky řešení lineární rovnice L(v) = R
+function linKroky(L,R,v,uvod){
+  L=P.norm(L);const a=L[1]||Fr(0),b=L[0];const st=[S(uvod,`${polyH(L,v)} = ${numH(R)}`)];let r=R;
+  if(!F.isZero(b)){r=F.sub(R,b);st.push(S(`${K('Číslo převedeme na druhou stranu')} a změníme mu znaménko:`,`${termsH([T(a,1)],v)} = ${numH(r)}`))}
+  const x=F.div(r,a);
+  if(!F.eq(a,Fr(1)))st.push(S(`${K(`Obě strany vydělíme číslem u ${V(v)}`)}:`,`${V(v)} = ${numH(r)} : ${fracHp(a)} = ${N(numH(x))}`));
+  return{x,st};
+}
+// šablony: každá vrací zadání, dva cílové výrazy, rovnici L = R a typické chyby ve výrazech (s radou)
+const PROMENNA=[
+ {lv:1,f(){const v='x',x=ri(5,30)*100,d=ri(2,9)*100,m=pick([2,3,4]);const e1=LP(1,d),e2=LP(m,m*d),L=P.add(P.add(LP(1,0),e1),e2),R=evalP(L,Fr(x));
+  return{v,x:Fr(x),unit:'Kč',e:[e1,e2],L,R,
+   text:`Do pokoje jsme koupili noční stolek, židli a skříň. Židle byla o ${fmtNum(d)} Kč dražší než noční stolek. Skříň byla ${KRAT[m]} dražší než židle. Cenu nočního stolku v korunách označíme ${v}.`,
+   q:[`Vyjádřete výrazem s proměnnou ${v} cenu židle.`,`Vyjádřete výrazem s proměnnou ${v} cenu skříně.`,`Za všechny tři kusy nábytku jsme zaplatili ${fmtNum(R.n)} Kč. Vypočtěte, kolik korun stál noční stolek.`],
+   kroky:[[`Židle je o ${fmtNum(d)} Kč dražší než stolek, takže k ceně stolku přičteme ${fmtNum(d)}.`,polyH(e1,v)],
+     [`Skříň je ${KRAT[m]} dražší než celá židle, proto ${K('celou cenu židle dáme do závorky')} a vynásobíme ${m}.`,`${m} · (${polyH(e1,v)}) = ${polyH(e2,v)}`]],
+   uvod:`Sečteme ceny všech tří kusů a položíme je rovné ${fmtNum(R.n)}. Levou stranu upravíme:`,
+   chyby:[[],[{p:LP(m,d),rada:`Skříň je ${KRAT[m]} dražší než celá židle. Celou cenu židle dej do závorky: ${m}·(${v} + ${d}).`},{p:LP(m,0),rada:`Skříň je ${KRAT[m]} dražší než židle, ne než stolek: ${m}·(${v} + ${d}).`}]]}}},
+ {lv:1,f(){const v='x',x=ri(9,15),d=ri(2,6),m=pick([3,4]);if(m*x<27||m*x>56)return null;const J=pick(JMENA.f);const e1=LP(1,d),e2=LP(m,0),L=P.add(P.add(LP(1,0),e1),e2),R=evalP(L,Fr(x));
+  return{v,x:Fr(x),unit:'let',e:[e1,e2],L,R,
+   text:`${J} má ${v} let. Její bratr je o ${d} ${d<5?'roky':'let'} starší. Maminka je ${KRAT[m]} starší než ${J}.`,
+   q:[`Vyjádřete výrazem s proměnnou ${v} věk bratra.`,`Vyjádřete výrazem s proměnnou ${v} věk maminky.`,`Všichni tři mají dohromady ${R.n} let. Vypočtěte, kolik let má ${J}.`],
+   kroky:[[`Bratr je starší, takže přičteme ${d}.`,polyH(e1,v)],[`${KRAT[m][0].toUpperCase()+KRAT[m].slice(1)} starší znamená ${K('násobit')}.`,polyH(e2,v)]],
+   uvod:`Sečteme věk všech tří a položíme ho rovný ${R.n}. Levou stranu upravíme:`,
+   chyby:[[{p:LP(1,-d),rada:`Bratr je starší, takže k věku přičítáš: ${v} + ${d}.`}],[{p:LP(1,m),rada:`${cap(KRAT[m])} starší znamená násobit: ${m}·${v}, ne přičítat.`}]]}}},
+ {lv:1,f(){const v='x',pc=pick([25,30,35]),pk=pick([40,45,50,55]),d=pick([10,15,20,30]),x=ri(20,80);const e1=LP(1,d),e2=LP(pc+pk,pk*d),L=e2,R=evalP(L,Fr(x));
+  return{v,x:Fr(x),unit:'čajů',e:[e1,e2],L,R,
+   text:`Ve stánku prodávají čaj za ${pc} Kč a kávu za ${pk} Kč. Dnes prodali o ${d} káv více než čajů. Počet prodaných čajů označíme ${v}.`,
+   q:[`Vyjádřete výrazem s proměnnou ${v} počet prodaných káv.`,`Vyjádřete výrazem s proměnnou ${v}, kolik korun dnes utržili za všechny nápoje.`,`Za všechny nápoje dnes utržili ${fmtNum(R.n)} Kč. Vypočtěte, kolik čajů prodali.`],
+   kroky:[[`Káv bylo o ${d} více než čajů.`,polyH(e1,v)],[`Za čaje utržili ${pc}·${V(v)}, za kávy ${pk}krát počet káv. ${K('Počet káv je v závorce')}.`,`${pc}${V(v)} + ${pk} · (${polyH(e1,v)}) = ${polyH(e2,v)}`]],
+   uvod:`Tržba za všechny nápoje je ${fmtNum(R.n)} Kč:`,
+   chyby:[[{p:LP(1,-d),rada:`Káv bylo o ${d} víc než čajů: ${v} + ${d}.`}],[{p:LP(pc+pk,d),rada:`Každá káva stojí ${pk} Kč, i těch ${d} navíc. Tržba za kávy je ${pk}·(${v} + ${d}).`},{p:LP(pc+pk,0),rada:`Káv bylo o ${d} víc než čajů, tržba za kávy je ${pk}·(${v} + ${d}).`}]]}}},
+ {lv:1,f(){const v='x',x=ri(6,30),d=ri(3,12);const e1=LP(1,d),e2=LP(4,2*d),L=e2,R=evalP(L,Fr(x));
+  return{v,x:Fr(x),unit:'m',e:[e1,e2],L,R,
+   text:`Zahrada má tvar obdélníku. Delší strana je o ${d} m delší než kratší strana. Délku kratší strany v metrech označíme ${v}.`,
+   q:[`Vyjádřete výrazem s proměnnou ${v} délku delší strany.`,`Vyjádřete výrazem s proměnnou ${v} obvod zahrady.`,`Obvod zahrady je ${fmtNum(R.n)} m. Vypočtěte v metrech délku kratší strany.`],
+   kroky:[[`Delší strana je o ${d} m delší.`,polyH(e1,v)],[`${K('Obvod obdélníku tvoří dvě kratší a dvě delší strany')}.`,`2 · (${V(v)} + ${polyH(e1,v)}) = ${polyH(e2,v)}`]],
+   uvod:`Obvod je ${fmtNum(R.n)} m:`,
+   chyby:[[],[{p:LP(2,d),rada:`Obvod tvoří dvě kratší a dvě delší strany: 2·(${v} + ${v} + ${d}).`},{p:P.norm([Fr(0),Fr(d),Fr(1)]),rada:`To je obsah zahrady, ne obvod. Obvod: 2·(${v} + ${v} + ${d}).`}]]}}},
+ {lv:2,f(){const v='x',n=pick([2,3,4,5]),w=ZLOMKY_SLOVY[n],d=ri(2,9),x=n*ri(3,12);const a=Fr(n+1,n);const e1=LP(a,0),e2=LP(a,-d);if(F.isZero(evalP(e2,Fr(x)))||evalP(e2,Fr(x)).n<0)return null;const L=P.add(P.add(LP(1,0),e1),e2),R=evalP(L,Fr(x));
+  return{v,x:Fr(x),unit:'stromků',e:[e1,e2],L,R,
+   text:`Dobrovolníci sázeli stromky. V úterý zasadili o ${w} stromků více než v pondělí a ve středu o ${d} stromků méně než v úterý. Počet stromků zasazených v pondělí označíme ${v}.`,
+   q:[`Vyjádřete výrazem s proměnnou ${v}, kolik stromků zasadili v úterý.`,`Vyjádřete výrazem s proměnnou ${v}, kolik stromků zasadili ve středu.`,`Za tři dny zasadili celkem ${fmtNum(R.n)} stromků. Vypočtěte, kolik stromků zasadili v pondělí.`],
+   kroky:[[`„O ${w} více“ znamená ${K(`pondělní počet a k tomu ještě ${w} z něj`)}.`,`${V(v)} + ${frBox(V(v),n)} = ${polyH(e1,v)}`],[`Ve středu o ${d} méně než v úterý.`,polyH(e2,v)]],
+   uvod:`Sečteme všechny tři dny a položíme je rovné ${fmtNum(R.n)}. Levou stranu upravíme:`,
+   chyby:[[{p:LP(Fr(1,n),0),rada:`„O ${w} více“ není jen ${w}. Je to pondělní počet a k tomu ještě ${w}: ${v} + ${v}/${n}.`}],[{p:LP(Fr(1,n),-d),rada:`„O ${w} více“ v úterý znamená ${v} + ${v}/${n}. Od toho ve středu odečti ${d}.`},{p:LP(1,-d),rada:`Ve středu bylo o ${d} méně než v úterý, ne než v pondělí. Od úterního výrazu odečti ${d}.`}]]}}},
+ {lv:2,f(){const v='x',n=pick([3,4,5]),w=ZLOMKY_SLOVY[n],d=ri(1,6),k=ri(3,15),x=n*k,r3=(n-2)*k-d;if(r3<2)return null;const e1=LP(Fr(1,n),d),e2=LP(Fr(n-2,n),-d),L=e2,R=Fr(r3);
+  return{v,x:Fr(x),unit:'km',e:[e1,e2],L,R,
+   text:`Turisté šli po trase dlouhé ${v} km. První den ušli ${w} celé trasy, druhý den o ${d} km více než první den a třetí den došli zbytek trasy.`,
+   q:[`Vyjádřete výrazem s proměnnou ${v}, kolik km ušli druhý den.`,`Vyjádřete výrazem s proměnnou ${v}, kolik km ušli třetí den.`,`Třetí den ušli ${r3} km. Vypočtěte, kolik km měřila celá trasa.`],
+   kroky:[[`První den ušli ${frBox(V(v),n)}, druhý den o ${d} km víc.`,polyH(e1,v)],[`Třetí den je ${K('celá trasa bez prvního i druhého dne')}.`,`${V(v)} ${MINUS} ${frBox(V(v),n)} ${MINUS} (${polyH(e1,v)}) = ${polyH(e2,v)}`]],
+   uvod:`Třetí den ušli ${r3} km:`,
+   chyby:[[{p:LP(1,d),rada:`První den ušli jen ${w} trasy, tedy ${v}/${n}. Druhý den o ${d} víc: ${v}/${n} + ${d}.`}],[{p:LP(Fr(n-1,n),-d),rada:`Třetí den zbývá trasa bez prvního i druhého dne: ${v} − ${v}/${n} − (${v}/${n} + ${d}).`},{p:LP(Fr(n-2,n),d),rada:`Těch ${d} km navíc ušli druhý den, takže se od trasy odečítají: ${v} − ${v}/${n} − (${v}/${n} + ${d}).`}]]}}},
+ {lv:2,f(){const v='x',n=pick([2,3,4]),w=ZLOMKY_SLOVY[n],s=ri(5,30)*10,k=ri(10,60)*10,x=n*k,zb=(n-1)*k-s;if(zb<20)return null;const e1=LP(Fr(n-1,n),0),e2=LP(Fr(n-1,n),-s),L=e2,R=Fr(zb);
+  return{v,x:Fr(x),unit:'Kč',e:[e1,e2],L,R,
+   text:`Na třídním účtu bylo ${v} Kč. Za autobus na výlet zaplatili ${w} této částky a za vstupenky do muzea ještě ${fmtNum(s)} Kč.`,
+   q:[`Vyjádřete výrazem s proměnnou ${v}, kolik korun zbylo na účtu po zaplacení autobusu.`,`Vyjádřete výrazem s proměnnou ${v}, kolik korun zbylo na účtu nakonec.`,`Nakonec zbylo na účtu ${fmtNum(zb)} Kč. Vypočtěte, kolik korun bylo na účtu na začátku.`],
+   kroky:[[`Autobus stál ${frBox(V(v),n)}, na účtu ${K('zbylo celé x bez této části')}.`,`${V(v)} ${MINUS} ${frBox(V(v),n)} = ${polyH(e1,v)}`],[`Pak zaplatili ještě ${fmtNum(s)} Kč.`,polyH(e2,v)]],
+   uvod:`Nakonec zbylo ${fmtNum(zb)} Kč:`,
+   chyby:[[{p:LP(Fr(1,n),0),rada:`${v}/${n} je cena autobusu. Na účtu zbylo ${v} − ${v}/${n}.`}],[{p:LP(Fr(1,n),-s),rada:`Po zaplacení autobusu zbylo ${v} − ${v}/${n}, od toho odečti vstupenky ${s} Kč.`},{p:LP(1,-s),rada:`Nezapomeň odečíst i autobus: ${v} − ${v}/${n} − ${s}.`}]]}}},
+ {lv:2,f(){const v='x',n=pick([4,5,6]),m=pick([2,3]);if(n-1-m<1)return null;const w=ZLOMKY_SLOVY[n],k=ri(10,40),x=n*k,zb=(n-1-m)*k;const J=pick(JMENA.f);const e1=LP(Fr(m,n),0),e2=LP(Fr(n-1-m,n),0),L=e2,R=Fr(zb);
+  return{v,x:Fr(x),unit:'stran',e:[e1,e2],L,R,
+   text:`${J} čte knihu, která má ${v} stran. První týden přečetla ${w} knihy, druhý týden ${KRAT[m]} více stran než první týden.`,
+   q:[`Vyjádřete výrazem s proměnnou ${v}, kolik stran přečetla druhý týden.`,`Vyjádřete výrazem s proměnnou ${v}, kolik stran jí ještě zbývá přečíst.`,`Zbývá jí přečíst ${zb} stran. Vypočtěte, kolik stran má kniha.`],
+   kroky:[[`První týden přečetla ${frBox(V(v),n)}, druhý týden ${K(`${m}krát tolik`)}.`,`${m} · ${frBox(V(v),n)} = ${polyH(e1,v)}`],[`Zbývá ${K('celá kniha bez prvního i druhého týdne')}.`,`${V(v)} ${MINUS} ${frBox(V(v),n)} ${MINUS} ${polyH(e1,v)} = ${polyH(e2,v)}`]],
+   uvod:`Zbývá jí ${zb} stran:`,
+   chyby:[[{p:LP(Fr(m+1,n),0),rada:`${cap(KRAT[m])} více stran znamená ${m}·${v}/${n}, ne ${v}/${n} k tomu ještě přičítat.`}],[{p:LP(Fr(n-m,n),0),rada:`Zbývá kniha bez prvního i druhého týdne: ${v} − ${v}/${n} − ${m}${v}/${n}.`},{p:LP(Fr(n-1,n),0),rada:`Odečti oba týdny: ${v} − ${v}/${n} − ${m}${v}/${n}.`}]]}}}
+];
+function genPromenna(level){
+  const pool=PROMENNA.filter(t=>t.lv===level);
+  for(let t=0;t<500;t++){
+    const s=pick(pool).f();if(!s)continue;
+    const {v}=s;const sol=linKroky(s.L,s.R,v,s.uvod);if(!F.eq(sol.x,s.x))throw new Error('šablona nesedí');
+    const steps=[H('a) první výraz'),S(s.kroky[0][0],s.kroky[0][1]),H('b) druhý výraz'),S(s.kroky[1][0],s.kroky[1][1]),H('c) výpočet'),...sol.st];
+    const prompt=`<span class="txt">${s.text}<span class="opts"><span><b>a)</b> ${s.q[0]}</span><span><b>b)</b> ${s.q[1]}</span><span><b>c)</b> ${s.q[2]}</span></span></span>`;
+    // typická chyba, která náhodou vyjde stejně jako správný výraz (např. polovina), se nehlásí
+    const chybyV=s.chyby.map((list,k)=>list.filter(c=>!P.eq(c.p,s.e[k])));
+    return{kind:'promenna',v,e:s.e,ans:s.x,unitTxt:s.unit,unit:true,chybyV,
+      task:'Slovní úloha s proměnnou. Do a) a b) napište výraz, do c) výsledek. Na papír piš celý postup.',
+      prompt,steps,plain:`${s.text} a) ${s.q[0]} b) ${s.q[1]} c) ${s.q[2]}`,
+      sol:[polySol(s.e[0],v),polySol(s.e[1],v),numSol(s.x)],
+      solH:`a) ${polyH(s.e[0],v)}, b) ${polyH(s.e[1],v)}, c) ${numH(s.x)} ${escT(s.unit)}`,
+      trap:'Každou větu zadání přepiš na výraz. Když s celým výrazem dál násobíš nebo ho odečítáš, dej ho do závorky.'};
+  }
+}
+
 const TOPIC_GROUPS=['Základy počítání','Zlomky, mocniny, procenta','Výrazy','Rovnice','Slovní úlohy'];
 // Pořadí = doporučené pořadí procvičování; každé téma staví na předchozích.
 const TOPICS=[
@@ -1344,9 +1453,10 @@ const TOPICS=[
   {id:'vzorce',g:2,name:'Vzorce',ref:'jako úlohy 4.1 a 4.2',gen:genVzorce},
   {id:'rovnice',g:3,name:'Rovnice',ref:'jako úloha 5.1',gen:genRovnice},
   {id:'soustavy',g:3,name:'Soustavy rovnic',ref:'jako úloha 5.2',gen:genSoustavy},
-  {id:'slovni',g:4,name:'Slovní úlohy',ref:'jako úlohy 1, 2 a 11 až 16',gen:genSlovni}
+  {id:'slovni',g:4,name:'Slovní úlohy',ref:'jako úlohy 1, 2 a 11 až 16',gen:genSlovni},
+  {id:'promenna',g:4,name:'Slovní úlohy s proměnnou',ref:'vyjádři výrazem a dopočítej',gen:genPromenna}
 ];
-const GUIDE_DEFAULT={celacisla:'celacisla',nasobeni:'nasobeni',prednost:'prednost',delitelnost:'delitelnost',kraceni:'kraceni',zlomky:'zlomky',slozene:'slozene',desetinna:'desetinna',mocniny:'mocniny',procenta:'procenta',roznasobovani:'roznasobovani',vytykani:'vytykani',vzorce:'umocneni',rovnice:'rovnice',soustavy:'soustavy',slovni:'slovni'};
+const GUIDE_DEFAULT={celacisla:'celacisla',nasobeni:'nasobeni',prednost:'prednost',delitelnost:'delitelnost',kraceni:'kraceni',zlomky:'zlomky',slozene:'slozene',desetinna:'desetinna',mocniny:'mocniny',procenta:'procenta',roznasobovani:'roznasobovani',vytykani:'vytykani',vzorce:'umocneni',rovnice:'rovnice',soustavy:'soustavy',slovni:'slovni',promenna:'promenna'};
 const TRAP_DEFAULT={desetinna:'Pořadí: závorka, pak násobení a dělení, nakonec sčítání a odčítání. <b class="hx">Nepočítej zleva doprava.</b>',mocniny:'Mocnina má přednost před násobením. <b class="hx">−3² = −9, ale (−3)² = 9.</b>',procenta:'Vždy si ujasni, <b class="hx">co je 100 %</b>, tedy z čeho procenta počítáš.',soustavy:'<b class="hx">Dopočítej obě neznámé.</b> Když spočítáš jen jednu, je bod dolů.'};
 function generate(topicId,level){
   const tp=TOPICS.find(t=>t.id===topicId);const p=tp.gen(level);
@@ -1392,6 +1502,10 @@ const GUIDE_GENERAL={title:'Jak přijímačky z matematiky fungují',items:[
  'Uznávají se i jiné správné zápisy výsledku, třeba jiné pořadí členů (9 + 12x + 4x² je stejně dobře jako 4x² + 12x + 9).'
 ]};
 const GUIDES={
+promenna:{title:'Slovní úlohy s proměnnou',
+ how:[`Zadání samo řekne, co je ${K('neznámá')} (třeba „cenu stolku označíme x“).`,`Každou větu přepiš na výraz: „o 5 více“ je x + 5, „třikrát více“ je 3x, ${K('„o čtvrtinu více“ je x + x/4')}, „o 20 % více“ je 1,2x.`,'Když výraz dál násobíš, dej ho celý do závorky: třikrát dražší než židle je 3 · (x + 400).','V části c) sečti nebo porovnej výrazy podle zadání, polož je rovné danému číslu a vyřeš rovnici.','Na konci zkontroluj, že odpovídáš na otázku, a dosaď výsledek zpět do zadání.'],
+ why:'V testech 2023 až 2026 byla tahle úloha v 11 ze 16 testů (úloha 5 až 7). Každý výraz bývá za 1 bod, výpočet za 1 až 2 body. Výraz nemusí být upravený, uzná se každý správný zápis.',
+ traps:[`„O třetinu více“ ${X('není x/3')}, je to x + x/3.`,`Bez závorky ${X('násobíš jen část výrazu')}: 3 · x + 400 není totéž co 3 · (x + 400).`,`„O 5 méně než v úterý“ se odečítá ${X('od úterního výrazu')}, ne od x.`]},
 slovni:{title:'Slovní úlohy',
  how:[`Přečti zadání celé, a pak ještě jednou. Na papíře si ${K('podtrhni, na co se ptají')}.`,'Zapiš si, co znáš, a označ neznámou (třeba x = cena kola).','U procent si ujasni, co je 100 %: číslo za slovem „než“, původní cena, loňský počet.',`U uzavřené úlohy (A až E) můžeš ${K('dosadit nabízené možnosti do zadání')} a zkontrolovat, která sedí.`,'Na konci odhadni, jestli výsledek dává smysl (cena kola nemůže být 20 Kč).'],
  why:'Slovní úlohy jsou v testu na mnoha místech: úlohy 1 a 2, uzavřené úlohy 11 až 16 a často i úloha 6 až 8. Uzavřené úlohy (A až E, ano/ne) dávají body i slabšímu počtáři, když dosadí možnosti. Za špatnou odpověď se body neodečítají, takže uzavřenou úlohu nikdy nenechávej prázdnou.',
@@ -1553,7 +1667,7 @@ function newProblem(fromMistake){
   const t=TOPICS.find(x=>x.id===p.topic);
   $('tName').textContent=t.name;$('tRef').textContent=t.ref;
   if(fromMistake)$('tSrc').textContent='ze sešitu chyb';else renderDots(false);
-  $('tick').hidden=true;$('answer').classList.remove('ok','nudge');
+  $('tick').hidden=true;$('answer').classList.remove('ok','nudge','rows');
   state.lastAnswer='';state.chat=[];$('ask').hidden=true;$('thread').replaceChildren();$('askIn').value='';
   $('nextBtn').textContent=(!fromMistake&&state.series.i>=SERIES)?'Ukázat výsledek série':'Další příklad';
   $('task').textContent=p.task;
@@ -1563,6 +1677,7 @@ function newProblem(fromMistake){
   const mk=(lab,id,cls)=>{const l=document.createElement('label');l.htmlFor=id;setHTML(l,lab);const i=document.createElement('input');i.id=id;i.type='text';i.autocomplete='off';i.spellcheck=false;i.setAttribute('autocapitalize','off');if(cls)i.className=cls;i.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(state.solved)newProblem();else doCheck()}});a.appendChild(l);a.appendChild(i);return i};
   let first;
   if(p.kind==='sys'){first=mk('<i>x</i> =','in0','short');mk('<i>y</i> =','in1','short')}
+  else if(p.kind==='promenna'){first=mk('a)','in0');mk('b)','in1');mk(`c) (${escT(p.unitTxt)})`,'in2','short');a.classList.add('rows')}
   else if(p.kind==='eq'){first=mk('<i>'+p.v+'</i> =','in0','short');const box=document.createElement('span');box.className='ins';[['nemá řešení','nemá řešení'],['nekonečně mnoho','nekonečně mnoho řešení']].forEach(([lab,txt])=>{const b=document.createElement('button');b.type='button';b.textContent=lab;b.style.fontFamily='var(--ui)';b.style.fontSize='.85rem';b.onclick=()=>{first.value=txt;first.focus()};box.appendChild(b)});a.appendChild(box)}
   else if(p.kind==='mc'){
     // výběr A–E jako v záznamovém archu; volba se drží ve skrytém poli in0
@@ -1579,6 +1694,7 @@ function newProblem(fromMistake){
     poly:'Mocninu napiš jako ^2 nebo tlačítkem ². Třeba 3'+p.v+'^2 − 5'+p.v+' + 1.',
     factor:p.mode==='common'?'Napiš jako součin, třeba 3'+p.v+'(2'+p.v+' − 5).':'Napiš jako součin závorek, třeba ('+p.v+' + 3)('+p.v+' − 3) nebo ('+p.v+' − 2)².',
     eq:'Napiš jen hodnotu '+p.v+'. Když rovnice nemá řešení nebo jich má nekonečně mnoho, klepni na tlačítko.',sys:'Napiš hodnotu x a hodnotu y.',
+    promenna:'Do a) a b) napiš výraz s proměnnou, třeba x + x/4 nebo 3(x + 400). Do c) jen číslo.',
     mc:'Klepni na písmeno a pak na Zkontrolovat. Když si nevíš rady, dosaď možnosti do zadání.'};
   $('hint').textContent=hints[p.kind];
   $('fb').textContent='';$('fb').className='fb';
@@ -1613,7 +1729,7 @@ function record(ok){
 }
 function doCheck(){
   if(state.solved)return;
-  const p=state.cur;const ins=p.kind==='sys'?[$('in0').value,$('in1').value]:[$('in0').value];
+  const p=state.cur;const ins=p.kind==='sys'?[$('in0').value,$('in1').value]:p.kind==='promenna'?[$('in0').value,$('in1').value,$('in2').value]:[$('in0').value];
   const r=check(p,ins);const fb=$('fb');
   if(!r.format)state.lastAnswer=p.kind==='sys'?`x = ${ins[0]}, y = ${ins[1]}`:ins[0];
   if(r.format){fb.className='fb neutral';fb.textContent=r.msg;return}
