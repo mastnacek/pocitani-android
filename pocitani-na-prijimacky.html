@@ -10,7 +10,7 @@
 <style>
 :root{
   --surface:#E9EEF3; --paper:#FBFCFE; --grid:#DBE4EE; --ink:#1B2A3F; --muted:#56667B;
-  --pen:#2347B8; --pen-soft:#E3EAFB; --red:#C42F2F; --red-soft:#FBE7E5; --green:#1F7A4A; --green-soft:#E1F3E8; --line:#C6D2DF;
+  --pen:#2347B8; --pen-soft:#E3EAFB; --red:#C42F2F; --red-soft:#FBE7E5; --green:#1F7A4A; --green-soft:#E1F3E8; --line:#C6D2DF; --hl:#FFE27A;
   --ui:"Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif;
   --math:"STIX Two Text","Cambria Math",Cambria,"Times New Roman",serif;
   color-scheme:light;
@@ -18,10 +18,10 @@
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
   --surface:#0F151E; --paper:#162030; --grid:#21304A; --ink:#E4EAF3; --muted:#9AA9BC;
-  --pen:#93B2FF; --pen-soft:#22345C; --red:#FF8077; --red-soft:#3A2024; --green:#62D297; --green-soft:#17352A; --line:#2D3D57; color-scheme:dark;}}
+  --pen:#93B2FF; --pen-soft:#22345C; --red:#FF8077; --red-soft:#3A2024; --green:#62D297; --green-soft:#17352A; --line:#2D3D57; --hl:#6B5410; color-scheme:dark;}}
 :root[data-theme="dark"]{
   --surface:#0F151E; --paper:#162030; --grid:#21304A; --ink:#E4EAF3; --muted:#9AA9BC;
-  --pen:#93B2FF; --pen-soft:#22345C; --red:#FF8077; --red-soft:#3A2024; --green:#62D297; --green-soft:#17352A; --line:#2D3D57; color-scheme:dark;}
+  --pen:#93B2FF; --pen-soft:#22345C; --red:#FF8077; --red-soft:#3A2024; --green:#62D297; --green-soft:#17352A; --line:#2D3D57; --hl:#6B5410; color-scheme:dark;}
 *,*::before,*::after{box-sizing:inherit}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--surface);color:var(--ink);font-family:var(--ui);font-size:17px;line-height:1.5}
@@ -130,6 +130,11 @@ table.stats tr.grp td{font-weight:700;color:var(--pen);padding-top:14px;font-siz
 table.stats td small{display:block;color:var(--muted);font-size:.8rem;font-weight:400}
 .chips .grp{flex-basis:100%;font-size:.8rem;font-weight:600;color:var(--muted);margin-top:4px}
 .chips .grp:first-child{margin-top:0}
+/* zvýraznění: pravidlo (zvýrazňovač), nové (modře), pozor (červeně); vždy i tučně kvůli tisku */
+.hk{font-weight:700;background:linear-gradient(transparent 55%,var(--hl) 55%);padding:0 .08em;-webkit-box-decoration-break:clone;box-decoration-break:clone}
+.hn{font-weight:700;color:var(--pen)}
+.hx{font-weight:700;color:var(--red)}
+@media print{.hk{background:none;text-decoration:underline}}
 nav.tabs a .badge[hidden]{display:none}
 .note{color:var(--muted);font-size:.92rem;max-width:62ch}
 details.guide{margin:-4px 0 14px;background:var(--paper);border:1.5px solid var(--line);border-radius:8px}
@@ -570,46 +575,49 @@ function rfr(maxD,maxN){maxN=maxN||maxD*2;for(;;){const d=ri(2,maxD),n=ri(1,maxN
 const S=(say,math)=>`<span class="say">${say}</span>`+(math?`<span class="m">${math}</span>`:'');
 const H=t=>'#H#'+t;
 const SEP='<span class="sep">a</span>';
+// Zvýraznění v postupech a tipech (všude stejný význam, nejvýš jedno pravidlo na krok):
+// K = pravidlo / klíčové slovo (zvýrazňovač), N = co je v kroku nové (modře), X = pozor, past (červeně).
+const K=t=>`<b class="hk">${t}</b>`, N=t=>`<b class="hn">${t}</b>`, X=t=>`<b class="hx">${t}</b>`;
 function addSub(a,b,op){
   const L=lcm(a.d,b.d),ka=L/a.d,kb=L/b.d,an=a.n*ka,bn=b.n*kb,rn=op==='+'?an+bn:an-bn,res=Fr(rn,L);
   const steps=[];
   if(a.d!==b.d){
     const ints=a.d===1||b.d===1;
     if(!ints) steps.push(S(a.d===L||b.d===L
-      ?`Zlomky mají různé jmenovatele (${a.d} a ${b.d}), takže je nejdřív musíme převést na stejný. Číslo ${L} jde vydělit ${a.d} i ${b.d}, proto bude společný jmenovatel ${L}.`
-      :`Zlomky mají různé jmenovatele (${a.d} a ${b.d}), takže je nejdřív musíme převést na stejný. Hledáme nejmenší číslo, které jde vydělit ${a.d} i ${b.d}. To je ${L}, bude to společný jmenovatel.`));
-    const ext=(f,k)=>f.d===1?`${intH(f.n)} = ${rawH(f.n*L,L)}`:(k===1?null:`${fracH(f)} = ${(f.n<0?MINUS:'')+frBox(Math.abs(f.n)+' · '+k,f.d+' · '+k)} = ${rawH(f.n*k,L)}`);
+      ?`Zlomky mají různé jmenovatele (${a.d} a ${b.d}), takže je nejdřív musíme převést na stejný. Číslo ${L} jde vydělit ${a.d} i ${b.d}, proto bude ${K('společný jmenovatel')} ${N(L)}.`
+      :`Zlomky mají různé jmenovatele (${a.d} a ${b.d}), takže je nejdřív musíme převést na stejný. Hledáme ${K('nejmenší číslo, které jde vydělit')} ${a.d} i ${b.d}. To je ${N(L)}, bude to společný jmenovatel.`));
+    const ext=(f,k)=>f.d===1?`${intH(f.n)} = ${N(rawH(f.n*L,L))}`:(k===1?null:`${fracH(f)} = ${(f.n<0?MINUS:'')+frBox(Math.abs(f.n)+' · '+k,f.d+' · '+k)} = ${N(rawH(f.n*k,L))}`);
     const ex=[ext(a,ka),ext(b,kb)].filter(Boolean);
     const who=[];if(a.d!==1&&ka!==1)who.push(`${fracH(a)} číslem ${ka}`);if(b.d!==1&&kb!==1)who.push(`${fracH(b)} číslem ${kb}`);
     steps.push(S(ints?`Celé číslo zapíšeme jako zlomek se jmenovatelem ${L}.`
-      :`Zlomky rozšíříme na jmenovatele ${L}. Rozšířit znamená vynásobit čitatel i jmenovatel stejným číslem, hodnota zlomku se tím nezmění. Rozšiřujeme ${who.join(' a ')}.`,ex.join(SEP)));
+      :`Zlomky rozšíříme na jmenovatele ${L}. Rozšířit znamená ${K('vynásobit čitatel i jmenovatel stejným číslem')}, hodnota zlomku se tím nezmění. Rozšiřujeme ${who.join(' a ')}.`,ex.join(SEP)));
   }
-  steps.push(S(`${op==='+'?'Sečteme':'Odečteme'} čitatele (čísla nahoře). Jmenovatel ${L} zůstane stejný, ten se ${op==='+'?'nesčítá':'neodečítá'}.`,
-    `${rawH(an,L)}${opS(op)}${rawH(bn,L)} = ${frBox(intH(an)+opS(op)+(bn<0?'('+intH(bn)+')':bn),L)} = ${rawH(rn,L)}`));
-  if(res.d!==L&&rn!==0){const g=gcd(rn,L);steps.push(S(`Výsledek zkrátíme. Krátit znamená vydělit čitatel i jmenovatel stejným číslem. ${Math.abs(rn)} i ${L} jdou vydělit ${g}, takže: čitatel ${Math.abs(rn)} : ${g} = ${Math.abs(rn)/g}, jmenovatel ${L} : ${g} = ${L/g}.`,`${rawH(rn,L)} = ${(rn<0?MINUS:'')+frBox(Math.abs(rn)+' : '+g,L+' : '+g)} = ${fracH(res)}`))}
+  steps.push(S(`${op==='+'?'Sečteme':'Odečteme'} čitatele (čísla nahoře). ${K(`Jmenovatel ${L} zůstane stejný`)}, ten se ${op==='+'?'nesčítá':'neodečítá'}.`,
+    `${rawH(an,L)}${opS(op)}${rawH(bn,L)} = ${frBox(intH(an)+opS(op)+(bn<0?'('+intH(bn)+')':bn),L)} = ${N(rawH(rn,L))}`));
+  if(res.d!==L&&rn!==0){const g=gcd(rn,L);steps.push(S(`Výsledek zkrátíme. Krátit znamená ${K('vydělit čitatel i jmenovatel stejným číslem')}. ${Math.abs(rn)} i ${L} jdou vydělit ${g}, takže: čitatel ${Math.abs(rn)} : ${g} = ${Math.abs(rn)/g}, jmenovatel ${L} : ${g} = ${L/g}.`,`${rawH(rn,L)} = ${(rn<0?MINUS:'')+frBox(Math.abs(rn)+' : '+g,L+' : '+g)} = ${N(fracH(res))}`))}
   return{res,steps,L};
 }
 function mulSteps(x,y,say){
   const res=F.mul(x,y);const sg=((x.n<0)!==(y.n<0)&&res.n!==0)?MINUS:'';
   const rn=Math.abs(x.n*y.n),rd=x.d*y.d;const steps=[];
-  if(x.d===1&&y.d===1){steps.push(S('Vynásobíme.',`${fracHp(x)} · ${fracHp(y)} = ${fracH(res)}`));return{res,steps}}
+  if(x.d===1&&y.d===1){steps.push(S('Vynásobíme.',`${fracHp(x)} · ${fracHp(y)} = ${N(fracH(res))}`));return{res,steps}}
   const top=`${Math.abs(x.n)} · ${Math.abs(y.n)}`,bot=[x.d,y.d].filter(d=>d!==1).join(' · ');
   const intOne=(x.d===1)!==(y.d===1),kk=x.d===1?Math.abs(x.n):Math.abs(y.n);
-  steps.push(S(say||(intOne?`Celé číslo ${kk} vynásobíme jen s čitatelem, jmenovatel zůstane. (${kk} je totéž co zlomek ${kk}/1.)`:'Násobíme zlomky: čitatel krát čitatel (nahoře), jmenovatel krát jmenovatel (dole).')+(sg?' Jedno číslo je záporné a druhé kladné, proto vyjde záporný výsledek.':''),
-    `${fracHp(x)} · ${fracHp(y)} = ${sg}${frBox(top,bot)} = ${sg}${rawH(rn,rd)}`));
+  steps.push(S(say||(intOne?`Celé číslo ${kk} vynásobíme ${K('jen s čitatelem')}, jmenovatel zůstane. (${kk} je totéž co zlomek ${kk}/1.)`:`Násobíme zlomky: ${K('čitatel krát čitatel (nahoře), jmenovatel krát jmenovatel (dole)')}.`)+(sg?` Jedno číslo je záporné a druhé kladné, proto vyjde ${X('záporný výsledek')}.`:''),
+    `${fracHp(x)} · ${fracHp(y)} = ${sg}${frBox(top,bot)} = ${N(sg+rawH(rn,rd))}`));
   if(rn===0)return{res,steps};
   const g=gcd(rn,rd);
   if(g>1){
-    steps.push(S(`Výsledek zkrátíme. Krátit znamená vydělit čitatel i jmenovatel stejným číslem. ${rn} i ${rd} jdou vydělit ${g}, takže: čitatel ${rn} : ${g} = ${rn/g}, jmenovatel ${rd} : ${g} = ${rd/g}.`,`${sg}${rawH(rn,rd)} = ${sg}${frBox(rn+' : '+g,rd+' : '+g)} = ${fracH(res)}`));
+    steps.push(S(`Výsledek zkrátíme. Krátit znamená ${K('vydělit čitatel i jmenovatel stejným číslem')}. ${rn} i ${rd} jdou vydělit ${g}, takže: čitatel ${rn} : ${g} = ${rn/g}, jmenovatel ${rd} : ${g} = ${rd/g}.`,`${sg}${rawH(rn,rd)} = ${sg}${frBox(rn+' : '+g,rd+' : '+g)} = ${N(fracH(res))}`));
     const c1=gcd(Math.abs(x.n),y.d),c2=gcd(Math.abs(y.n),x.d);const pr=[];
     if(c1>1)pr.push(`${Math.abs(x.n)} nahoře a ${y.d} dole vydělit ${c1}`);if(c2>1)pr.push(`${Math.abs(y.n)} nahoře a ${x.d} dole vydělit ${c2}`);
-    if(pr.length)steps.push(S(`Tip na příště: krátit jde už před násobením, „do kříže“. Tady stačí ${pr.join(' a ')}. Pak se násobí menší čísla a je menší šance udělat chybu.`));
+    if(pr.length)steps.push(S(`Tip na příště: ${K('krátit jde už před násobením')}, „do kříže“. Tady stačí ${pr.join(' a ')}. Pak se násobí menší čísla a je menší šance udělat chybu.`));
   }
   return{res,steps};
 }
 function divSteps(x,y){
   const r=Fr(y.d,y.n);
-  const steps=[S(`Dělit zlomkem znamená násobit jeho převrácenou hodnotou. Převrácenou hodnotu dostaneme tak, že prohodíme čitatel a jmenovatel: z ${fracH(y)} je ${fracH(r)}. První číslo zůstane, jak je.`,`${fracHp(x)} : ${fracHp(y)} = ${fracHp(x)} · ${fracHp(r)}`)];
+  const steps=[S(`Dělit zlomkem znamená ${K('násobit jeho převrácenou hodnotou')}. Převrácenou hodnotu dostaneme tak, že prohodíme čitatel a jmenovatel: z ${fracH(y)} je ${N(fracH(r))}. ${X('Obrací se jen druhé číslo')}, první zůstane, jak je.`,`${fracHp(x)} : ${fracHp(y)} = ${fracHp(x)} · ${N(fracHp(r))}`)];
   const m=mulSteps(x,r);return{res:m.res,steps:steps.concat(m.steps)};
 }
 const okFr=(f,lim)=>f.n!==0&&Math.abs(f.n)<=lim&&f.d<=lim;
@@ -620,31 +628,31 @@ function genZlomky(level){
     const tp=level===1?pick(['as','as','md']):pick(['p31','p31','prec','pm','dec','dec','intmul','brkint']);
     if(tp==='dec'){const a=rfr(9,10),c=rfr(9,10),k=ri(1,49);if(k%10===0)continue;const dv=Fr(k,10);const op1=pick(['+','-']),op2=pick(['+','-']);
       const s1=addSub(a,dv,op1);if(F.isZero(s1.res))continue;const s2=addSub(s1.res,c,op2);if(!okFr(s2.res,60))continue;
-      return{kind:'num',fraction:true,ans:s2.res,task:TASKF,trap:'Desetinné číslo nejdřív převeď na zlomek. Výsledek musí být zlomek v základním tvaru, desetinné číslo by stálo bod.',prompt:`${fracH(a)}${opS(op1)}${decStr(dv)}${opS(op2)}${fracH(c)} =`,
-        steps:[S('Desetinné číslo převedeme na zlomek. Zlomky a desetinná čísla se v jednom výpočtu nemíchají, všechno musí být ve stejném tvaru.',`${decStr(dv)} = ${frBox(k,10)}${dv.d!==10?' = '+fracH(dv):''}`),H(`${op1==='+'?'Sečteme':'Odečteme'} první dvě čísla`),...s1.steps,H(`Pak ${op2==='+'?'přičteme':'odečteme'} třetí`),...s2.steps],
+      return{kind:'num',fraction:true,ans:s2.res,task:TASKF,trap:`Desetinné číslo nejdřív převeď na zlomek. Výsledek musí být zlomek v základním tvaru, ${X('desetinné číslo by stálo bod')}.`,prompt:`${fracH(a)}${opS(op1)}${decStr(dv)}${opS(op2)}${fracH(c)} =`,
+        steps:[S(`Desetinné číslo převedeme na zlomek. Zlomky a desetinná čísla ${K('se v jednom výpočtu nemíchají')}, všechno musí být ve stejném tvaru.`,`${decStr(dv)} = ${frBox(k,10)}${dv.d!==10?' = '+fracH(dv):''}`),H(`${op1==='+'?'Sečteme':'Odečteme'} první dvě čísla`),...s1.steps,H(`Pak ${op2==='+'?'přičteme':'odečteme'} třetí`),...s2.steps],
         plain:`${frP(a)}${op1}${decP(dv)}${op2}${frP(c)}`}}
     if(tp==='intmul'){const k=ri(2,6),m=ri(2,9),a=rfr(9,10),c=rfr(9,10);const m1=mulSteps(Fr(k),a),m2=mulSteps(c,Fr(m));const op=pick(['+','-']);const s1=addSub(m1.res,m2.res,op);if(!okFr(s1.res,60)||m1.res.d===1&&m2.res.d===1)continue;
-      return{kind:'num',fraction:true,ans:s1.res,task:TASKF,trap:'Celé číslo násobí jen čitatel. A obě násobení mají přednost před sčítáním a odčítáním.',prompt:`${k} · ${fracH(a)}${opS(op)}${fracH(c)} · ${m} =`,
+      return{kind:'num',fraction:true,ans:s1.res,task:TASKF,trap:`Celé číslo násobí ${X('jen čitatel')}. A obě násobení mají přednost před sčítáním a odčítáním.`,prompt:`${k} · ${fracH(a)}${opS(op)}${fracH(c)} · ${m} =`,
         steps:[H('Nejdřív obě násobení, mají přednost'),...m1.steps,...m2.steps,H(`Teď výsledky ${op==='+'?'sečteme':'odečteme'}`),...s1.steps],plain:`${k}*${frP(a)}${op}${frP(c)}*${m}`}}
     if(tp==='brkint'){const a=rfr(9,10),c=rfr(7,9),e=rfr(7,8);const rev=Math.random()<0.4;const s1=rev?addSub(Fr(1),e,'-'):addSub(e,Fr(1),'-');if(F.isZero(s1.res))continue;const m=mulSteps(c,s1.res);
-      let tail;if(m.res.n<0){const ab=F.abs(m.res);const s2=addSub(a,ab,'-');tail={res:s2.res,steps:[S('Přičíst záporné číslo je totéž jako ho odečíst.',`${fracH(a)} + (${fracH(m.res)}) = ${fracH(a)} ${MINUS} ${fracH(ab)}`),...s2.steps]}}else{const s2=addSub(a,m.res,'+');tail={res:s2.res,steps:s2.steps}}
+      let tail;if(m.res.n<0){const ab=F.abs(m.res);const s2=addSub(a,ab,'-');tail={res:s2.res,steps:[S(`${K('Přičíst záporné číslo je totéž jako ho odečíst.')}`,`${fracH(a)} + (${fracH(m.res)}) = ${fracH(a)} ${MINUS} ${fracH(ab)}`),...s2.steps]}}else{const s2=addSub(a,m.res,'+');tail={res:s2.res,steps:s2.steps}}
       if(!okFr(tail.res,60))continue;
-      return{kind:'num',fraction:true,ans:tail.res,task:TASKF,trap:'Pořadí: závorka, násobení, nakonec sčítání. Pozor na znaménko, výsledek závorky může být záporný.',prompt:`${fracH(a)} + ${fracH(c)} · (${rev?'1 '+MINUS+' '+fracH(e):fracH(e)+' '+MINUS+' 1'}) =`,
+      return{kind:'num',fraction:true,ans:tail.res,task:TASKF,trap:`Pořadí: závorka, násobení, nakonec sčítání. Pozor na znaménko, ${X('výsledek závorky může být záporný')}.`,prompt:`${fracH(a)} + ${fracH(c)} · (${rev?'1 '+MINUS+' '+fracH(e):fracH(e)+' '+MINUS+' 1'}) =`,
         steps:[H('Nejdřív závorka'),...s1.steps,H('Pak násobení, má přednost před sčítáním'),...m.steps,H('Nakonec sčítání'),...tail.steps],plain:`${frP(a)}+${frP(c)}*(${rev?'1-'+frP(e):frP(e)+'-1'})`}}
     if(tp==='as'){const a=rfr(9,12),b=rfr(9,12);if(a.d===b.d)continue;const op=pick(['+','-']);const s=addSub(a,b,op);if(!okFr(s.res,60))continue;
-      return{kind:'num',fraction:true,ans:s.res,task:TASKF,trap:'Jmenovatele se nikdy nesčítají ani neodčítají. Nejdřív společný jmenovatel, pak počítáš jen s čitateli.',prompt:`${fracH(a)}${opS(op)}${fracH(b)} =`,steps:s.steps,plain:`${frP(a)}${op}${frP(b)}`}}
+      return{kind:'num',fraction:true,ans:s.res,task:TASKF,trap:`${X('Jmenovatele se nikdy nesčítají ani neodčítají.')} Nejdřív společný jmenovatel, pak počítáš jen s čitateli.`,prompt:`${fracH(a)}${opS(op)}${fracH(b)} =`,steps:s.steps,plain:`${frP(a)}${op}${frP(b)}`}}
     if(tp==='md'){const a=rfr(9,12),b=rfr(9,12);const op=pick(['*',':']);const s=op==='*'?mulSteps(a,b):divSteps(a,b);if(!okFr(s.res,60)||s.res.d===1)continue;
-      return{kind:'num',fraction:true,ans:s.res,task:TASKF,trap:op==='*'?'Při násobení společný jmenovatel nepotřebuješ. Krátit můžeš i do kříže před násobením.':'Dělit zlomkem = násobit převrácenou hodnotou. Obrací se jen druhý zlomek, první zůstává.',prompt:`${fracH(a)} ${op==='*'?'·':':'} ${fracH(b)} =`,steps:s.steps,plain:`${frP(a)}${op}(${frP(b)})`}}
+      return{kind:'num',fraction:true,ans:s.res,task:TASKF,trap:op==='*'?`Při násobení ${X('společný jmenovatel nepotřebuješ')}. Krátit můžeš i do kříže před násobením.`:`Dělit zlomkem = násobit převrácenou hodnotou. ${X('Obrací se jen druhý zlomek')}, první zůstává.`,prompt:`${fracH(a)} ${op==='*'?'·':':'} ${fracH(b)} =`,steps:s.steps,plain:`${frP(a)}${op}(${frP(b)})`}}
     if(tp==='p31'){const a=rfr(9,12),b=rfr(9,12);if(a.d===b.d)continue;const op=pick(['+','-']);const s=addSub(a,b,op);if(F.isZero(s.res))continue;const e=rfr(7,9);const op2=pick([':',':','*']);
       const m=op2===':'?divSteps(s.res,e):mulSteps(s.res,e);if(!okFr(m.res,50))continue;
-      return{kind:'num',fraction:true,ans:m.res,task:TASKF,trap:'Nejdřív závorka, pak dělení. Výsledek nakonec zkrať.',prompt:`(${fracH(a)}${opS(op)}${fracH(b)}) ${op2==='*'?'·':':'} ${fracH(e)} =`,
+      return{kind:'num',fraction:true,ans:m.res,task:TASKF,trap:`${X('Nejdřív závorka')}, pak dělení. Výsledek nakonec zkrať.`,prompt:`(${fracH(a)}${opS(op)}${fracH(b)}) ${op2==='*'?'·':':'} ${fracH(e)} =`,
         steps:[H('Nejdřív závorka, ta má vždycky přednost'),...s.steps,H(`Teď výsledek závorky ${op2===':'?'vydělíme':'vynásobíme'} zlomkem ${fracH(e)}`),...m.steps],
         plain:`(${frP(a)}${op}${frP(b)})${op2}(${frP(e)})`}}
     if(tp==='prec'){const a=rfr(9,12),c=rfr(8,10),e=rfr(8,10);const m=mulSteps(c,e);const op=pick(['+','-']);if(m.res.d===1)continue;const s=addSub(a,m.res,op);if(!okFr(s.res,60))continue;
-      return{kind:'num',fraction:true,ans:s.res,task:TASKF,trap:'Násobení má přednost před sčítáním a odčítáním. Nepočítej zleva doprava.',prompt:`${fracH(a)}${opS(op)}${fracH(c)} · ${fracH(e)} =`,
+      return{kind:'num',fraction:true,ans:s.res,task:TASKF,trap:`Násobení má přednost před sčítáním a odčítáním. ${X('Nepočítej zleva doprava.')}`,prompt:`${fracH(a)}${opS(op)}${fracH(c)} · ${fracH(e)} =`,
         steps:[H('Nejdřív násobení, má přednost před sčítáním a odčítáním'),...m.steps,H(`Teď ${op==='+'?'přičteme':'odečteme'} výsledek násobení`),...s.steps],plain:`${frP(a)}${op}${frP(c)}*${frP(e)}`}}
     if(tp==='pm'){const a=rfr(6,8),b=rfr(6,8),c=rfr(6,8),d=rfr(6,8);if(a.d===b.d||c.d===d.d)continue;const s1=addSub(a,b,'+'),s2=addSub(c,d,'-');if(F.isZero(s2.res))continue;const m=mulSteps(s1.res,s2.res);if(!okFr(m.res,40))continue;
-      return{kind:'num',fraction:true,ans:m.res,task:TASKF,trap:'Každou závorku spočítej zvlášť, až potom násob.',prompt:`(${fracH(a)} + ${fracH(b)}) · (${fracH(c)} ${MINUS} ${fracH(d)}) =`,
+      return{kind:'num',fraction:true,ans:m.res,task:TASKF,trap:`${X('Každou závorku spočítej zvlášť')}, až potom násob.`,prompt:`(${fracH(a)} + ${fracH(b)}) · (${fracH(c)} ${MINUS} ${fracH(d)}) =`,
         steps:[H('První závorka'),...s1.steps,H('Druhá závorka'),...s2.steps,H('Výsledky obou závorek vynásobíme'),...m.steps],plain:`(${frP(a)}+${frP(b)})*(${frP(c)}-${frP(d)})`}}
   }
 }
@@ -662,22 +670,22 @@ function blkPowMul(){
   const ms=mulSteps(sq,mf);
   return{html:`(${p}${opS(op)}${frBox(1,r)})² · ${fracH(mf)}`,plain:`(${p}${op}1/${r})^2*${frP(mf)}`,val:ms.res,
     steps:[S(`Nejdřív závorka. Číslo ${p} zapíšeme jako zlomek se jmenovatelem ${r} (${p} = ${frBox(p*r,r)}) a ${op==='+'?'sečteme':'odečteme'} čitatele.`,`${p}${opS(op)}${frBox(1,r)} = ${rawH(p*r,r)}${opS(op)}${frBox(1,r)} = ${fracH(q)}`),
-      S('Zlomek umocníme na druhou: na druhou umocníme zvlášť čitatel a zvlášť jmenovatel.',`(${fracH(q)})² = ${frBox(q.n+'²',q.d+'²')} = ${fracH(sq)}`),...ms.steps]}
+      S(`Zlomek umocníme na druhou: na druhou umocníme ${K('zvlášť čitatel a zvlášť jmenovatel')}.`,`(${fracH(q)})² = ${frBox(q.n+'²',q.d+'²')} = ${fracH(sq)}`),...ms.steps]}
 }
 function blkAddMul(){const a=rfr(6,8),c=rfr(6,8),e=rfr(6,8);const m=mulSteps(c,e);const op=pick(['+','-']);if(m.res.d===1)return null;const s=addSub(a,m.res,op);if(F.isZero(s.res))return null;
-  return{html:`${fracH(a)}${opS(op)}${fracH(c)} · ${fracH(e)}`,plain:`${frP(a)}${op}${frP(c)}*${frP(e)}`,val:s.res,steps:[S('Násobení má přednost před sčítáním a odčítáním, takže začneme jím.'),...m.steps,...s.steps]}}
+  return{html:`${fracH(a)}${opS(op)}${fracH(c)} · ${fracH(e)}`,plain:`${frP(a)}${op}${frP(c)}*${frP(e)}`,val:s.res,steps:[S(`${K('Násobení má přednost')} před sčítáním a odčítáním, takže začneme jím.`),...m.steps,...s.steps]}}
 function blkRootSq(){const s=ri(2,10),t=ri(2,4),u=ri(2,9),Tt=t*t;if(Tt%u===0||gcd(Tt,u)>1)return null;const op=pick(['-','+']);const r=addSub(Fr(s),Fr(Tt,u),op);if(F.isZero(r.res))return null;
   return{html:`√<span class="ov">${s*s}</span>${opS(op)}${frBox(t+'²',u)}`,plain:`√${s*s}${op}${t}^2/${u}`,val:r.res,
-    steps:[S(`Nejdřív odmocnina a mocnina. Odmocnina z ${s*s} je ${s}, protože ${s} · ${s} = ${s*s}. A ${t}² = ${t} · ${t} = ${Tt}.`,`√${s*s} = ${s}${SEP}${frBox(t+'²',u)} = ${frBox(Tt,u)}`),...r.steps]}}
+    steps:[S(`${K('Nejdřív odmocnina a mocnina.')} Odmocnina z ${s*s} je ${s}, protože ${s} · ${s} = ${s*s}. A ${t}² = ${t} · ${t} = ${Tt}.`,`√${s*s} = ${s}${SEP}${frBox(t+'²',u)} = ${frBox(Tt,u)}`),...r.steps]}}
 function blkRootFrac(){const a=ri(1,6),b=ri(2,9);if(gcd(a,b)>1)return null;const c=rfr(6,8);const op=pick(['+','-']);const r=addSub(Fr(a,b),c,op);if(F.isZero(r.res))return null;
   return{html:`√<span class="ov">${frBox(a*a,b*b)}</span>${opS(op)}${fracH(c)}`,plain:`√(${a*a}/${b*b})${op}${frP(c)}`,val:r.res,
-    steps:[S(`Odmocninu ze zlomku spočítáme tak, že odmocníme zvlášť čitatel a zvlášť jmenovatel: √${a*a} = ${a} a √${b*b} = ${b}.`,`√<span class="ov">${frBox(a*a,b*b)}</span> = ${frBox(a,b)}`),...r.steps]}}
+    steps:[S(`Odmocninu ze zlomku spočítáme tak, že ${K('odmocníme zvlášť čitatel a zvlášť jmenovatel')}: √${a*a} = ${a} a √${b*b} = ${b}.`,`√<span class="ov">${frBox(a*a,b*b)}</span> = ${frBox(a,b)}`),...r.steps]}}
 function blkIntMinus(){const k=ri(1,5),f=rfr(7,9);const op=pick(['-','+']);const r=addSub(Fr(k),f,op);if(F.isZero(r.res))return null;return{html:`${k}${opS(op)}${fracH(f)}`,plain:`${k}${op}${frP(f)}`,val:r.res,steps:r.steps}}
 function blkDecMix(){const a=rfr(7,9),c=rfr(7,9),k=ri(11,49);if(k%10===0)return null;const dv=Fr(k,10);const op2=pick(['+','-']);const s1=addSub(a,dv,'+');const s2=addSub(s1.res,c,op2);if(F.isZero(s2.res))return null;
-  return{html:`${fracH(a)} + ${decStr(dv)}${opS(op2)}${fracH(c)}`,plain:`${frP(a)}+${decP(dv)}${op2}${frP(c)}`,val:s2.res,steps:[S('Desetinné číslo převedeme na zlomek, se zlomky se nemíchá.',`${decStr(dv)} = ${frBox(k,10)}${dv.d!==10?' = '+fracH(dv):''}`),...s1.steps,...s2.steps]}}
-function blkDec(){const k=ri(1,9);const dv=Fr(k,10);return{html:decStr(dv),plain:decP(dv),val:dv,steps:[S('Desetinné číslo převedeme na zlomek.',`${decStr(dv)} = ${frBox(k,10)}${dv.d!==10?' = '+fracH(dv):''}`)]}}
+  return{html:`${fracH(a)} + ${decStr(dv)}${opS(op2)}${fracH(c)}`,plain:`${frP(a)}+${decP(dv)}${op2}${frP(c)}`,val:s2.res,steps:[S(`Desetinné číslo ${K('převedeme na zlomek')}, se zlomky se nemíchá.`,`${decStr(dv)} = ${frBox(k,10)}${dv.d!==10?' = '+fracH(dv):''}`),...s1.steps,...s2.steps]}}
+function blkDec(){const k=ri(1,9);const dv=Fr(k,10);return{html:decStr(dv),plain:decP(dv),val:dv,steps:[S(`Desetinné číslo ${K('převedeme na zlomek')}.`,`${decStr(dv)} = ${frBox(k,10)}${dv.d!==10?' = '+fracH(dv):''}`)]}}
 function blkDivNeg(){const a=rfr(7,8),b=rfr(7,8);if(a.d===b.d)return null;const s=addSub(a,b,'-');if(F.isZero(s.res))return null;const e=rfr(6,7);const d=divSteps(s.res,F.neg(e));
-  return{html:`(${fracH(a)} ${MINUS} ${fracH(b)}) : (${MINUS}${fracH(e)})`,plain:`(${frP(a)}-${frP(b)}):(-${frP(e)})`,val:d.res,steps:[S('Nejdřív závorka.'),...s.steps,S('Pak dělení. Dělíme záporným číslem, tak hlídej znaménko výsledku.'),...d.steps]}}
+  return{html:`(${fracH(a)} ${MINUS} ${fracH(b)}) : (${MINUS}${fracH(e)})`,plain:`(${frP(a)}-${frP(b)}):(-${frP(e)})`,val:d.res,steps:[S('Nejdřív závorka.'),...s.steps,S(`Pak dělení. Dělíme záporným číslem, tak ${X('hlídej znaménko výsledku')}.`),...d.steps]}}
 function genSlozene(level){
   for(let t=0;t<5000;t++){
     let N,D;
@@ -685,11 +693,11 @@ function genSlozene(level){
     else{N=pick([blkPowMul,blkPowMul,blkAddMul,blkDecMix,blkDivNeg])();D=pick([blkRootSq,blkRootSq,blkRootFrac,blkIntMinus,blkDec,blkAddSub])()}
     if(!N||!D||F.isZero(D.val)||F.isZero(N.val))continue;
     const d=divSteps(N.val,D.val);if(!okFr(d.res,level===1?40:30))continue;
-    const steps=[S('Složený zlomek počítáme po částech: nejdřív zvlášť všechno nad hlavní zlomkovou čarou, pak zvlášť všechno pod ní, a nakonec obojí vydělíme.')];
+    const steps=[S(`Složený zlomek počítáme po částech: ${K('nejdřív zvlášť všechno nad hlavní zlomkovou čarou, pak zvlášť všechno pod ní')}, a nakonec obojí vydělíme.`)];
     if(N.steps.length)steps.push(H('Čitatel (nad hlavní čarou)'),...N.steps);
     if(D.steps.length)steps.push(H('Jmenovatel (pod hlavní čarou)'),...D.steps);
     steps.push(H(`Teď máme ${fracH(N.val)} nad čarou a ${fracH(D.val)} pod čarou. Hlavní zlomková čára znamená dělení`),...d.steps);
-    return{kind:'num',fraction:true,ans:d.res,trap:'Počítej zvlášť čitatel (nahoře) a zvlášť jmenovatel (dole), pak vyděl. Výraz nikdy nenásob společným jmenovatelem, to je 0 bodů.',task:'Vypočtěte a výsledek zapište zlomkem v základním tvaru. Na papír piš celý postup.',
+    return{kind:'num',fraction:true,ans:d.res,trap:`Počítej zvlášť čitatel (nahoře) a zvlášť jmenovatel (dole), pak vyděl. ${X('Výraz nikdy nenásob společným jmenovatelem')}, to je 0 bodů.`,task:'Vypočtěte a výsledek zapište zlomkem v základním tvaru. Na papír piš celý postup.',
       prompt:`<span class="fr big"><span>${N.html}</span><span>${D.html}</span></span> =`,steps,plain:`(${N.plain})/(${D.plain})`};
   }
 }
@@ -1303,19 +1311,19 @@ kraceni:{title:'Krácení a převody',
  why:'V úloze 3 musí být výsledek zlomek v základním tvaru. Nezkrácený výsledek nebo výsledek jen jako desetinné číslo stojí bod.',
  traps:['0,5 = 5/10 = 1/2, ne 1/5.','0,05 = 5/100 = 1/20.','Krátit jde jen součin, ne součet: v (2 + 4)/4 nekrať dvojku s čtyřkou.']},
 zlomky:{title:'Zlomky (úloha 3)',
- how:['Desetinná čísla převeď na zlomky (0,3 = 3/10). Se zlomky a desetinnými čísly naráz se nepočítá.','Dodrž pořadí: závorky, mocniny, pak násobení a dělení, nakonec sčítání a odčítání.','Sčítání a odčítání: najdi společný jmenovatel, zlomky rozšiř a sečti jen čitatele.','Násobení: čitatel krát čitatel, jmenovatel krát jmenovatel. Celé číslo násobí jen čitatel. Krátit můžeš i do kříže před násobením.','Dělení: první zlomek nech a vynásob ho převráceným druhým (čitatel a jmenovatel prohodíš).','Výsledek zkrať na základní tvar.'],
+ how:[`Desetinná čísla ${K('převeď na zlomky')} (0,3 = 3/10). Se zlomky a desetinnými čísly naráz se nepočítá.`,'Dodrž pořadí: závorky, mocniny, pak násobení a dělení, nakonec sčítání a odčítání.',`Sčítání a odčítání: najdi společný jmenovatel, zlomky rozšiř a ${K('sečti jen čitatele')}.`,`Násobení: ${K('čitatel krát čitatel, jmenovatel krát jmenovatel')}. Celé číslo násobí jen čitatel. Krátit můžeš i do kříže před násobením.`,`Dělení: první zlomek nech a ${K('vynásob ho převráceným druhým')} (čitatel a jmenovatel prohodíš).`,`Výsledek ${K('zkrať na základní tvar')}.`],
  write:['Piš postupně, každou úpravu za rovnítko nebo na nový řádek začínající „=“. Postup musí jít přečíst krok po kroku.','Záporný zlomek piš s mínusem před zlomkovou čarou: −7/8.','Výsledek nech jako zlomek v základním tvaru, klidně i nepravý (19/6). Na smíšené číslo převádět nemusíš a chyba při převodu by stála bod.'],
  full:['Správný výsledek v základním tvaru a správný postup: 2 body (u úlohy jen na výsledek 1 bod).'],
  minus:['Výsledek není zkrácený na základní tvar.','Výsledek je jen jako desetinné číslo, zlomkem není uvedený nikde.','Jedna početní chyba, třeba 7 · 8 = 54.','Ztracené znaménko mínus.','Správný výsledek, ale po něm ještě chybná úprava (třeba při převodu na smíšené číslo).'],
  zero:['Chybný postup počítání se zlomky, třeba sečtené jmenovatele nebo dělení bez převrácení.','Číselný výraz vynásobený společným jmenovatelem. To se smí jen u rovnice, u výrazu nikdy.','Víc než jedna chyba.','Chybí postup, když ho zadání chce.'],
- traps:['1/2 + 1/3 není 2/5. Jmenovatele se nikdy nesčítají.','Při dělení se obrací jen druhý zlomek.','2 · 3/4 = 6/4, ne 6/8. Celé číslo násobí jen čitatel.','Násobení má přednost před sčítáním, nepočítej zleva doprava.']},
+ traps:[`1/2 + 1/3 ${X('není 2/5')}. Jmenovatele se nikdy nesčítají.`,`Při dělení se obrací ${X('jen druhý zlomek')}.`,`2 · 3/4 = 6/4, ${X('ne 6/8')}. Celé číslo násobí jen čitatel.`,`Násobení má přednost před sčítáním, ${X('nepočítej zleva doprava')}.`]},
 slozene:{title:'Složené zlomky (úloha 3)',
- how:['Najdi hlavní zlomkovou čáru: je nejdelší a je na úrovni rovnítka.','Spočítej zvlášť všechno nad ní (čitatel) až na jeden zlomek.','Spočítej zvlášť všechno pod ní (jmenovatel) až na jeden zlomek.','Hlavní čára znamená dělení: čitatel vynásob převráceným jmenovatelem.','Výsledek zkrať.'],
+ how:['Najdi hlavní zlomkovou čáru: je nejdelší a je na úrovni rovnítka.',`Spočítej ${K('zvlášť')} všechno nad ní (čitatel) až na jeden zlomek.`,`Spočítej ${K('zvlášť')} všechno pod ní (jmenovatel) až na jeden zlomek.`,`${K('Hlavní čára znamená dělení')}: čitatel vynásob převráceným jmenovatelem.`,'Výsledek zkrať.'],
  write:['Můžeš přepisovat celý složený zlomek a postupně zjednodušovat nahoře i dole, nebo spočítat čitatel a jmenovatel zvlášť a pak napsat jejich podíl. Obojí je správně, hlavně ať jde postup sledovat.','Výsledek: zlomek v základním tvaru, záporný s mínusem před zlomkem.'],
  full:['Správný výsledek v základním tvaru a správný postup: 2 body.'],
  minus:['Výsledek není zkrácený.','Jedna početní chyba.','Chybná úprava až po správném výsledku.'],
  zero:['Celý výraz vynásobený společným jmenovatelem, aby „zmizely zlomky“. U výrazu se to nesmí, to je 0 bodů.','Chybný postup se zlomky.','Víc než jedna chyba.'],
- traps:['Neplete se ti hlavní čára s menšími zlomkovými čarami?','Desetinné číslo ve jmenovateli (0,3) převeď na zlomek 3/10 a pak ho převrať: dělit 3/10 je násobit 10/3.','Dělení záporným číslem dá záporný výsledek, pokud je čitatel kladný.']},
+ traps:[`Neplete se ti ${X('hlavní čára')} s menšími zlomkovými čarami?`,`Desetinné číslo ve jmenovateli (0,3) převeď na zlomek 3/10 a pak ho převrať: ${X('dělit 3/10 je násobit 10/3')}.`,`Dělení záporným číslem dá ${X('záporný výsledek')}, pokud je čitatel kladný.`]},
 desetinna:{title:'Desetinná čísla',
  how:['Pořadí: závorky, pak násobení a dělení, nakonec sčítání a odčítání.','Násobení: násob jako celá čísla a ve výsledku odděl tolik desetinných míst, kolik jich mají obě čísla dohromady (0,4 · 0,3 = 0,12).','Dělení desetinným číslem: posuň desetinnou čárku u obou čísel o stejný počet míst doprava, až je dělitel celé číslo (1,2 : 0,3 = 12 : 3 = 4).','Sčítání a odčítání: čísla pod sebe, čárka pod čárkou.'],
  write:['Mezivýsledky piš, ať je vidět pořadí operací.'],
@@ -1646,7 +1654,7 @@ const VIEWS=['trenink','list','chyby','pruvodce','prehled'];
 function renderGuides(){
   const g=GUIDE_GENERAL;let h=`<div class="gen"><h3>${g.title}</h3><ul>${g.items.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="glist">`;
   Object.keys(GUIDES).forEach(k=>{h+=`<details><summary>${GUIDES[k].title}</summary><div class="gbody">${guideHTML(GUIDES[k],'')}</div></details>`});
-  setHTML($('pruvodceOut'),h+'</div><p class="note">Bodování vychází z klíčů správných řešení CERMATu z let 2023 až 2025. Body se mohou u konkrétní úlohy lišit, rozhoduje vždy zadání a klíč.</p>');
+  setHTML($('pruvodceOut'),`<p class="note">V postupech a tipech: ${K('zvýrazněné')} je pravidlo, ${N('modře')} co je v kroku nové, ${X('červeně')} pozor na chybu.</p>`+h+'</div><p class="note">Bodování vychází z klíčů správných řešení CERMATu z let 2023 až 2025. Body se mohou u konkrétní úlohy lišit, rozhoduje vždy zadání a klíč.</p>');
 }
 function route(){
   const h=(location.hash||'').slice(1);const v=VIEWS.includes(h)?h:'trenink';
