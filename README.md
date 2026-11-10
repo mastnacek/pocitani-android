@@ -3,6 +3,15 @@
 Tenký obal (WebView) kolem `app/src/main/assets/index.html`. Vše běží v telefonu,
 internet je potřeba jen pro vysvětlování přes OpenRouter (a pro webové fonty; bez nich se použijí systémové).
 
+## Jak to vypadá
+Snímky z telefonu (verze 1.7).
+
+| Trénink | Příklad | Za co jsou body |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/01-trenink.png" width="240" alt="Výběr tématu a obtížnosti"> | <img src="docs/screenshots/02-priklad.png" width="240" alt="Příklad na čtverečkovaném papíře"> | <img src="docs/screenshots/03-bodovani.png" width="240" alt="Bodování podle klíče Cermatu"> |
+| **Pracovní list** | **Průvodce** | |
+| <img src="docs/screenshots/04-pracovni-list.png" width="240" alt="Pracovní list k vytištění"> | <img src="docs/screenshots/05-pruvodce.png" width="240" alt="Jak přijímačky fungují"> | |
+
 ## Build
 1. `cp local.properties.example local.properties` a doplň `sdk.dir`, `OPENROUTER_KEY`, `OPENROUTER_MODEL`.
 2. Otevři v Android Studiu (vygeneruje Gradle wrapper), nebo `gradle wrapper && ./gradlew assembleRelease`.
