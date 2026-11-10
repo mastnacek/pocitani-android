@@ -140,6 +140,33 @@ nav.tabs a .badge[hidden]{display:none}
 .btn.go{background:var(--green);border-color:var(--green);color:var(--paper);animation:go-pulse 1.8s ease-in-out infinite}
 @keyframes go-pulse{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--green) 55%,transparent)}50%{box-shadow:0 0 0 9px color-mix(in srgb,var(--green) 0%,transparent)}}
 @media (prefers-reduced-motion:reduce){.btn.go{animation:none}}
+/* jemné odměny (bez sérií dní a bodů): učitelská fajfka na okraji, zelená odpověď,
+   postup odkrývaný krok za krokem, razítko po sérii, puntíky série, fajfka u zvládnutého tématu */
+.tick{position:absolute;left:5px;width:34px;height:32px;color:var(--red);pointer-events:none}
+.tick svg{width:100%;height:100%;display:block;overflow:visible}
+.tick path{fill:none;stroke:currentColor;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:44;stroke-dashoffset:0}
+@media (max-width:560px){.tick{left:-2px;width:24px;height:23px}}
+.answer input{transition:border-color .3s,color .3s}
+.answer.ok input{border-bottom-color:var(--green);color:var(--green)}
+.dots{display:inline-flex;gap:5px;align-items:center;vertical-align:middle}
+.dots span{width:9px;height:9px;border-radius:50%;border:1.5px solid var(--line);box-sizing:border-box}
+.dots span.d{background:var(--pen);border-color:var(--pen)}
+.dots span.c{border-color:var(--pen);box-shadow:0 0 0 2px var(--pen-soft)}
+.stamp{display:inline-block;vertical-align:middle;margin-left:14px;padding:2px 12px;font-family:var(--ui);border:3px solid currentColor;border-radius:8px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:1.05rem;line-height:1.6;color:var(--pen);transform:rotate(-8deg);opacity:.85;pointer-events:none}
+.stamp.s1{color:var(--green)}
+.mast{color:var(--green);font-weight:800}
+.chip[aria-pressed="true"] .mast{color:inherit}
+@media (prefers-reduced-motion:no-preference){
+  .tick.draw path{animation:tickDraw .45s ease-out both}
+  @keyframes tickDraw{from{stroke-dashoffset:44}to{stroke-dashoffset:0}}
+  .answer.nudge{animation:nudge .35s ease-in-out}
+  @keyframes nudge{0%,100%{transform:none}25%{transform:translateX(-4px)}50%{transform:translateX(4px)}75%{transform:translateX(-2px)}}
+  .steps.rev .stp>li,.steps.rev .result{animation:stepIn .32s ease-out both}
+  @keyframes stepIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .stamp{animation:stampIn .45s .15s ease-out both}
+  @keyframes stampIn{0%{opacity:0;transform:scale(1.8) rotate(-8deg)}70%{opacity:.9;transform:scale(.95) rotate(-8deg)}100%{opacity:.85;transform:scale(1) rotate(-8deg)}}
+}
+@media print{.tick,.stamp{animation:none}}
 @media print{.btn.go{animation:none}}
 .note{color:var(--muted);font-size:.92rem;max-width:62ch}
 details.guide{margin:-4px 0 14px;background:var(--paper);border:1.5px solid var(--line);border-radius:8px}
@@ -290,6 +317,7 @@ details.guide[open]>summary::before{content:"▾ ";}
       <button data-level="1">Základ</button><button data-level="2">Jako u přijímaček</button>
     </div>
     <article class="sheet" id="sheet">
+      <span class="tick" id="tick" aria-hidden="true" hidden><svg viewBox="0 0 30 28"><path d="M4 15 L11.5 22.5 L26 5"/></svg></span>
       <div class="sheet-head"><span><b id="tName"></b> <span id="tRef"></span></span><span id="tSrc"></span></div>
       <p class="task" id="task"></p>
       <details class="guide" id="guide"><summary>Jak na to a za co jsou body</summary><div class="gbody" id="guideBody"></div></details>
@@ -1430,6 +1458,7 @@ function renderChips(el,set,onChange,multi){
   TOPICS.forEach((t,i)=>{
     if(!i||TOPICS[i-1].g!==t.g){const h=document.createElement('span');h.className='grp';h.textContent=TOPIC_GROUPS[t.g];el.appendChild(h)}
     const b=document.createElement('button');b.className='chip';b.type='button';b.dataset.id=t.id;b.textContent=`${i+1}. ${t.name}`;b.setAttribute('aria-pressed',set.has(t.id));
+    if(isMastered(store.stats[t.id])){const m=document.createElement('span');m.className='mast';m.textContent=' ✓';m.title='zvládnuto (aspoň 80 % napoprvé)';b.appendChild(m)}
     b.onclick=()=>{if(multi&&!multi()){if(set.size===1&&set.has(t.id))return;set.clear();set.add(t.id)}else if(set.has(t.id)){if(set.size>1)set.delete(t.id)}else set.add(t.id);el.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',set.has(c.dataset.id)));onChange()};
     el.appendChild(b)});
 }
@@ -1445,7 +1474,8 @@ function newProblem(fromMistake){
   state.cur=p;state.attempts=0;state.counted=false;state.solved=false;state.shown=false;
   const t=TOPICS.find(x=>x.id===p.topic);
   $('tName').textContent=t.name;$('tRef').textContent=t.ref;
-  $('tSrc').textContent=fromMistake?'ze sešitu chyb':`příklad ${state.series.i} z ${SERIES}`;
+  if(fromMistake)$('tSrc').textContent='ze sešitu chyb';else renderDots(false);
+  $('tick').hidden=true;$('answer').classList.remove('ok','nudge');
   state.lastAnswer='';state.chat=[];$('ask').hidden=true;$('thread').replaceChildren();$('askIn').value='';
   $('nextBtn').textContent=(!fromMistake&&state.series.i>=SERIES)?'Ukázat výsledek série':'Další příklad';
   $('task').textContent=p.task;
@@ -1468,11 +1498,25 @@ function newProblem(fromMistake){
   $('checkBtn').disabled=false;$('showBtn').disabled=false;$('nextBtn').classList.remove('go');
   setTimeout(()=>first.focus({preventScroll:true}),0);
 }
+// puntíky série: hotové plné, aktuální obtažený, další prázdné (chyby se nebarví)
+function renderDots(doneCur){
+  const el=$('tSrc');el.replaceChildren();const w=document.createElement('span');w.className='dots';
+  w.setAttribute('role','img');w.setAttribute('aria-label',`příklad ${state.series.i} z ${SERIES}`);
+  for(let i=1;i<=SERIES;i++){const d=document.createElement('span');if(i<state.series.i||(i===state.series.i&&doneCur))d.className='d';else if(i===state.series.i)d.className='c';w.appendChild(d)}
+  el.appendChild(w);
+}
+// učitelská fajfka na okraji listu u řádku s odpovědí
+function showTick(){
+  const t=$('tick'),a=$('answer');t.hidden=false;
+  t.style.top=Math.round(a.offsetTop+a.offsetHeight/2-t.offsetHeight/2)+'px';
+  t.classList.remove('draw');void t.offsetWidth;t.classList.add('draw');
+}
 function insertAt(inp,txt){const s=inp.selectionStart??inp.value.length,e=inp.selectionEnd??inp.value.length;inp.value=inp.value.slice(0,s)+txt+inp.value.slice(e);inp.focus();inp.selectionStart=inp.selectionEnd=s+txt.length}
 function record(ok){
   if(state.counted)return;state.counted=true;
-  const p=state.cur;const s=store.stats[p.topic]||(store.stats[p.topic]={ok:0,n:0});s.n++;if(ok)s.ok++;
+  const p=state.cur;const s=store.stats[p.topic]||(store.stats[p.topic]={ok:0,n:0});const wasM=isMastered(s);s.n++;if(ok)s.ok++;
   s.last=Date.now();s.r=((s.r||'')+(ok?'1':'0')).slice(-20); // posledních 20 prvních pokusů: ukazuje, jak to jde teď
+  if(isMastered(s)!==wasM)renderTopicChips();
   const d=today();const day=store.days[d]||(store.days[d]={ok:0,n:0});day.n++;if(ok)day.ok++;
   if(!state.fromMistake&&ok)state.series.ok++;
   if(state.fromMistake&&ok){store.mistakes=store.mistakes.filter(m=>m.id!==p.id)}
@@ -1490,10 +1534,12 @@ function doCheck(){
     record(true);state.solved=true;
     fb.className='fb ok';fb.textContent=state.attempts===1&&!state.shown?'Správně.':'Správně, tentokrát napodruhé. Do statistiky se počítá první pokus.';
     if(state.fromMistake&&state.attempts===1&&!state.shown)fb.textContent='Správně. Příklad jsem vyřadil ze sešitu chyb.';
+    $('answer').classList.add('ok');showTick();
     showSteps('Porovnej se svým postupem');
     $('checkBtn').disabled=true;$('nextBtn').classList.add('go');$('nextBtn').focus();
   }else{
     record(false);
+    const an=$('answer');an.classList.remove('nudge');void an.offsetWidth;an.classList.add('nudge');
     fb.className='fb bad';fb.textContent=r.msg+(r.near?'':' Zkus to znovu, nebo si ukaž postup.');
     if(p.trap){const tip=document.createElement('div');tip.className='fbtip';setHTML(tip,'<b>Tip:</b> '+p.trap);fb.appendChild(tip)}
   }
@@ -1502,12 +1548,17 @@ function showSteps(title){
   const p=state.cur;const box=$('steps');
   setHTML(box,`<h3>${title}</h3><ol class="stp">${p.steps.map(stepHTML).join('')}</ol><p class="result"><b>Výsledek:</b> ${p.solH}</p>`);
   box.hidden=false;
+  // kroky naskočí postupně, jako by je někdo psal
+  box.classList.remove('rev');void box.offsetWidth;box.classList.add('rev');
+  box.querySelectorAll('.stp>li,.result').forEach((li,i)=>li.style.animationDelay=Math.min(i*70,1000)+'ms');
+  if(!state.fromMistake)renderDots(true);
   showAsk();
 }
 function showSummary(){
   const s=state.series;$('sheet').hidden=true;const el=$('summary');el.hidden=false;
   const msg=s.ok===SERIES?'Celá série bez chyby.':(s.ok>=SERIES*0.7?'Dobrá série. Chyby najdeš v sešitu chyb.':'Tohle téma chce ještě trénink. Projdi si sešit chyb a zkus další sérii.');
-  setHTML(el,`<h2>Série hotová</h2><p class="big">${s.ok} z ${SERIES}</p><p>správně napoprvé. ${msg}</p><div class="actions"><button class="btn" id="againBtn" type="button">Další série</button><a class="btn ghost" href="#chyby" style="text-decoration:none">Sešit chyb</a></div>`);
+  const st=s.ok===SERIES?['s1','Výborně']:(s.ok>=SERIES*0.7?['s2','Dobrá práce']:['s3','Pokračuj']);
+  setHTML(el,`<h2>Série hotová</h2><p class="big">${s.ok} z ${SERIES}<span class="stamp ${st[0]}" aria-hidden="true">${st[1]}</span></p><p>správně napoprvé. ${msg}</p><div class="actions"><button class="btn" id="againBtn" type="button">Další série</button><a class="btn ghost" href="#chyby" style="text-decoration:none">Sešit chyb</a></div>`);
   $('againBtn').onclick=()=>{state.series={i:0,ok:0};newProblem()};$('againBtn').focus();
 }
 function resetSeries(){state.series={i:0,ok:0};newProblem()}
@@ -1632,6 +1683,8 @@ function renderMistakes(){
 // ---------- stats ----------
 // úspěšnost posledních (až) 20 prvních pokusů; starší data bez historie berou celkový poměr
 const recentPc=s=>s.r&&s.r.length?Math.round(100*[...s.r].filter(c=>c==='1').length/s.r.length):(s.n?Math.round(100*s.ok/s.n):0);
+// téma je zvládnuté: aspoň 10 příkladů a z posledních 20 aspoň 80 % napoprvé
+function isMastered(s){return !!s&&s.n>=10&&recentPc(s)>=80}
 function daysAgo(ts){if(!ts)return null;const a=new Date(),b=new Date(ts);a.setHours(0,0,0,0);b.setHours(0,0,0,0);return Math.round((a-b)/864e5)}
 const agoTxt=n=>n===null?'zatím necvičeno':n<=0?'cvičeno dnes':n===1?'cvičeno včera':`cvičeno před ${n} dny`;
 function renderStats(){
@@ -1639,7 +1692,7 @@ function renderStats(){
   let rows='';
   TOPICS.forEach((t,i)=>{const s=st(t.id),pc=recentPc(s);
     if(!i||TOPICS[i-1].g!==t.g)rows+=`<tr class="grp"><td colspan="4">${TOPIC_GROUPS[t.g]}</td></tr>`;
-    rows+=`<tr><td>${i+1}. ${t.name}<small>${agoTxt(daysAgo(s.last))}</small></td><td>${s.n}</td><td>${s.n?pc+' %':'–'}</td><td><div class="bar" role="img" aria-label="${pc} procent"><span style="width:${pc}%"></span></div></td></tr>`});
+    rows+=`<tr><td>${i+1}. ${t.name}${isMastered(s)?' <span class="mast" title="zvládnuto">✓</span>':''}<small>${agoTxt(daysAgo(s.last))}</small></td><td>${s.n}</td><td>${s.n?pc+' %':'–'}</td><td><div class="bar" role="img" aria-label="${pc} procent"><span style="width:${pc}%"></span></div></td></tr>`});
   // doporučení bez zamykání: první téma v pořadí, které ještě nejde, a nejdéle necvičené zvládnuté téma
   const nextI=TOPICS.findIndex(t=>{const s=st(t.id);return s.n<10||recentPc(s)<80});
   const stale=TOPICS.map((t,i)=>({t,i,d:daysAgo(st(t.id).last)})).filter(x=>st(x.t.id).n>=10&&x.d!==null&&x.d>=7).sort((a,b)=>b.d-a.d)[0];
