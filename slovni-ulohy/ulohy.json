@@ -1,0 +1,4245 @@
+[
+ {
+  "id": 1,
+  "typ": "součet a rozdíl",
+  "vzor": "9C/2024 úl. 1",
+  "text": "Obce Lipová a Javorník mají dohromady 3 480 obyvatel. Lipová má o 620 obyvatel více než Javorník.",
+  "otazka": "Kolik obyvatel má Javorník?",
+  "nezname": {
+   "j": [
+    0,
+    3480
+   ]
+  },
+  "pomocne": {
+   "l": "j+620"
+  },
+  "podminky": [
+   "j+l=3480"
+  ],
+  "celociselne": [
+   "j"
+  ],
+  "odpoved": {
+   "vyraz": "j",
+   "hodnota": 1430,
+   "jednotka": "obyvatel"
+  },
+  "reseni": {
+   "j": 1430
+  },
+  "moznosti": {
+   "A": 2860,
+   "B": 1430,
+   "C": 1740,
+   "D": 2050,
+   "E": "jiný výsledek"
+  },
+  "spravne": "B",
+  "postup": [
+   {
+    "text": "Kdyby měly obě obce stejně obyvatel jako Javorník, měly by dohromady o 620 méně.",
+    "vypocet": "3480-620",
+    "vysledek": 2860
+   },
+   {
+    "text": "Tento zbytek rozdělíme rovným dílem mezi obě obce, čímž získáme počet obyvatel Javorníku.",
+    "vypocet": "2860/2",
+    "vysledek": 1430
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "3480-620",
+    "popis": "Odečten pouze rozdíl 620 obyvatel bez následného rozdělení zbytku dvěma.",
+    "rada": "Číslo 2 860 představuje obyvatele obou obcí bez přebytku Lipové. Rozděl tento zbytek ještě dvěma: 2 860 / 2 = 1 430.",
+    "podtrhnout": "mají dohromady 3 480 obyvatel"
+   },
+   "C": {
+    "vypocet": "3480/2",
+    "popis": "Rozdělení celkového počtu obyvatel napůl bez zohlednění rozdílu mezi obcemi.",
+    "rada": "Obce nemají stejný počet obyvatel. Nejdříve odečti rozdíl 620 a teprve zbytek děl dvěma: (3 480 - 620) / 2 = 1 430.",
+    "podtrhnout": "Lipová má o 620 obyvatel více než Javorník"
+   },
+   "D": {
+    "vypocet": "(3480+620)/2",
+    "popis": "Spočítán počet obyvatel Lipové místo Javorníku.",
+    "rada": "Pozor, otázka se ptá na Javorník. Lipová má 2 050 obyvatel, Javorník má o 620 méně: 2 050 - 620 = 1 430 obyvatel.",
+    "podtrhnout": "Kolik obyvatel má Javorník?"
+   }
+  }
+ },
+ {
+  "id": 2,
+  "typ": "součet a rozdíl",
+  "vzor": "9C/2024 úl. 1",
+  "text": "{o1} a {o2} mají dohromady 96 sběratelských kartiček. {o1} má třikrát více kartiček než {o2}.",
+  "otazka": "Kolik kartiček má {o1}?",
+  "nezname": {
+   "o": [
+    0,
+    96
+   ]
+  },
+  "pomocne": {
+   "m": "3*o"
+  },
+  "podminky": [
+   "m+o=96"
+  ],
+  "celociselne": [
+   "o"
+  ],
+  "odpoved": {
+   "vyraz": "m",
+   "hodnota": 72,
+   "jednotka": "kartiček"
+  },
+  "reseni": {
+   "o": 24
+  },
+  "moznosti": {
+   "A": 24,
+   "B": 32,
+   "C": 64,
+   "D": 72,
+   "E": "jiný výsledek"
+  },
+  "spravne": "D",
+  "postup": [
+   {
+    "text": "{o2} má 1 díl a {o1} 3 díly, dohromady mají 4 stejné díly.",
+    "vypocet": "1+3",
+    "vysledek": 4
+   },
+   {
+    "text": "Jeden díl je to, co má {o2}. Vypočítáme ho vydělením celkového počtu čtyřmi.",
+    "vypocet": "96/4",
+    "vysledek": 24
+   },
+   {
+    "text": "{o1} má 3 díly, takže jeden díl vynásobíme třemi.",
+    "vypocet": "24*3",
+    "vysledek": 72
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "osoby": {
+   "o1": {
+    "rod": "m",
+    "jmeno": "Martin"
+   },
+   "o2": {
+    "rod": "m",
+    "jmeno": "Ondra"
+   }
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "96/(1+3)",
+    "popis": "Spočítán počet kartiček, které má {o2}, a ne ten, na který se ptá otázka.",
+    "rada": "Pozor, otázka se ptá na to, kolik kartiček má {o1}. {o2} má 24 kartiček, {o1} má třikrát více: 24 * 3 = 72 kartiček.",
+    "podtrhnout": "Kolik kartiček má {o1}?"
+   },
+   "B": {
+    "vypocet": "96/3",
+    "popis": "Vydělení celkového počtu kartiček třemi místo čtyřmi díly.",
+    "rada": "{o1} má třikrát více kartiček než {o2}, celkový počet se tedy dělí na 1 + 3 = 4 díly. Jeden díl je 96 / 4 = 24 kartiček.",
+    "podtrhnout": "{o1} má třikrát více kartiček než {o2}"
+   },
+   "C": {
+    "vypocet": "96-96/3",
+    "popis": "Chybné použití poměru 2 : 1 místo 3 : 1.",
+    "rada": "{o1} má třikrát více kartiček než {o2}, poměr je tedy 3 : 1 (celkem 4 díly). {o1} má 3 * 24 = 72 kartiček.",
+    "podtrhnout": "{o1} má třikrát více kartiček než {o2}"
+   }
+  }
+ },
+ {
+  "id": 3,
+  "typ": "součet a rozdíl",
+  "vzor": "9C/2024 úl. 1",
+  "text": "Na školní výlet jelo 54 žáků. Dívek bylo o 8 méně než chlapců.",
+  "otazka": "Kolik dívek jelo na výlet?",
+  "nezname": {
+   "d": [
+    0,
+    54
+   ]
+  },
+  "pomocne": {
+   "ch": "d+8"
+  },
+  "podminky": [
+   "d+ch=54"
+  ],
+  "celociselne": [
+   "d"
+  ],
+  "odpoved": {
+   "vyraz": "d",
+   "hodnota": 23,
+   "jednotka": "dívek"
+  },
+  "reseni": {
+   "d": 23
+  },
+  "moznosti": {
+   "A": 23,
+   "B": 27,
+   "C": 31,
+   "D": 46,
+   "E": "jiný výsledek"
+  },
+  "spravne": "A",
+  "postup": [
+   {
+    "text": "Kdyby bylo chlapců stejně jako dívek, jelo by o 8 žáků méně.",
+    "vypocet": "54-8",
+    "vysledek": 46
+   },
+   {
+    "text": "Tento počet rozdělíme na dvě stejné části, čímž získáme počet dívek.",
+    "vypocet": "46/2",
+    "vysledek": 23
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "B": {
+    "vypocet": "54/2",
+    "popis": "Rozdělení celkového počtu žáků na dvě stejné poloviny bez zohlednění rozdílu.",
+    "rada": "Dívek a chlapců nejelo stejně. Nejdříve odečti rozdíl 8 a teprve zbytek děl dvěma: (54 - 8) / 2 = 23.",
+    "podtrhnout": "Dívek bylo o 8 méně než chlapců"
+   },
+   "C": {
+    "vypocet": "(54+8)/2",
+    "popis": "Spočítán počet chlapců místo počtu dívek.",
+    "rada": "Pozor, otázka se ptá na dívky. Číslo 31 představuje chlapce, dívek jelo o 8 méně: 31 - 8 = 23.",
+    "podtrhnout": "Kolik dívek jelo na výlet?"
+   },
+   "D": {
+    "vypocet": "54-8",
+    "popis": "Odečten pouze rozdíl 8 od celku bez následného rozdělení dvěma.",
+    "rada": "Číslo 46 představuje žáky bez rozdílu. Rozděl tento zbytek rovným dílem: 46 / 2 = 23.",
+    "podtrhnout": "Na školní výlet jelo 54 žáků"
+   }
+  }
+ },
+ {
+  "id": 4,
+  "typ": "součet a rozdíl",
+  "vzor": "9C/2024 úl. 1",
+  "text": "Kniha a sešit stojí dohromady 268 Kč. Kniha je o 196 Kč dražší než sešit.",
+  "otazka": "Kolik korun stojí sešit?",
+  "nezname": {
+   "s": [
+    0,
+    268
+   ]
+  },
+  "pomocne": {
+   "k": "s+196"
+  },
+  "podminky": [
+   "s+k=268"
+  ],
+  "celociselne": [
+   "s"
+  ],
+  "odpoved": {
+   "vyraz": "s",
+   "hodnota": 36,
+   "jednotka": "Kč"
+  },
+  "reseni": {
+   "s": 36
+  },
+  "moznosti": {
+   "A": 36,
+   "B": 72,
+   "C": 134,
+   "D": 232,
+   "E": "jiný výsledek"
+  },
+  "spravne": "A",
+  "postup": [
+   {
+    "text": "Od celkové ceny odečteme rozdíl, čímž získáme cenu odpovídající dvěma sešitům.",
+    "vypocet": "268-196",
+    "vysledek": 72
+   },
+   {
+    "text": "Cenu dvou sešitů vydělíme dvěma, abychom dostali cenu jednoho sešitu.",
+    "vypocet": "72/2",
+    "vysledek": 36
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "B": {
+    "vypocet": "268-196",
+    "popis": "Odečten pouze cenový rozdíl bez následného dělení dvěma.",
+    "rada": "Částka 72 Kč odpovídá ceně dvou sešitů. Rozděl ji dvěma: 72 / 2 = 36 Kč.",
+    "podtrhnout": "Kniha a sešit stojí dohromady 268 Kč"
+   },
+   "C": {
+    "vypocet": "268/2",
+    "popis": "Rozdělení celkové ceny napůl bez zohlednění rozdílu mezi knihou a sešitem.",
+    "rada": "Kniha a sešit nestojí stejně. Nejdříve odečti rozdíl 196 Kč a teprve zbytek děl dvěma: (268 - 196) / 2 = 36 Kč.",
+    "podtrhnout": "Kniha je o 196 Kč dražší než sešit"
+   },
+   "D": {
+    "vypocet": "(268+196)/2",
+    "popis": "Spočítána cena knihy místo ceny sešitu.",
+    "rada": "Pozor, otázka se ptá na sešit. Kniha stojí 232 Kč, sešit je o 196 Kč levnější: 232 - 196 = 36 Kč.",
+    "podtrhnout": "Kolik korun stojí sešit?"
+   }
+  }
+ },
+ {
+  "id": 5,
+  "typ": "součet a rozdíl",
+  "vzor": "9C/2024 úl. 1",
+  "text": "{o1}, {o2} a {o3} mají dohromady 160 Kč. {o1} má o 20 Kč více než {o2} a {o3} má dvakrát více než {o2}.",
+  "otazka": "Kolik korun má {o3}?",
+  "nezname": {
+   "e": [
+    0,
+    160
+   ]
+  },
+  "pomocne": {
+   "j": "e+20",
+   "l": "2*e"
+  },
+  "podminky": [
+   "e+j+l=160"
+  ],
+  "celociselne": [
+   "e"
+  ],
+  "odpoved": {
+   "vyraz": "l",
+   "hodnota": 70,
+   "jednotka": "Kč"
+  },
+  "reseni": {
+   "e": 35
+  },
+  "moznosti": {
+   "A": 35,
+   "B": 55,
+   "C": 70,
+   "D": 80,
+   "E": "jiný výsledek"
+  },
+  "spravne": "C",
+  "postup": [
+   {
+    "text": "Kdyby {o1} neměla o 20 Kč více, měly by dívky celkem 4 stejné díly.",
+    "vypocet": "160-20",
+    "vysledek": 140
+   },
+   {
+    "text": "Jeden díl je částka, kterou má {o2}. Vypočítáme ji vydělením čtyřmi.",
+    "vypocet": "140/4",
+    "vysledek": 35
+   },
+   {
+    "text": "{o3} má dvakrát více než {o2}, tedy 2 díly.",
+    "vypocet": "35*2",
+    "vysledek": 70
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "osoby": {
+   "o1": {
+    "rod": "f",
+    "jmeno": "Jana"
+   },
+   "o2": {
+    "rod": "f",
+    "jmeno": "Eva"
+   },
+   "o3": {
+    "rod": "f",
+    "jmeno": "Lucie"
+   }
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "(160-20)/4",
+    "popis": "Spočítána částka, kterou má {o2}, a ne ta, na kterou se ptá otázka.",
+    "rada": "Pozor, otázka se ptá na to, kolik korun má {o3}. {o2} má 35 Kč, ale {o3} má dvakrát tolik: 35 * 2 = 70 Kč.",
+    "podtrhnout": "Kolik korun má {o3}?"
+   },
+   "B": {
+    "vypocet": "(160-20)/4+20",
+    "popis": "Spočítána částka, kterou má {o1}, a ne ta, na kterou se ptá otázka.",
+    "rada": "Pozor, částku 55 Kč má {o1}. Otázka se ptá, kolik má {o3}. {o3} má dvakrát tolik co {o2}: 2 * 35 = 70 Kč.",
+    "podtrhnout": "Kolik korun má {o3}?"
+   },
+   "D": {
+    "vypocet": "160/2",
+    "popis": "Předpoklad, že {o3} má polovinu všech peněz.",
+    "rada": "{o3} má dvakrát více než {o2}, nikoli polovinu z celku 160 Kč. Správná částka je 70 Kč.",
+    "podtrhnout": "{o3} má dvakrát více než {o2}"
+   }
+  }
+ },
+ {
+  "id": 6,
+  "typ": "poměr",
+  "vzor": "9D/2023 úl. 1",
+  "text": "Hmotnosti dvou balíků jsou v poměru 2 : 7 a liší se o 1,5 kg.",
+  "otazka": "Kolik kilogramů váží těžší balík?",
+  "nezname": {
+   "k": [
+    1,
+    5000
+   ]
+  },
+  "pomocne": {
+   "lehci": "2*k",
+   "tezsi": "7*k"
+  },
+  "podminky": [
+   "tezsi-lehci=1500"
+  ],
+  "celociselne": [
+   "k"
+  ],
+  "odpoved": {
+   "vyraz": "tezsi/1000",
+   "hodnota": 2.1,
+   "jednotka": "kg"
+  },
+  "reseni": {
+   "k": 300
+  },
+  "moznosti": {
+   "A": 0.6,
+   "B": 1.5,
+   "C": 2.1,
+   "D": 2.7,
+   "E": "jiný výsledek"
+  },
+  "spravne": "C",
+  "postup": [
+   {
+    "text": "Rozdíl v poměru je 7 - 2 = 5 dílů, což odpovídá 1,5 kg.",
+    "vypocet": "7-2",
+    "vysledek": 5
+   },
+   {
+    "text": "Jeden díl poměru vypočítáme vydělením rozdílu 5 díly.",
+    "vypocet": "1.5/5",
+    "vysledek": 0.3
+   },
+   {
+    "text": "Těžší balík má 7 dílů.",
+    "vypocet": "7*0.3",
+    "vysledek": 2.1
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "1.5/(7-2)*2",
+    "popis": "Spočítána hmotnost lehčího balíku místo těžšího.",
+    "rada": "Pozor, otázka se ptá na těžší balík. Lehčí balík váží 0,6 kg (2 díly), těžší balík má 7 dílů: 7 * 0,3 = 2,1 kg.",
+    "podtrhnout": "Kolik kilogramů váží těžší balík?"
+   },
+   "B": {
+    "vypocet": "1.5",
+    "popis": "Uvedení zadaného rozdílu hmotností místo hledané hmotnosti těžšího balíku.",
+    "rada": "Číslo 1,5 kg je pouze rozdíl mezi balíky. Těžší balík váží 2,1 kg.",
+    "podtrhnout": "liší se o 1,5 kg"
+   },
+   "D": {
+    "vypocet": "1.5/(7-2)*(7+2)",
+    "popis": "Spočítána celková hmotnost obou balíků dohromady místo těžšího balíku.",
+    "rada": "Číslo 2,7 kg je součet obou balíků (9 dílů). Samotný těžší balík má 7 dílů, tedy 7 * 0,3 = 2,1 kg.",
+    "podtrhnout": "Kolik kilogramů váží těžší balík?"
+   }
+  }
+ },
+ {
+  "id": 7,
+  "typ": "poměr",
+  "vzor": "9D/2024 úl. 16.3",
+  "text": "Dědeček rozdělil 4 200 Kč mezi vnuky Adama a Báru v poměru 3 : 4.",
+  "otazka": "Kolik korun dostala Bára?",
+  "nezname": {
+   "k": [
+    1,
+    4200
+   ]
+  },
+  "pomocne": {
+   "a": "3*k",
+   "b": "4*k"
+  },
+  "podminky": [
+   "a+b=4200"
+  ],
+  "celociselne": [
+   "k"
+  ],
+  "odpoved": {
+   "vyraz": "b",
+   "hodnota": 2400,
+   "jednotka": "Kč"
+  },
+  "reseni": {
+   "k": 600
+  },
+  "moznosti": {
+   "A": 1800,
+   "B": 2100,
+   "C": 2400,
+   "D": 600,
+   "E": "jiný výsledek"
+  },
+  "spravne": "C",
+  "postup": [
+   {
+    "text": "Poměr 3 : 4 znamená celkem 3 + 4 = 7 stejných dílů.",
+    "vypocet": "3+4",
+    "vysledek": 7
+   },
+   {
+    "text": "Jeden díl vypočítáme vydělením celkové částky 7 díly.",
+    "vypocet": "4200/7",
+    "vysledek": 600
+   },
+   {
+    "text": "Bára dostala 4 díly.",
+    "vypocet": "4*600",
+    "vysledek": 2400
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "4200/(3+4)*3",
+    "popis": "Spočítána částka pro Adama místo pro Báru.",
+    "rada": "Pozor, otázka se ptá na Báru. Adam dostal 1 800 Kč (3 díly), Bára má 4 díly: 4 * 600 = 2 400 Kč.",
+    "podtrhnout": "Kolik korun dostala Bára?"
+   },
+   "B": {
+    "vypocet": "4200/2",
+    "popis": "Rozdělení částky napůl bez ohledu na zadaný poměr.",
+    "rada": "Peníze se nedělí rovným dílem. Poměr 3 : 4 znamená celkem 7 dílů, Bára dostane 4 * 600 = 2 400 Kč.",
+    "podtrhnout": "v poměru 3 : 4"
+   },
+   "D": {
+    "vypocet": "4200/(3+4)*(4-3)",
+    "popis": "Spočítán pouze rozdíl mezi podíly obou dětí místo částky pro Báru.",
+    "rada": "Částka 600 Kč je hodnota jednoho dílu. Bára má 4 díly, spočítej 4 * 600 = 2 400 Kč.",
+    "podtrhnout": "Kolik korun dostala Bára?"
+   }
+  }
+ },
+ {
+  "id": 8,
+  "typ": "poměr",
+  "vzor": "9D/2023 úl. 1",
+  "text": "V knihovně je poměr českých a cizojazyčných knih 5 : 2. Českých knih je o 450 více než cizojazyčných.",
+  "otazka": "Kolik knih je v knihovně celkem?",
+  "nezname": {
+   "k": [
+    1,
+    1000
+   ]
+  },
+  "pomocne": {
+   "c": "5*k",
+   "z": "2*k"
+  },
+  "podminky": [
+   "c-z=450"
+  ],
+  "celociselne": [
+   "k"
+  ],
+  "odpoved": {
+   "vyraz": "c+z",
+   "hodnota": 1050,
+   "jednotka": "knih"
+  },
+  "reseni": {
+   "k": 150
+  },
+  "moznosti": {
+   "A": 630,
+   "B": 750,
+   "C": 300,
+   "D": 1050,
+   "E": "jiný výsledek"
+  },
+  "spravne": "D",
+  "postup": [
+   {
+    "text": "Rozdíl mezi českými a cizojazyčnými knihami je 5 - 2 = 3 díly.",
+    "vypocet": "5-2",
+    "vysledek": 3
+   },
+   {
+    "text": "Tři díly odpovídají 450 knihám, jeden díl je 450 / 3.",
+    "vypocet": "450/3",
+    "vysledek": 150
+   },
+   {
+    "text": "Knih v knihovně je celkem 5 + 2 = 7 dílů.",
+    "vypocet": "7*150",
+    "vysledek": 1050
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "450/5*(5+2)",
+    "popis": "Záměna rozdílu 450 knih za počet českých knih s dělením 5 díly.",
+    "rada": "Českých knih není 450, ale je jich o 450 více. Rozdílu 5 - 2 = 3 díly odpovídá 450 knih, jeden díl je 150 knih.",
+    "podtrhnout": "Českých knih je o 450 více než cizojazyčných"
+   },
+   "B": {
+    "vypocet": "450/(5-2)*5",
+    "popis": "Spočítán počet českých knih místo celkového počtu knih v knihovně.",
+    "rada": "Pozor, otázka se ptá na všechny knihy celkem. Českých knih je sice 750, ale v knihovně je celkem 7 dílů: 7 * 150 = 1 050 knih.",
+    "podtrhnout": "Kolik knih je v knihovně celkem?"
+   },
+   "C": {
+    "vypocet": "450/(5-2)*2",
+    "popis": "Spočítán počet cizojazyčných knih místo celkového počtu knih.",
+    "rada": "Číslo 300 je počet cizojazyčných knih. Celkem je v knihovně 7 dílů: 7 * 150 = 1 050 knih.",
+    "podtrhnout": "Kolik knih je v knihovně celkem?"
+   }
+  }
+ },
+ {
+  "id": 9,
+  "typ": "poměr",
+  "vzor": "9D/2023 úl. 1",
+  "text": "Na zahradě rostou jabloně, hrušně a švestky v poměru 4 : 3 : 2. Švestek je 14.",
+  "otazka": "Kolik jabloní roste na zahradě?",
+  "nezname": {
+   "k": [
+    1,
+    100
+   ]
+  },
+  "pomocne": {
+   "j": "4*k",
+   "h": "3*k",
+   "s": "2*k"
+  },
+  "podminky": [
+   "s=14"
+  ],
+  "celociselne": [
+   "k"
+  ],
+  "odpoved": {
+   "vyraz": "j",
+   "hodnota": 28,
+   "jednotka": "jabloní"
+  },
+  "reseni": {
+   "k": 7
+  },
+  "moznosti": {
+   "A": 63,
+   "B": 21,
+   "C": 28,
+   "D": 56,
+   "E": "jiný výsledek"
+  },
+  "spravne": "C",
+  "postup": [
+   {
+    "text": "Švestky tvoří 2 díly poměru a je jich 14, jeden díl je 14 / 2.",
+    "vypocet": "14/2",
+    "vysledek": 7
+   },
+   {
+    "text": "Jabloně tvoří 4 díly poměru.",
+    "vypocet": "4*7",
+    "vysledek": 28
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "14/2*(4+3+2)",
+    "popis": "Spočítán celkový počet všech stromů na zahradě místo počtu jabloní.",
+    "rada": "Číslo 63 je součet všech stromů. Jabloně tvoří pouze 4 díly: 4 * 7 = 28.",
+    "podtrhnout": "Kolik jabloní roste na zahradě?"
+   },
+   "B": {
+    "vypocet": "14/2*3",
+    "popis": "Spočítán počet hrušní místo jabloní.",
+    "rada": "Pozor, otázka se ptá na jabloně. Hrušní je 21 (3 díly), jabloně mají 4 díly: 4 * 7 = 28.",
+    "podtrhnout": "Kolik jabloní roste na zahradě?"
+   },
+   "D": {
+    "vypocet": "14*4",
+    "popis": "Záměna počtu švestek za hodnotu jednoho dílu bez vydělení dvěma.",
+    "rada": "Švestek je 14 a odpovídají 2 dílům. Jeden díl je 14 / 2 = 7 stromů, jabloní je 4 * 7 = 28.",
+    "podtrhnout": "Švestek je 14"
+   }
+  }
+ },
+ {
+  "id": 10,
+  "typ": "poměr",
+  "vzor": "9D/2024 úl. 16.3",
+  "text": "Délky stran obdélníku jsou v poměru 3 : 5. Obvod obdélníku je 64 cm.",
+  "otazka": "Jak dlouhá je delší strana obdélníku (v cm)?",
+  "nezname": {
+   "k": [
+    1,
+    100
+   ]
+  },
+  "pomocne": {
+   "a": "3*k",
+   "b": "5*k"
+  },
+  "podminky": [
+   "2*(a+b)=64"
+  ],
+  "celociselne": [
+   "k"
+  ],
+  "odpoved": {
+   "vyraz": "b",
+   "hodnota": 20,
+   "jednotka": "cm"
+  },
+  "reseni": {
+   "k": 4
+  },
+  "moznosti": {
+   "A": 12,
+   "B": 20,
+   "C": 24,
+   "D": 40,
+   "E": "jiný výsledek"
+  },
+  "spravne": "B",
+  "postup": [
+   {
+    "text": "Součet jedné kratší a jedné delší strany je polovina obvodu.",
+    "vypocet": "64/2",
+    "vysledek": 32
+   },
+   {
+    "text": "Strany jsou v poměru 3 : 5, celkem 3 + 5 = 8 dílů.",
+    "vypocet": "3+5",
+    "vysledek": 8
+   },
+   {
+    "text": "Jeden díl má délku 32 / 8 = 4 cm.",
+    "vypocet": "32/8",
+    "vysledek": 4
+   },
+   {
+    "text": "Delší strana má 5 dílů.",
+    "vypocet": "5*4",
+    "vysledek": 20
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "64/(2*(3+5))*3",
+    "popis": "Spočítána délka kratší strany obdélníku místo delší.",
+    "rada": "Délka 12 cm patří kratší straně. Delší strana má 5 dílů: 5 * 4 = 20 cm.",
+    "podtrhnout": "Jak dlouhá je delší strana obdélníku (v cm)?"
+   },
+   "C": {
+    "vypocet": "64/(3+5)*3",
+    "popis": "Dělení celého obvodu 8 díly místo poloviny obvodu s výpočtem kratší strany.",
+    "rada": "Obvod tvoří dvě kratší a dvě delší strany. Polovina obvodu je 32 cm (8 dílů), delší strana má 5 * 4 = 20 cm.",
+    "podtrhnout": "Obvod obdélníku je 64 cm"
+   },
+   "D": {
+    "vypocet": "64/(3+5)*5",
+    "popis": "Vydělení celého obvodu 8 díly a vynásobení 5 bez zohlednění dvou dvojic stran.",
+    "rada": "Obvod obdélníku je 2 * (a + b). Na součet a + b připadá 32 cm, delší strana měří 5 * 4 = 20 cm.",
+    "podtrhnout": "Obvod obdélníku je 64 cm"
+   }
+  }
+ },
+ {
+  "id": 11,
+  "typ": "poměr",
+  "vzor": "9D/2023 úl. 1",
+  "text": "Ovocný nápoj se míchá ze sirupu a vody v poměru 1 : 6. Chceme připravit 21 dl nápoje.",
+  "otazka": "Kolik decilitrů sirupu potřebujeme?",
+  "nezname": {
+   "k": [
+    1,
+    100
+   ]
+  },
+  "pomocne": {
+   "sirup": "k",
+   "voda": "6*k"
+  },
+  "podminky": [
+   "sirup+voda=21"
+  ],
+  "celociselne": [
+   "k"
+  ],
+  "odpoved": {
+   "vyraz": "sirup",
+   "hodnota": 3,
+   "jednotka": "dl"
+  },
+  "reseni": {
+   "k": 3
+  },
+  "moznosti": {
+   "A": 3,
+   "B": 3.5,
+   "C": 15,
+   "D": 18,
+   "E": "jiný výsledek"
+  },
+  "spravne": "A",
+  "postup": [
+   {
+    "text": "Sirup a voda tvoří celkem 1 + 6 = 7 dílů nápoje.",
+    "vypocet": "1+6",
+    "vysledek": 7
+   },
+   {
+    "text": "Jeden díl (objem sirupu) vypočítáme vydělením 21 dl sedmi díly.",
+    "vypocet": "21/7",
+    "vysledek": 3
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "B": {
+    "vypocet": "21/6",
+    "popis": "Dělení celkového objemu 6 díly vody místo 7 díly celého nápoje.",
+    "rada": "Celý nápoj obsahuje sirup i vodu, má tedy 1 + 6 = 7 dílů. Počítej 21 / 7 = 3 dl.",
+    "podtrhnout": "Chceme připravit 21 dl nápoje"
+   },
+   "C": {
+    "vypocet": "21-6",
+    "popis": "Odečtení poměrného čísla 6 od celkového objemu nápoje.",
+    "rada": "Číslo 6 je poměrný díl, ne decilitry. Celý nápoj má 1 + 6 = 7 dílů, sirup tvoří 21 / 7 = 3 dl.",
+    "podtrhnout": "v poměru 1 : 6"
+   },
+   "D": {
+    "vypocet": "21/(1+6)*6",
+    "popis": "Spočítán objem vody místo sirupu.",
+    "rada": "Pozor, otázka se ptá na sirup. Číslo 18 dl je objem vody, sirup tvoří 1 díl: 21 / 7 = 3 dl.",
+    "podtrhnout": "Kolik decilitrů sirupu potřebujeme?"
+   }
+  }
+ },
+ {
+  "id": 12,
+  "typ": "procenta",
+  "vzor": "9D/2024 úl. 2",
+  "text": "Bunda stála 2 400 Kč. Nejdříve ji zlevnili o 20 %, potom novou cenu ještě o 10 %.",
+  "otazka": "Kolik korun stojí bunda teď?",
+  "nezname": {
+   "x": [
+    0,
+    2400
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "x=2400*0.8*0.9"
+  ],
+  "celociselne": [
+   "x"
+  ],
+  "odpoved": {
+   "vyraz": "x",
+   "hodnota": 1728,
+   "jednotka": "Kč"
+  },
+  "reseni": {
+   "x": 1728
+  },
+  "moznosti": {
+   "A": 1680,
+   "B": 1728,
+   "C": 192,
+   "D": 1920,
+   "E": "jiný výsledek"
+  },
+  "spravne": "B",
+  "postup": [
+   {
+    "text": "Po první slevě o 20 % se platí 80 % původní ceny.",
+    "vypocet": "2400*0.8",
+    "vysledek": 1920
+   },
+   {
+    "text": "Druhá sleva o 10 % se počítá z nové ceny, platí se 90 % z 1 920 Kč.",
+    "vypocet": "1920*0.9",
+    "vysledek": 1728
+   },
+   {
+    "text": "Pozor: dvě slevy po sobě se nesčítají. 30 % z 2 400 Kč by dalo špatný výsledek 1 680 Kč."
+   }
+  ],
+  "chyby": {
+   "A": {
+    "vypocet": "2400*0.7",
+    "popis": "Sečtení obou slev na 30 % a jejich odečtení z původní ceny.",
+    "rada": "Druhá sleva se počítá z nové ceny 1 920 Kč, ne z původních 2 400 Kč. Postupné slevy nelze sčítat.",
+    "podtrhnout": "potom novou cenu ještě o 10 %"
+   },
+   "C": {
+    "vypocet": "2400*0.8*0.1",
+    "popis": "Spočítána pouze výše druhé slevy místo konečné ceny po obou slevách.",
+    "rada": "Otázka žádá konečnou cenu bundy. Druhou slevu (192 Kč) ještě odečti od meziceny: 1 920 - 192 = 1 728 Kč.",
+    "podtrhnout": "Kolik korun stojí bunda teď?"
+   },
+   "D": {
+    "vypocet": "2400*0.8",
+    "popis": "Vynechání druhé slevy s uvedením meziceny po první slevě.",
+    "rada": "Po první slevě stojí bunda 1 920 Kč, z této částky ještě odečti druhou slevu 10 %: 1 920 - 192 = 1 728 Kč.",
+    "podtrhnout": "potom novou cenu ještě o 10 %"
+   }
+  },
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  }
+ },
+ {
+  "id": 13,
+  "typ": "procenta",
+  "vzor": "9D/2024 úl. 16.1",
+  "text": "Po zdražení o 15 % stojí jízdenka 92 Kč.",
+  "otazka": "Kolik korun stála jízdenka před zdražením?",
+  "nezname": {
+   "x": [
+    1,
+    92
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "x*1.15=92"
+  ],
+  "celociselne": [
+   "x"
+  ],
+  "odpoved": {
+   "vyraz": "x",
+   "hodnota": 80,
+   "jednotka": "Kč"
+  },
+  "reseni": {
+   "x": 80
+  },
+  "moznosti": {
+   "A": 77,
+   "B": 78.2,
+   "C": 80,
+   "D": 105.8,
+   "E": "jiný výsledek"
+  },
+  "spravne": "C",
+  "postup": [
+   {
+    "text": "Původní cena je 100 %, po zdražení o 15 % stojí jízdenka 115 %.",
+    "vypocet": "100+15",
+    "vysledek": 115
+   },
+   {
+    "text": "Jedno procento původní ceny vypočítáme vydělením nové ceny 115.",
+    "vypocet": "92/115",
+    "vysledek": 0.8
+   },
+   {
+    "text": "Původní cena (100 %) je stonásobek jednoho procenta.",
+    "vypocet": "0.8*100",
+    "vysledek": 80
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "92-15",
+    "popis": "Odečtení 15 Kč jako absolutní částky místo 15 %.",
+    "rada": "Zdražení je o 15 %, ne o 15 Kč. Nová cena 92 Kč odpovídá 115 % původní ceny: 92 / 1,15 = 80 Kč.",
+    "podtrhnout": "Po zdražení o 15 %"
+   },
+   "B": {
+    "vypocet": "92*0.85",
+    "popis": "Výpočet 15 % z nové ceny 92 Kč a její odečtení místo výpočtu z původního základu.",
+    "rada": "Původní cena představuje 100 %, nová cena 92 Kč je 115 %. Vyděl: 92 / 1,15 = 80 Kč.",
+    "podtrhnout": "Po zdražení o 15 %"
+   },
+   "D": {
+    "vypocet": "92*1.15",
+    "popis": "Opětovné přičtení 15 % k již zdražené ceně 92 Kč.",
+    "rada": "Před zdražením byla cena nižší. Místo násobení děl: 92 / 1,15 = 80 Kč.",
+    "podtrhnout": "před zdražením"
+   }
+  }
+ },
+ {
+  "id": 14,
+  "typ": "procenta",
+  "vzor": "9D/2024 úl. 12",
+  "text": "Ve třídě je 25 žáků a 9 z nich chodí do sportovního kroužku.",
+  "otazka": "Kolik procent žáků chodí do kroužku?",
+  "nezname": {
+   "p": [
+    0,
+    100
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "25*p/100=9"
+  ],
+  "celociselne": [
+   "p"
+  ],
+  "odpoved": {
+   "vyraz": "p",
+   "hodnota": 36,
+   "jednotka": "%"
+  },
+  "reseni": {
+   "p": 36
+  },
+  "moznosti": {
+   "A": 9,
+   "B": 25,
+   "C": 36,
+   "D": 64,
+   "E": "jiný výsledek"
+  },
+  "spravne": "C",
+  "postup": [
+   {
+    "text": "Podíl žáků v kroužku vyjádříme jako zlomek 9 / 25.",
+    "vypocet": "9/25",
+    "vysledek": 0.36
+   },
+   {
+    "text": "Desetinné číslo převedeme na procenta vynásobením stem.",
+    "vypocet": "0.36*100",
+    "vysledek": 36
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "9",
+    "popis": "Uvedení počtu žáků v kroužku místo vyjádření v procentech.",
+    "rada": "V kroužku je 9 žáků, ale otázka žádá procenta z celku: (9 / 25) * 100 = 36 %.",
+    "podtrhnout": "Kolik procent žáků chodí do kroužku?"
+   },
+   "B": {
+    "vypocet": "25",
+    "popis": "Uvedení celkového počtu žáků ve třídě místo procenta žáků v kroužku.",
+    "rada": "Číslo 25 je počet všech žáků ve třídě (100 %). Žáci v kroužku tvoří (9 / 25) * 100 = 36 %.",
+    "podtrhnout": "Kolik procent žáků chodí do kroužku?"
+   },
+   "D": {
+    "vypocet": "(25-9)/25*100",
+    "popis": "Spočítáno procento žáků, kteří do kroužku nechodí.",
+    "rada": "Číslo 64 % představuje žáky mimo kroužek. Do kroužku chodí 100 - 64 = 36 % žáků.",
+    "podtrhnout": "Kolik procent žáků chodí do kroužku?"
+   }
+  }
+ },
+ {
+  "id": 15,
+  "typ": "procenta",
+  "vzor": "9D/2023 úl. 15.1",
+  "text": "Letos přišlo na školní ples 630 lidí. To je o 40 % více než loni.",
+  "otazka": "Kolik lidí přišlo na ples loni?",
+  "nezname": {
+   "x": [
+    1,
+    630
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "1.4*x=630"
+  ],
+  "celociselne": [
+   "x"
+  ],
+  "odpoved": {
+   "vyraz": "x",
+   "hodnota": 450,
+   "jednotka": "lidí"
+  },
+  "reseni": {
+   "x": 450
+  },
+  "moznosti": {
+   "A": 378,
+   "B": 450,
+   "C": 180,
+   "D": 882,
+   "E": "jiný výsledek"
+  },
+  "spravne": "B",
+  "postup": [
+   {
+    "text": "Letošních 630 lidí představuje 100 % + 40 % = 140 % loňské účasti.",
+    "vypocet": "100+40",
+    "vysledek": 140
+   },
+   {
+    "text": "Jedno procento loňské účasti je 630 / 140.",
+    "vypocet": "630/140",
+    "vysledek": 4.5
+   },
+   {
+    "text": "Loňská účast (100 %) je stonásobek.",
+    "vypocet": "4.5*100",
+    "vysledek": 450
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "630*0.6",
+    "popis": "Odečtení 40 % z letošního počtu lidí místo výpočtu z loňského základu.",
+    "rada": "Základem (100 %) je loňská účast. Letošních 630 lidí je 140 % loňska, vyděl: 630 / 1,4 = 450 lidí.",
+    "podtrhnout": "o 40 % více než loni"
+   },
+   "C": {
+    "vypocet": "630-630/1.4",
+    "popis": "Spočítán pouze nárůst počtu lidí oproti loňsku místo celkového počtu lidí loni.",
+    "rada": "Číslo 180 je nárůst počtu návštěvníků. Loni přišlo 630 - 180 = 450 lidí.",
+    "podtrhnout": "Kolik lidí přišlo na ples loni?"
+   },
+   "D": {
+    "vypocet": "630*1.4",
+    "popis": "Přičtení dalších 40 % k letošnímu počtu návštěvníků.",
+    "rada": "Loni přišlo méně lidí než letos. Místo násobení letošní počet vyděl: 630 / 1,4 = 450 lidí.",
+    "podtrhnout": "Kolik lidí přišlo na ples loni?"
+   }
+  }
+ },
+ {
+  "id": 16,
+  "typ": "procenta",
+  "vzor": "9D/2023 úl. 15.2",
+  "text": "Letního tábora se zúčastnilo 168 dětí. To je o 30 % méně než v loňském roce.",
+  "otazka": "Kolik dětí se tábora zúčastnilo loni?",
+  "nezname": {
+   "x": [
+    1,
+    1000
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "0.7*x=168"
+  ],
+  "celociselne": [
+   "x"
+  ],
+  "odpoved": {
+   "vyraz": "x",
+   "hodnota": 240,
+   "jednotka": "dětí"
+  },
+  "reseni": {
+   "x": 240
+  },
+  "moznosti": {
+   "A": 218.4,
+   "B": 72,
+   "C": 240,
+   "D": 280,
+   "E": "jiný výsledek"
+  },
+  "spravne": "C",
+  "postup": [
+   {
+    "text": "Letošních 168 dětí představuje 100 % - 30 % = 70 % loňské účasti.",
+    "vypocet": "100-30",
+    "vysledek": 70
+   },
+   {
+    "text": "Jedno procento loňské účasti je 168 / 70.",
+    "vypocet": "168/70",
+    "vysledek": 2.4
+   },
+   {
+    "text": "Loňská účast (100 %) je stonásobek.",
+    "vypocet": "2.4*100",
+    "vysledek": 240
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "168*1.3",
+    "popis": "Přičtení 30 % k letošnímu počtu dětí místo výpočtu z loňského základu.",
+    "rada": "Základem (100 %) je loňský tábor. Letošních 168 dětí odpovídá 70 % loňska, děl: 168 / 0,7 = 240 dětí.",
+    "podtrhnout": "o 30 % méně než v loňském roce"
+   },
+   "B": {
+    "vypocet": "168/0.7*0.3",
+    "popis": "Spočítán pouze úbytek dětí oproti loňsku místo celkové účasti.",
+    "rada": "Číslo 72 představuje úbytek dětí. Loni se tábora zúčastnilo 168 + 72 = 240 dětí.",
+    "podtrhnout": "Kolik dětí se tábora zúčastnilo loni?"
+   },
+   "D": {
+    "vypocet": "168/0.6",
+    "popis": "Dělení 60 % místo správných 70 %.",
+    "rada": "Při poklesu o 30 % zbývá 100 - 30 = 70 % loňského základu. Správný výpočet je 168 / 0,7 = 240 dětí.",
+    "podtrhnout": "o 30 % méně než v loňském roce"
+   }
+  }
+ },
+ {
+  "id": 17,
+  "typ": "procenta",
+  "vzor": "9C/2024 úl. 13",
+  "text": "Sál má 400 míst. Před koncertem bylo obsazeno 65 % míst, potom přišlo ještě 48 lidí.",
+  "otazka": "Kolik procent míst je teď obsazeno?",
+  "nezname": {
+   "p": [
+    0,
+    100
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "400*p/100=400*0.65+48"
+  ],
+  "celociselne": [
+   "p"
+  ],
+  "odpoved": {
+   "vyraz": "p",
+   "hodnota": 77,
+   "jednotka": "%"
+  },
+  "reseni": {
+   "p": 77
+  },
+  "moznosti": {
+   "A": 65,
+   "B": 12,
+   "C": 77,
+   "D": 113,
+   "E": "jiný výsledek"
+  },
+  "spravne": "C",
+  "postup": [
+   {
+    "text": "Před koncertem bylo obsazeno 65 % ze 400 míst.",
+    "vypocet": "400*0.65",
+    "vysledek": 260
+   },
+   {
+    "text": "Po příchodu dalších 48 lidí je obsazeno 260 + 48 míst.",
+    "vypocet": "260+48",
+    "vysledek": 308
+   },
+   {
+    "text": "Obsazenost v procentech je (308 / 400) * 100.",
+    "vypocet": "308/400*100",
+    "vysledek": 77
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "65",
+    "popis": "Uvedení původní obsazenosti bez započtení nově příchozích diváků.",
+    "rada": "Po příchodu 48 lidí obsazenost vzrostla. Převeď 48 lidí na procenta (12 %) a přičti k 65 %: celkem 77 %.",
+    "podtrhnout": "potom přišlo ještě 48 lidí"
+   },
+   "B": {
+    "vypocet": "48/400*100",
+    "popis": "Spočítáno pouze procento nově příchozích diváků bez původní obsazenosti.",
+    "rada": "Číslo 12 % je přírůstek ze 48 lidí. Přičti k němu původních 65 %: 65 + 12 = 77 %.",
+    "podtrhnout": "Kolik procent míst je teď obsazeno?"
+   },
+   "D": {
+    "vypocet": "65+48",
+    "popis": "Přímé sečtení procent a počtu osob bez převodu jednotek.",
+    "rada": "Nelze sčítat procenta a osoby dohromady. Převeď 48 lidí na procenta (48 / 400 * 100 = 12 %) a přičti: 65 + 12 = 77 %.",
+    "podtrhnout": "obsazeno 65 % míst, potom přišlo ještě 48 lidí"
+   }
+  }
+ },
+ {
+  "id": 18,
+  "typ": "procenta",
+  "vzor": "9C/2024 úl. 13",
+  "text": "Kino bylo zaplněné ze 60 %. Když přišlo dalších 18 diváků, zaplněnost stoupla na 75 %.",
+  "otazka": "Kolik míst má kino?",
+  "nezname": {
+   "x": [
+    1,
+    1000
+   ]
+  },
+  "pomocne": {
+   "o1": "0.6*x",
+   "o2": "0.75*x"
+  },
+  "podminky": [
+   "o2-o1=18"
+  ],
+  "celociselne": [
+   "x",
+   "o1",
+   "o2"
+  ],
+  "odpoved": {
+   "vyraz": "x",
+   "hodnota": 120,
+   "jednotka": "míst"
+  },
+  "reseni": {
+   "x": 120
+  },
+  "moznosti": {
+   "A": 24,
+   "B": 72,
+   "C": 90,
+   "D": 120,
+   "E": "jiný výsledek"
+  },
+  "spravne": "D",
+  "postup": [
+   {
+    "text": "Přírůstek 18 diváků odpovídá rozdílu v zaplněnosti 75 % - 60 % = 15 %.",
+    "vypocet": "75-60",
+    "vysledek": 15
+   },
+   {
+    "text": "Jedno procento kapacity kina představuje 18 / 15 míst.",
+    "vypocet": "18/15",
+    "vysledek": 1.2
+   },
+   {
+    "text": "Celá kapacita kina (100 %) je stonásobek.",
+    "vypocet": "1.2*100",
+    "vysledek": 120
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "18/0.75",
+    "popis": "Vydělení 18 diváků konečnou zaplněností 75 % místo zjištěným rozdílem zaplněnosti.",
+    "rada": "18 diváků netvoří 75 % kina, ale rozdíl 75 - 60 = 15 %. Celá kapacita je 18 / 0,15 = 120 míst.",
+    "podtrhnout": "zaplněnost stoupla na 75 %"
+   },
+   "B": {
+    "vypocet": "18/(0.75-0.6)*0.6",
+    "popis": "Spočítán původní počet diváků v kině místo celkové kapacity kina.",
+    "rada": "Číslo 72 je původní počet diváků. Kapacita celého kina (100 %) je 120 míst.",
+    "podtrhnout": "Kolik míst má kino?"
+   },
+   "C": {
+    "vypocet": "18/(0.75-0.6)*0.75",
+    "popis": "Spočítán konečný počet diváků v kině místo celkové kapacity kina.",
+    "rada": "Číslo 90 je konečný počet diváků v kině. Celková kapacita (100 %) je 120 míst.",
+    "podtrhnout": "Kolik míst má kino?"
+   }
+  }
+ },
+ {
+  "id": 19,
+  "typ": "procenta",
+  "vzor": "9D/2023 úl. 15.3",
+  "text": "Ve sboru zpívá 56 lidí. Mužů je o 40 % méně než žen.",
+  "otazka": "Kolik mužů zpívá ve sboru?",
+  "nezname": {
+   "z": [
+    0,
+    56
+   ]
+  },
+  "pomocne": {
+   "m": "0.6*z"
+  },
+  "podminky": [
+   "z+m=56"
+  ],
+  "celociselne": [
+   "z",
+   "m"
+  ],
+  "odpoved": {
+   "vyraz": "m",
+   "hodnota": 21,
+   "jednotka": "mužů"
+  },
+  "reseni": {
+   "z": 35
+  },
+  "moznosti": {
+   "A": 21,
+   "B": 22.4,
+   "C": 28,
+   "D": 35,
+   "E": "jiný výsledek"
+  },
+  "spravne": "A",
+  "postup": [
+   {
+    "text": "Ženy tvoří 100 % a mužů je o 40 % méně, tedy tvoří 60 % počtu žen.",
+    "vypocet": "100-40",
+    "vysledek": 60
+   },
+   {
+    "text": "Celý sbor odpovídá 100 % + 60 % = 160 % počtu žen.",
+    "vypocet": "100+60",
+    "vysledek": 160
+   },
+   {
+    "text": "Počet žen vypočítáme vydělením 56 číslem 1,6.",
+    "vypocet": "56/1.6",
+    "vysledek": 35
+   },
+   {
+    "text": "Mužů je zbytek do 56.",
+    "vypocet": "56-35",
+    "vysledek": 21
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "B": {
+    "vypocet": "56*0.4",
+    "popis": "Výpočet 40 % z celého sboru místo ze základu počtu žen.",
+    "rada": "Mužů je o 40 % méně než žen, nikoli z celého sboru. Ženy tvoří základ: 56 / 1,6 = 35 žen a 56 - 35 = 21 mužů.",
+    "podtrhnout": "Mužů je o 40 % méně než žen"
+   },
+   "C": {
+    "vypocet": "56/2",
+    "popis": "Rozdělení sboru na dvě stejné poloviny bez ohledu na rozdíl mezi muži a ženami.",
+    "rada": "Mužů a žen není stejně. Muži tvoří 60 % počtu žen, ve sboru je 35 žen a 21 mužů.",
+    "podtrhnout": "Mužů je o 40 % méně než žen"
+   },
+   "D": {
+    "vypocet": "56/1.6",
+    "popis": "Spočítán počet žen místo počtu mužů.",
+    "rada": "Pozor, otázka se ptá na muže. Ve sboru zpívá 35 žen, mužů je 56 - 35 = 21.",
+    "podtrhnout": "Kolik mužů zpívá ve sboru?"
+   }
+  }
+ },
+ {
+  "id": 20,
+  "typ": "procenta",
+  "vzor": "9B/2024 úl. 2",
+  "text": "Cena vstupenky klesla z 250 Kč na 200 Kč.",
+  "otazka": "O kolik procent vstupenka zlevnila?",
+  "nezname": {
+   "p": [
+    0,
+    100
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "250*(1-p/100)=200"
+  ],
+  "celociselne": [
+   "p"
+  ],
+  "odpoved": {
+   "vyraz": "p",
+   "hodnota": 20,
+   "jednotka": "%"
+  },
+  "reseni": {
+   "p": 20
+  },
+  "moznosti": {
+   "A": 20,
+   "B": 25,
+   "C": 50,
+   "D": 80,
+   "E": "jiný výsledek"
+  },
+  "spravne": "A",
+  "postup": [
+   {
+    "text": "Zlevnění v korunách je rozdíl původní a nové ceny.",
+    "vypocet": "250-200",
+    "vysledek": 50
+   },
+   {
+    "text": "Jedno procento z původní ceny 250 Kč je 2,50 Kč.",
+    "vypocet": "250/100",
+    "vysledek": 2.5
+   },
+   {
+    "text": "Slevu 50 Kč vyjádříme v procentech vydělením 2,5.",
+    "vypocet": "50/2.5",
+    "vysledek": 20
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "B": {
+    "vypocet": "(250-200)/200*100",
+    "popis": "Vydělení slevy novou cenou 200 Kč místo původní ceny 250 Kč.",
+    "rada": "Základem (100 %) je původní cena 250 Kč. Sleva 50 Kč tvoří (50 / 250) * 100 = 20 %.",
+    "podtrhnout": "klesla z 250 Kč na 200 Kč"
+   },
+   "C": {
+    "vypocet": "250-200",
+    "popis": "Uvedení slevy v korunách místo v procentech.",
+    "rada": "Sleva je sice 50 Kč, ale otázka žádá procenta: (50 / 250) * 100 = 20 %.",
+    "podtrhnout": "O kolik procent vstupenka zlevnila?"
+   },
+   "D": {
+    "vypocet": "200/250*100",
+    "popis": "Spočítáno, kolik procent původní ceny tvoří nová cena, místo procenta zlevnění.",
+    "rada": "Nová cena je 80 % původní. Vstupenka zlevnila o 100 - 80 = 20 %.",
+    "podtrhnout": "O kolik procent vstupenka zlevnila?"
+   }
+  }
+ },
+ {
+  "id": 21,
+  "typ": "procenta",
+  "vzor": "9B/2024 úl. 2",
+  "text": "{o1} ušla 3,6 km, {o2} ušel 4,5 km.",
+  "otazka": "O kolik procent delší cestu ušel {o2} než {o1}?",
+  "nezname": {
+   "p": [
+    0,
+    100
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "3.6*(1+p/100)=4.5"
+  ],
+  "celociselne": [
+   "p"
+  ],
+  "odpoved": {
+   "vyraz": "p",
+   "hodnota": 25,
+   "jednotka": "%"
+  },
+  "reseni": {
+   "p": 25
+  },
+  "moznosti": {
+   "A": 0.9,
+   "B": 20,
+   "C": 25,
+   "D": 125,
+   "E": "jiný výsledek"
+  },
+  "spravne": "C",
+  "postup": [
+   {
+    "text": "{o2} ušel o 4,5 - 3,6 = 0,9 km více než {o1}.",
+    "vypocet": "4.5-3.6",
+    "vysledek": 0.9
+   },
+   {
+    "text": "Základem (100 %) je trasa, kterou ušla {o1} (3,6 km). Rozdíl v procentech vypočítáme jako (0,9 / 3,6) * 100.",
+    "vypocet": "0.9/3.6*100",
+    "vysledek": 25
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "osoby": {
+   "o1": {
+    "rod": "f",
+    "jmeno": "Eliška"
+   },
+   "o2": {
+    "rod": "m",
+    "jmeno": "Petr"
+   }
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "4.5-3.6",
+    "popis": "Uvedení rozdílu v kilometrech místo v procentech.",
+    "rada": "{o2} ušel o 0,9 km více, ale otázka žádá procenta. Základem je kratší trasa 3,6 km: (0,9 / 3,6) * 100 = 25 %.",
+    "podtrhnout": "O kolik procent delší cestu ušel {o2} než {o1}?"
+   },
+   "B": {
+    "vypocet": "(4.5-3.6)/4.5*100",
+    "popis": "Vydělení rozdílu delší trasou (4,5 km) místo kratší trasou, se kterou se porovnává.",
+    "rada": "Otázka se ptá 'než {o1}', základem je tedy 3,6 km: (0,9 / 3,6) * 100 = 25 %.",
+    "podtrhnout": "než {o1}"
+   },
+   "D": {
+    "vypocet": "4.5/3.6*100",
+    "popis": "Spočítáno, kolik procent kratší trasy tvoří delší trasa, místo procentuálního navýšení.",
+    "rada": "Delší trasa představuje 125 % kratší trasy. O kolik procent je delší, zjistíš jako 125 - 100 = 25 %.",
+    "podtrhnout": "O kolik procent delší cestu ušel {o2} než {o1}?"
+   }
+  }
+ },
+ {
+  "id": 22,
+  "typ": "zlomek celku",
+  "vzor": "9D/2023 úl. 6",
+  "text": "Ve čtvrtek prodali v pekárně 120 rohlíků, v pátek o čtvrtinu více než ve čtvrtek.",
+  "otazka": "Kolik rohlíků prodali v pátek?",
+  "nezname": {
+   "x": [
+    0,
+    1000
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "x=120+120/4"
+  ],
+  "celociselne": [
+   "x"
+  ],
+  "odpoved": {
+   "vyraz": "x",
+   "hodnota": 150,
+   "jednotka": "rohlíků"
+  },
+  "reseni": {
+   "x": 150
+  },
+  "moznosti": {
+   "A": 124,
+   "B": 30,
+   "C": 150,
+   "D": 160,
+   "E": "jiný výsledek"
+  },
+  "spravne": "C",
+  "postup": [
+   {
+    "text": "Jedna čtvrtina ze 120 rohlíků je 120 / 4.",
+    "vypocet": "120/4",
+    "vysledek": 30
+   },
+   {
+    "text": "V pátek prodali o 30 rohlíků více než ve čtvrtek.",
+    "vypocet": "120+30",
+    "vysledek": 150
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "120+4",
+    "popis": "Přičtení čísla 4 místo čtvrtiny celku.",
+    "rada": "O čtvrtinu více znamená přičíst 120 / 4 = 30 rohlíků, ne číslo 4. V pátek prodali 120 + 30 = 150 rohlíků.",
+    "podtrhnout": "o čtvrtinu více než ve čtvrtek"
+   },
+   "B": {
+    "vypocet": "120/4",
+    "popis": "Spočítán pouze nárůst prodeje bez přičtení k čtvrtečnímu počtu.",
+    "rada": "Číslo 30 je pouze nárůst. V pátek prodali o 30 rohlíků více než ve čtvrtek: 120 + 30 = 150 rohlíků.",
+    "podtrhnout": "Kolik rohlíků prodali v pátek?"
+   },
+   "D": {
+    "vypocet": "120+120/3",
+    "popis": "Přičtení třetiny ze 120 místo čtvrtiny.",
+    "rada": "Čtvrtina ze 120 je 30 rohlíků, ne 40. Správný výsledek je 120 + 30 = 150 rohlíků.",
+    "podtrhnout": "o čtvrtinu více než ve čtvrtek"
+   }
+  }
+ },
+ {
+  "id": 23,
+  "typ": "zlomek celku",
+  "vzor": "9D/2023 úl. 6",
+  "text": "V pondělí vysadili x stromů. V úterý vysadili o třetinu více než v pondělí a ve středu o polovinu více než v pondělí. Za tři dny vysadili 230 stromů.",
+  "otazka": "Kolik stromů vysadili v pondělí?",
+  "nezname": {
+   "x": [
+    1,
+    230
+   ]
+  },
+  "pomocne": {
+   "u": "x*4/3",
+   "s": "x*3/2"
+  },
+  "podminky": [
+   "x+u+s=230"
+  ],
+  "celociselne": [
+   "x",
+   "u",
+   "s"
+  ],
+  "odpoved": {
+   "vyraz": "x",
+   "hodnota": 60,
+   "jednotka": "stromů"
+  },
+  "reseni": {
+   "x": 60
+  },
+  "moznosti": {
+   "A": 46,
+   "B": 60,
+   "C": 90,
+   "D": 80,
+   "E": "jiný výsledek"
+  },
+  "spravne": "B",
+  "postup": [
+   {
+    "text": "Za všechny tři dny vysadili 1 + 4/3 + 1,5 = 23/6 násobek pondělního počtu.",
+    "vypocet": "230/(1+4/3+1.5)",
+    "vysledek": 60
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "230/5",
+    "popis": "Chybné dělení 230 pěti díly bez správného sečtení zlomků.",
+    "rada": "Pondělí (1), úterý (4/3) a středa (3/2) tvoří dohromady 23/6 pondělního počtu: 230 / (23/6) = 60 stromů.",
+    "podtrhnout": "o třetinu více než v pondělí a ve středu o polovinu více než v pondělí"
+   },
+   "C": {
+    "vypocet": "230/(1+4/3+1.5)*1.5",
+    "popis": "Spočítán počet stromů vysazených ve středu místo v pondělí.",
+    "rada": "Pozor, otázka se ptá na pondělí. Ve středu vysadili 90 stromů, v pondělí 60 stromů.",
+    "podtrhnout": "Kolik stromů vysadili v pondělí?"
+   },
+   "D": {
+    "vypocet": "230/(1+4/3+1.5)*(4/3)",
+    "popis": "Spočítán počet stromů vysazených v úterý místo v pondělí.",
+    "rada": "Pozor, otázka se ptá na pondělí. V úterý vysadili 80 stromů, v pondělí 60 stromů.",
+    "podtrhnout": "Kolik stromů vysadili v pondělí?"
+   }
+  }
+ },
+ {
+  "id": 24,
+  "typ": "zlomek celku",
+  "vzor": "9D/2024 úl. 11",
+  "text": "{o1} přečetl první den třetinu knihy, druhý den čtvrtinu knihy. Do konce mu zbývá 150 stran.",
+  "otazka": "Kolik stran má kniha?",
+  "nezname": {
+   "x": [
+    1,
+    10000
+   ]
+  },
+  "pomocne": {
+   "d1": "x/3",
+   "d2": "x/4"
+  },
+  "podminky": [
+   "x-d1-d2=150"
+  ],
+  "celociselne": [
+   "x",
+   "d1",
+   "d2"
+  ],
+  "odpoved": {
+   "vyraz": "x",
+   "hodnota": 360,
+   "jednotka": "stran"
+  },
+  "reseni": {
+   "x": 360
+  },
+  "moznosti": {
+   "A": 200,
+   "B": 210,
+   "C": 360,
+   "D": 600,
+   "E": "jiný výsledek"
+  },
+  "spravne": "C",
+  "postup": [
+   {
+    "text": "Do konce knihy zbývá 1 - 1/3 - 1/4 = 5/12 knihy, což je 150 stran.",
+    "vypocet": "150/(1-1/3-1/4)",
+    "vysledek": 360
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "osoby": {
+   "o1": {
+    "rod": "m",
+    "jmeno": "Petr"
+   }
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "150/(1-1/4)",
+    "popis": "Započtení pouze čtvrtiny knihy s vynecháním třetiny z prvního dne.",
+    "rada": "{o1} přečte 1/3 + 1/4 = 7/12 knihy. Zbývá 5/12, celá kniha má 150 / (5/12) = 360 stran.",
+    "podtrhnout": "první den třetinu knihy"
+   },
+   "B": {
+    "vypocet": "150/(1-1/3-1/4)*(1/3+1/4)",
+    "popis": "Spočítán počet již přečtených stran místo celkového počtu stran knihy.",
+    "rada": "Číslo 210 je počet již přečtených stran. Celá kniha má 210 + 150 = 360 stran.",
+    "podtrhnout": "Kolik stran má kniha?"
+   },
+   "D": {
+    "vypocet": "150/(1/4)",
+    "popis": "Záměna zbytku 150 stran za jednu čtvrtinu knihy.",
+    "rada": "Zbytek 150 stran odpovídá 5/12 knihy, ne 1/4. Celá kniha má 150 / (5/12) = 360 stran.",
+    "podtrhnout": "Do konce mu zbývá 150 stran"
+   }
+  }
+ },
+ {
+  "id": 25,
+  "typ": "zlomek celku",
+  "vzor": "9D/2024 úl. 11",
+  "text": "{o1} snědl 3/8 pizzy. {o2} snědl o 1/8 pizzy méně než {o1}.",
+  "otazka": "Jaká část pizzy zůstala?",
+  "nezname": {
+   "z": [
+    0,
+    8
+   ]
+  },
+  "pomocne": {
+   "tom": "3",
+   "jirka": "tom-1"
+  },
+  "podminky": [
+   "z=8-tom-jirka"
+  ],
+  "celociselne": [
+   "z"
+  ],
+  "odpoved": {
+   "vyraz": "z/8",
+   "hodnota": 0.375,
+   "zobrazeni": "3/8",
+   "jednotka": ""
+  },
+  "reseni": {
+   "z": 3
+  },
+  "moznosti": {
+   "A": "1/8",
+   "B": "1/4",
+   "C": "3/8",
+   "D": "5/8",
+   "E": "jiný výsledek"
+  },
+  "spravne": "C",
+  "postup": [
+   {
+    "text": "{o2} snědl o 1/8 méně než {o1}.",
+    "vypocet": "3/8-1/8",
+    "vysledek": 0.25
+   },
+   {
+    "text": "Dohromady snědli {o1} i {o2} 3/8 + 2/8 = 5/8 pizzy.",
+    "vypocet": "3/8+0.25",
+    "vysledek": 0.625
+   },
+   {
+    "text": "Z celé pizzy zůstala zbývající část (3/8).",
+    "vypocet": "1-0.625",
+    "vysledek": 0.375
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "osoby": {
+   "o1": {
+    "rod": "m",
+    "jmeno": "Tom"
+   },
+   "o2": {
+    "rod": "m",
+    "jmeno": "Jirka"
+   }
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "3/8-(3/8-1/8)",
+    "popis": "Odečtení 2/8 od 3/8 místo odečtení obou snědených dílů od celé pizzy.",
+    "rada": "Oba podíly sečti a odečti od celé pizzy (1): 1 - (3/8 + 2/8) = 3/8.",
+    "podtrhnout": "Jaká část pizzy zůstala?"
+   },
+   "B": {
+    "vypocet": "3/8-1/8",
+    "popis": "Spočítána část pizzy, kterou snědl {o2}, místo zbylé části pizzy.",
+    "rada": "{o2} sní 1/4 pizzy. Otázka se ptá, jaká část pizzy zůstane po obou: 1 - 5/8 = 3/8.",
+    "podtrhnout": "Jaká část pizzy zůstala?"
+   },
+   "D": {
+    "vypocet": "3/8+(3/8-1/8)",
+    "popis": "Spočítána snědená část pizzy dohromady místo zbylé části.",
+    "rada": "Část 5/8 představuje snědenou pizzu. Zbývá celá pizza bez snědené části: 1 - 5/8 = 3/8.",
+    "podtrhnout": "Jaká část pizzy zůstala?"
+   }
+  }
+ },
+ {
+  "id": 26,
+  "typ": "zlomek celku",
+  "vzor": "9D/2024 úl. 11",
+  "text": "Ráno měli v obchodě 240 triček. Dopoledne prodali čtvrtinu všech triček, odpoledne třetinu triček, která zbyla po dopoledni.",
+  "otazka": "Kolik triček zbylo večer v obchodě?",
+  "nezname": {
+   "z": [
+    0,
+    240
+   ]
+  },
+  "pomocne": {
+   "dop": "240/4",
+   "odp": "(240-dop)/3"
+  },
+  "podminky": [
+   "z=240-dop-odp"
+  ],
+  "celociselne": [
+   "z",
+   "odp"
+  ],
+  "odpoved": {
+   "vyraz": "z",
+   "hodnota": 120,
+   "jednotka": "triček"
+  },
+  "reseni": {
+   "z": 120
+  },
+  "moznosti": {
+   "A": 60,
+   "B": 80,
+   "C": 100,
+   "D": 120,
+   "E": "jiný výsledek"
+  },
+  "spravne": "D",
+  "postup": [
+   {
+    "text": "Dopoledne prodali čtvrtinu z 240 triček.",
+    "vypocet": "240/4",
+    "vysledek": 60
+   },
+   {
+    "text": "Po dopoledni zbylo v obchodě 240 - 60 triček.",
+    "vypocet": "240-60",
+    "vysledek": 180
+   },
+   {
+    "text": "Odpoledne prodali třetinu ze 180 triček.",
+    "vypocet": "180/3",
+    "vysledek": 60
+   },
+   {
+    "text": "Večer zbylo 180 - 60 triček.",
+    "vypocet": "180-60",
+    "vysledek": 120
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "(240-240/4)/3",
+    "popis": "Spočítán počet triček prodaných odpoledne místo zbylých triček večer.",
+    "rada": "Odpoledne se prodá 60 triček, ale otázka se ptá na večerní zbytek: 180 - 60 = 120 triček.",
+    "podtrhnout": "Kolik triček zbylo večer v obchodě?"
+   },
+   "B": {
+    "vypocet": "240/3",
+    "popis": "Výpočet odpolední třetiny z původních 240 triček místo ze zbytku po dopoledni.",
+    "rada": "Odpoledne se prodá třetina ze zbytku 180 triček (60 triček), nikoli z původních 240.",
+    "podtrhnout": "třetinu triček, která zbyla po dopoledni"
+   },
+   "C": {
+    "vypocet": "240-240/4-240/3",
+    "popis": "Odečtení čtvrtiny i třetiny z původních 240 triček.",
+    "rada": "Odpolední třetina se počítá ze 180 zbylých triček (60 triček), ne z 240. Večer zbývá 120 triček.",
+    "podtrhnout": "třetinu triček, která zbyla po dopoledni"
+   }
+  }
+ },
+ {
+  "id": 27,
+  "typ": "zlomek celku",
+  "vzor": "9C/2024 úl. 13",
+  "text": "Nádrž je naplněná ze 2/5. Když do ní přilijeme 180 litrů, bude naplněná z 5/8.",
+  "otazka": "Kolik litrů se vejde do celé nádrže?",
+  "nezname": {
+   "x": [
+    1,
+    10000
+   ]
+  },
+  "pomocne": {
+   "a": "x*2/5",
+   "b": "x*5/8"
+  },
+  "podminky": [
+   "b-a=180"
+  ],
+  "celociselne": [
+   "x",
+   "a",
+   "b"
+  ],
+  "odpoved": {
+   "vyraz": "x",
+   "hodnota": 800,
+   "jednotka": "l"
+  },
+  "reseni": {
+   "x": 800
+  },
+  "moznosti": {
+   "A": 320,
+   "B": 480,
+   "C": 500,
+   "D": 800,
+   "E": "jiný výsledek"
+  },
+  "spravne": "D",
+  "postup": [
+   {
+    "text": "Přírůstek 180 litrů představuje 5/8 - 2/5 nádrže.",
+    "vypocet": "5/8-2/5",
+    "vysledek": 0.225
+   },
+   {
+    "text": "Celá nádrž pojme 180 litrů děleno 0,225 (což je 9/40).",
+    "vypocet": "180/0.225",
+    "vysledek": 800
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "180/(5/8-2/5)*(2/5)",
+    "popis": "Spočítán objem vody v nádrži před přilitím místo celkové kapacity nádrže.",
+    "rada": "Číslo 320 litrů je počáteční objem vody. Do celé nádrže se vejde 800 litrů.",
+    "podtrhnout": "Kolik litrů se vejde do celé nádrže?"
+   },
+   "B": {
+    "vypocet": "180/(1-5/8)",
+    "popis": "Předpoklad, že 180 litrů doplní nádrž z 5/8 do plného stavu.",
+    "rada": "180 litrů nezaplní zbývající 3/8 nádrže, ale zvedne hladinu ze 2/5 na 5/8. Celá nádrž pojme 800 litrů.",
+    "podtrhnout": "Nádrž je naplněná ze 2/5"
+   },
+   "C": {
+    "vypocet": "180/(5/8-2/5)*(5/8)",
+    "popis": "Spočítán objem vody v nádrži po přilití 180 litrů místo celkové kapacity.",
+    "rada": "Číslo 500 litrů je objem vody po přilití (5/8 nádrže). Do plné nádrže se vejde 800 litrů.",
+    "podtrhnout": "Kolik litrů se vejde do celé nádrže?"
+   }
+  }
+ },
+ {
+  "id": 28,
+  "typ": "nepřímá úměrnost",
+  "vzor": "9C/2024 úl. 16",
+  "text": "Šest malířů vymaluje školu za 10 dní. Všichni pracují stejně rychle.",
+  "otazka": "Za kolik dní vymalují školu 4 malíři?",
+  "nezname": {
+   "d": [
+    1,
+    100
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "4*d=6*10"
+  ],
+  "celociselne": [
+   "d"
+  ],
+  "odpoved": {
+   "vyraz": "d",
+   "hodnota": 15,
+   "jednotka": "dní"
+  },
+  "reseni": {
+   "d": 15
+  },
+  "moznosti": {
+   "A": 8,
+   "B": 60,
+   "C": 15,
+   "D": 20,
+   "E": "jiný výsledek"
+  },
+  "spravne": "C",
+  "postup": [
+   {
+    "text": "Celková práce představuje 6 * 10 = 60 člověkodní.",
+    "vypocet": "6*10",
+    "vysledek": 60
+   },
+   {
+    "text": "Čtyři malíři práci dokončí za 60 / 4 dní.",
+    "vypocet": "60/4",
+    "vysledek": 15
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "10-(6-4)",
+    "popis": "Odečtení rozdílu v počtu malířů od počtu dní.",
+    "rada": "Méně malířů potřebuje více času, jedná se o nepřímou úměrnost: 6 * 10 / 4 = 15 dní.",
+    "podtrhnout": "Všichni pracují stejně rychle"
+   },
+   "B": {
+    "vypocet": "6*10",
+    "popis": "Spočítán celkový objem práce v člověkodnech bez vydělení 4 malíři.",
+    "rada": "Číslo 60 je celková práce v člověkodnech. Pro 4 malíře ji vyděl čtyřmi: 60 / 4 = 15 dní.",
+    "podtrhnout": "Za kolik dní vymalují školu 4 malíři?"
+   },
+   "D": {
+    "vypocet": "10*2",
+    "popis": "Zdvojnásobení počtu dní jako při polovičním počtu pracovníků.",
+    "rada": "Čtyři malíři nepředstavují polovinu ze šesti. Správný výpočet je 6 * 10 / 4 = 15 dní.",
+    "podtrhnout": "Za kolik dní vymalují školu 4 malíři?"
+   }
+  }
+ },
+ {
+  "id": 29,
+  "typ": "přímá úměrnost",
+  "vzor": "9C/2024 úl. 16",
+  "text": "Za 4 kg jablek zaplatíme 98 Kč.",
+  "otazka": "Kolik korun zaplatíme za 6 kg stejných jablek?",
+  "nezname": {
+   "c": [
+    0,
+    1000
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "c/6=98/4"
+  ],
+  "celociselne": [
+   "c"
+  ],
+  "odpoved": {
+   "vyraz": "c",
+   "hodnota": 147,
+   "jednotka": "Kč"
+  },
+  "reseni": {
+   "c": 147
+  },
+  "moznosti": {
+   "A": 49,
+   "B": 147,
+   "C": 24.5,
+   "D": 196,
+   "E": "jiný výsledek"
+  },
+  "spravne": "B",
+  "postup": [
+   {
+    "text": "Jeden kilogram jablek stojí 98 / 4 Kč.",
+    "vypocet": "98/4",
+    "vysledek": 24.5
+   },
+   {
+    "text": "Za 6 kg zaplatíme šestinásobek.",
+    "vypocet": "24.5*6",
+    "vysledek": 147
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "98/4*2",
+    "popis": "Spočítána cena za zbývající 2 kg jablek místo za celých 6 kg.",
+    "rada": "Částka 49 Kč je cena za 2 kg jablek. Za celých 6 kg zaplatíme 98 + 49 = 147 Kč.",
+    "podtrhnout": "Kolik korun zaplatíme za 6 kg stejných jablek?"
+   },
+   "C": {
+    "vypocet": "98/4",
+    "popis": "Spočítána pouze cena za 1 kg jablek.",
+    "rada": "Číslo 24,5 Kč je cena za 1 kg. Za 6 kg zaplatíme 6 * 24,5 = 147 Kč.",
+    "podtrhnout": "Kolik korun zaplatíme za 6 kg stejných jablek?"
+   },
+   "D": {
+    "vypocet": "98*2",
+    "popis": "Spočítána cena za 8 kg jablek jako dvojnásobek 4 kg.",
+    "rada": "Částka 196 Kč odpovídá 8 kg jablek. Za 6 kg zaplatíme 6 * 24,5 = 147 Kč.",
+    "podtrhnout": "Kolik korun zaplatíme za 6 kg stejných jablek?"
+   }
+  }
+ },
+ {
+  "id": 30,
+  "typ": "přímá úměrnost",
+  "vzor": "9D/2024 úl. 16.3",
+  "text": "Čerpadlo vyčerpá 240 litrů vody za 8 minut. Čerpá stále stejně rychle.",
+  "otazka": "Kolik minut bude čerpat 390 litrů?",
+  "nezname": {
+   "t": [
+    1,
+    100
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "240/8*t=390"
+  ],
+  "celociselne": [
+   "t"
+  ],
+  "odpoved": {
+   "vyraz": "t",
+   "hodnota": 13,
+   "jednotka": "min"
+  },
+  "reseni": {
+   "t": 13
+  },
+  "moznosti": {
+   "A": 5,
+   "B": 13,
+   "C": 30,
+   "D": 16,
+   "E": "jiný výsledek"
+  },
+  "spravne": "B",
+  "postup": [
+   {
+    "text": "Rychlost čerpání je 240 litrů za 8 minut, tedy 30 litrů za minutu.",
+    "vypocet": "240/8",
+    "vysledek": 30
+   },
+   {
+    "text": "Čas pro vyčerpání 390 litrů je 390 / 30.",
+    "vypocet": "390/30",
+    "vysledek": 13
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "(390-240)/(240/8)",
+    "popis": "Spočítán pouze čas na dočerpání zbývajících 150 litrů místo celkového času.",
+    "rada": "Za 5 minut čerpadlo dočerpá zbylých 150 litrů, ale celých 390 litrů čerpá 8 + 5 = 13 minut.",
+    "podtrhnout": "Kolik minut bude čerpat 390 litrů?"
+   },
+   "C": {
+    "vypocet": "240/8",
+    "popis": "Uvedení rychlosti čerpání v litrech za minutu místo celkového času.",
+    "rada": "Číslo 30 je rychlost v litrech za minutu. Hledaný čas pro 390 litrů je 390 / 30 = 13 minut.",
+    "podtrhnout": "Kolik minut bude čerpat 390 litrů?"
+   },
+   "D": {
+    "vypocet": "8*2",
+    "popis": "Zdvojnásobení původního času bez ohledu na přesný objem.",
+    "rada": "Za 16 minut čerpadlo vyčerpá 480 litrů. Na 390 litrů potřebuje 390 / 30 = 13 minut.",
+    "podtrhnout": "Kolik minut bude čerpat 390 litrů?"
+   }
+  }
+ },
+ {
+  "id": 31,
+  "typ": "nepřímá úměrnost",
+  "vzor": "9C/2024 úl. 16",
+  "text": "Zásoba sena vystačí 12 koním na 30 dní.",
+  "otazka": "Na kolik dní vystačí stejná zásoba 18 koním?",
+  "nezname": {
+   "d": [
+    1,
+    100
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "18*d=12*30"
+  ],
+  "celociselne": [
+   "d"
+  ],
+  "odpoved": {
+   "vyraz": "d",
+   "hodnota": 20,
+   "jednotka": "dní"
+  },
+  "reseni": {
+   "d": 20
+  },
+  "moznosti": {
+   "A": 20,
+   "B": 24,
+   "C": 36,
+   "D": 45,
+   "E": "jiný výsledek"
+  },
+  "spravne": "A",
+  "postup": [
+   {
+    "text": "Celková zásoba sena je 12 * 30 = 360 krmných dávek.",
+    "vypocet": "12*30",
+    "vysledek": 360
+   },
+   {
+    "text": "Pro 18 koní vystačí zásoba na 360 / 18 dní.",
+    "vypocet": "360/18",
+    "vysledek": 20
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "B": {
+    "vypocet": "30-(18-12)",
+    "popis": "Odečtení rozdílu v počtu koní od počtu dní.",
+    "rada": "Více koní spotřebuje zásobu rychleji podle nepřímé úměrnosti: 12 * 30 / 18 = 20 dní.",
+    "podtrhnout": "stejná zásoba 18 koním"
+   },
+   "C": {
+    "vypocet": "30+(18-12)",
+    "popis": "Přičtení rozdílu v počtu koní k počtu dní.",
+    "rada": "Pro více koní zásoba nevydrží déle. Správný výpočet je 12 * 30 / 18 = 20 dní.",
+    "podtrhnout": "stejná zásoba 18 koním"
+   },
+   "D": {
+    "vypocet": "30*18/12",
+    "popis": "Použití přímé úměrnosti místo nepřímé.",
+    "rada": "Více koní znamená méně dní. Počítej: 12 * 30 / 18 = 20 dní.",
+    "podtrhnout": "stejná zásoba 18 koním"
+   }
+  }
+ },
+ {
+  "id": 32,
+  "typ": "poměr a úměrnost",
+  "vzor": "9D/2024 úl. 16.3",
+  "text": "Výkony dvou strojů jsou v poměru 2 : 5. Slabší stroj vyrobí 140 součástek za 4 hodiny.",
+  "otazka": "Kolik součástek vyrobí silnější stroj za 6 hodin?",
+  "nezname": {
+   "v": [
+    0,
+    10000
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "v=140/4/2*5*6"
+  ],
+  "celociselne": [
+   "v"
+  ],
+  "odpoved": {
+   "vyraz": "v",
+   "hodnota": 525,
+   "jednotka": "součástek"
+  },
+  "reseni": {
+   "v": 525
+  },
+  "moznosti": {
+   "A": 210,
+   "B": 350,
+   "C": 525,
+   "D": 735,
+   "E": "jiný výsledek"
+  },
+  "spravne": "C",
+  "postup": [
+   {
+    "text": "Hodinový výkon slabšího stroje je 140 / 4 součástek za hodinu.",
+    "vypocet": "140/4",
+    "vysledek": 35
+   },
+   {
+    "text": "Silnější stroj má výkon v poměru 5 : 2, tedy 35 * (5/2).",
+    "vypocet": "35*5/2",
+    "vysledek": 87.5
+   },
+   {
+    "text": "Za 6 hodin vyrobí silnější stroj 87,5 * 6 součástek.",
+    "vypocet": "87.5*6",
+    "vysledek": 525
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "140/4*6",
+    "popis": "Spočítána produkce slabšího stroje za 6 hodin místo silnějšího.",
+    "rada": "Pozor, otázka se ptá na silnější stroj. Slabší stroj vyrobí za 6 hodin 210 součástek, silnější stroj 525 součástek.",
+    "podtrhnout": "Kolik součástek vyrobí silnější stroj za 6 hodin?"
+   },
+   "B": {
+    "vypocet": "140/2*5",
+    "popis": "Spočítána produkce silnějšího stroje za 4 hodiny místo za 6 hodin.",
+    "rada": "Číslo 350 je produkce za 4 hodiny. Za 6 hodin vyrobí silnější stroj 350 / 4 * 6 = 525 součástek.",
+    "podtrhnout": "za 6 hodin?"
+   },
+   "D": {
+    "vypocet": "140/4*(1+5/2)*6",
+    "popis": "Spočítána produkce obou strojů dohromady za 6 hodin místo samotného silnějšího stroje.",
+    "rada": "Číslo 735 je součet obou strojů dohromady. Samotný silnější stroj vyrobí 525 součástek.",
+    "podtrhnout": "Kolik součástek vyrobí silnější stroj za 6 hodin?"
+   }
+  }
+ },
+ {
+  "id": 33,
+  "typ": "přímá úměrnost",
+  "vzor": "9C/2024 úl. 16",
+  "text": "Auto spotřebuje 6,4 litru benzínu na 100 km.",
+  "otazka": "Kolik litrů benzínu spotřebuje na 375 km?",
+  "nezname": {
+   "l": [
+    0,
+    100
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "l=6.4*375/100"
+  ],
+  "celociselne": [
+   "l"
+  ],
+  "odpoved": {
+   "vyraz": "l",
+   "hodnota": 24,
+   "jednotka": "l"
+  },
+  "reseni": {
+   "l": 24
+  },
+  "moznosti": {
+   "A": 22.4,
+   "B": 24,
+   "C": 19.2,
+   "D": 25.6,
+   "E": "jiný výsledek"
+  },
+  "spravne": "B",
+  "postup": [
+   {
+    "text": "Na 1 km auto spotřebuje 6,4 / 100 litru benzínu.",
+    "vypocet": "6.4/100",
+    "vysledek": 0.064
+   },
+   {
+    "text": "Na 375 km spotřebuje 375 * 0,064 litru.",
+    "vypocet": "375*0.064",
+    "vysledek": 24
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "6.4*3.5",
+    "popis": "Výpočet spotřeby pro 350 km místo pro zadaných 375 km.",
+    "rada": "Vzdálenost je 375 km. Spotřeba činí 6,4 * 3,75 = 24 litrů.",
+    "podtrhnout": "na 375 km?"
+   },
+   "C": {
+    "vypocet": "6.4*3",
+    "popis": "Spočítána spotřeba pouze na 300 km.",
+    "rada": "Na 300 km auto spotřebuje 19,2 litru, na zbylých 75 km ještě 4,8 litru, celkem 24 litrů.",
+    "podtrhnout": "na 375 km?"
+   },
+   "D": {
+    "vypocet": "6.4*4",
+    "popis": "Zaokrouhlení vzdálenosti nahoru na 400 km.",
+    "rada": "Pro 400 km by spotřeba byla 25,6 litru, ale auto ujelo 375 km, tedy 24 litrů.",
+    "podtrhnout": "na 375 km?"
+   }
+  }
+ },
+ {
+  "id": 34,
+  "typ": "společná práce",
+  "vzor": "9D/2024 úl. 13",
+  "text": "{o1} uklidí třídu sama za 30 minut, {o2} sám za 20 minut.",
+  "otazka": "Za kolik minut uklidí třídu společně?",
+  "nezname": {
+   "t": [
+    1,
+    100
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "t/30+t/20=1"
+  ],
+  "celociselne": [
+   "t"
+  ],
+  "odpoved": {
+   "vyraz": "t",
+   "hodnota": 12,
+   "jednotka": "min"
+  },
+  "reseni": {
+   "t": 12
+  },
+  "moznosti": {
+   "A": 10,
+   "B": 12,
+   "C": 25,
+   "D": 50,
+   "E": "jiný výsledek"
+  },
+  "spravne": "B",
+  "postup": [
+   {
+    "text": "Za 1 minutu uklidí {o1} 1/30 a {o2} 1/20 třídy, společně 1/30 + 1/20.",
+    "vypocet": "1/30+1/20",
+    "vysledek": 0.08333333333333333
+   },
+   {
+    "text": "Celou třídu společně uklidí za 1 / (1/12) minut.",
+    "vypocet": "1/(1/30+1/20)",
+    "vysledek": 12
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "osoby": {
+   "o1": {
+    "rod": "f",
+    "jmeno": "Anna"
+   },
+   "o2": {
+    "rod": "m",
+    "jmeno": "Bedřich"
+   }
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "30-20",
+    "popis": "Odečtení časů obou osob od sebe.",
+    "rada": "Společný čas nelze získat odečtením. Spočti výkon za 1 minutu: 1/30 + 1/20 = 1/12, společně za 12 minut.",
+    "podtrhnout": "uklidí třídu společně?"
+   },
+   "C": {
+    "vypocet": "(30+20)/2",
+    "popis": "Spočítán aritmetický průměr obou časů.",
+    "rada": "Společně uklidí rychleji než ten nejrychlejší z nich sám (20 min). Společný čas je 12 minut.",
+    "podtrhnout": "uklidí třídu společně?"
+   },
+   "D": {
+    "vypocet": "30+20",
+    "popis": "Sečtení časů obou osob dohromady.",
+    "rada": "Časy se nesčítají, protože oba uklízejí současně. Společně uklidí třídu za 12 minut.",
+    "podtrhnout": "uklidí třídu společně?"
+   }
+  }
+ },
+ {
+  "id": 35,
+  "typ": "společná práce",
+  "vzor": "9D/2024 úl. 13",
+  "text": "Jedno potrubí naplní bazén za 6 hodin, druhé za 3 hodiny.",
+  "otazka": "Za kolik hodin naplní bazén obě potrubí společně?",
+  "nezname": {
+   "t": [
+    1,
+    100
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "t/6+t/3=1"
+  ],
+  "celociselne": [
+   "t"
+  ],
+  "odpoved": {
+   "vyraz": "t",
+   "hodnota": 2,
+   "jednotka": "h"
+  },
+  "reseni": {
+   "t": 2
+  },
+  "moznosti": {
+   "A": 2,
+   "B": 3,
+   "C": 4.5,
+   "D": 9,
+   "E": "jiný výsledek"
+  },
+  "spravne": "A",
+  "postup": [
+   {
+    "text": "Za 1 hodinu naplní první potrubí 1/6 a druhé 1/3 bazénu.",
+    "vypocet": "1/6+1/3",
+    "vysledek": 0.5
+   },
+   {
+    "text": "Celý bazén naplní obě potrubí společně za 1 / 0,5 hodiny.",
+    "vypocet": "1/0.5",
+    "vysledek": 2
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "B": {
+    "vypocet": "3",
+    "popis": "Uvedení času samotného rychlejšího potrubí místo společného napouštění.",
+    "rada": "Při společném napouštění se bazén naplní rychleji než za 3 hodiny: 1 / (1/6 + 1/3) = 2 hodiny.",
+    "podtrhnout": "obě potrubí společně?"
+   },
+   "C": {
+    "vypocet": "(6+3)/2",
+    "popis": "Spočítán průměr obou časů.",
+    "rada": "Obě potrubí naplní bazén za kratší dobu než to rychlejší, tedy za 2 hodiny.",
+    "podtrhnout": "obě potrubí společně?"
+   },
+   "D": {
+    "vypocet": "6+3",
+    "popis": "Sečtení časů obou potrubí dohromady.",
+    "rada": "Časy se nesčítají, protože potrubí pracují současně. Bazén naplní za 2 hodiny.",
+    "podtrhnout": "obě potrubí společně?"
+   }
+  }
+ },
+ {
+  "id": 36,
+  "typ": "společná práce",
+  "vzor": "9D/2024 úl. 13",
+  "text": "Maminka oloupe 3 kg brambor za 45 minut. Tatínek oloupe 2 kg brambor za 60 minut. Oba loupou stále stejně rychle.",
+  "otazka": "Za kolik minut oloupou společně 5 kg brambor?",
+  "nezname": {
+   "t": [
+    1,
+    1000
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "t*3/45+t*2/60=5"
+  ],
+  "celociselne": [
+   "t"
+  ],
+  "odpoved": {
+   "vyraz": "t",
+   "hodnota": 50,
+   "jednotka": "min"
+  },
+  "reseni": {
+   "t": 50
+  },
+  "moznosti": {
+   "A": 30,
+   "B": 75,
+   "C": 50,
+   "D": 105,
+   "E": "jiný výsledek"
+  },
+  "spravne": "C",
+  "postup": [
+   {
+    "text": "Maminka oloupe za minutu 3 / 45 kg brambor.",
+    "vypocet": "3/45",
+    "vysledek": 0.06666666666666667
+   },
+   {
+    "text": "Tatínek oloupe za minutu 2 / 60 kg brambor.",
+    "vypocet": "2/60",
+    "vysledek": 0.03333333333333333
+   },
+   {
+    "text": "Společně za minutu oloupou 1/15 + 1/30 = 1/10 kg brambor.",
+    "vypocet": "3/45+2/60",
+    "vysledek": 0.1
+   },
+   {
+    "text": "Na 5 kg brambor potřebují 5 / 0,1 minut.",
+    "vypocet": "5/0.1",
+    "vysledek": 50
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "60/2",
+    "popis": "Uvedení času, za který tatínek oloupe pouze 1 kg brambor.",
+    "rada": "Za 30 minut oloupe tatínek jen 1 kg brambor. Na 5 kg potřebují společně 50 minut.",
+    "podtrhnout": "Za kolik minut oloupou společně 5 kg brambor?"
+   },
+   "B": {
+    "vypocet": "45/3*5",
+    "popis": "Spočítán čas, za který by 5 kg oloupala samotná maminka.",
+    "rada": "Maminka by 5 kg loupala 75 minut, ale společně s tatínkem to stihnou za 50 minut.",
+    "podtrhnout": "oloupou společně 5 kg brambor?"
+   },
+   "D": {
+    "vypocet": "45+60",
+    "popis": "Sečtení zadaných časů maminky a tatínka dohromady.",
+    "rada": "Časy se nesčítají, protože loupou současně. Společně oloupou 5 kg za 50 minut.",
+    "podtrhnout": "oloupou společně 5 kg brambor?"
+   }
+  }
+ },
+ {
+  "id": 37,
+  "typ": "společná práce",
+  "vzor": "9D/2024 úl. 13",
+  "text": "Dva zedníci postaví zeď společně za 6 dní. První zedník by ji sám postavil za 10 dní.",
+  "otazka": "Za kolik dní by zeď postavil sám druhý zedník?",
+  "nezname": {
+   "d": [
+    1,
+    100
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "6/10+6/d=1"
+  ],
+  "celociselne": [
+   "d"
+  ],
+  "odpoved": {
+   "vyraz": "d",
+   "hodnota": 15,
+   "jednotka": "dní"
+  },
+  "reseni": {
+   "d": 15
+  },
+  "moznosti": {
+   "A": 4,
+   "B": 8,
+   "C": 15,
+   "D": 16,
+   "E": "jiný výsledek"
+  },
+  "spravne": "C",
+  "postup": [
+   {
+    "text": "Společně udělají za den 1/6 zdi a první zedník sám 1/10 zdi.",
+    "vypocet": "1/6-1/10",
+    "vysledek": 0.06666666666666667
+   },
+   {
+    "text": "Druhý zedník sám postaví zeď za 1 / (1/15) dní.",
+    "vypocet": "1/(1/6-1/10)",
+    "vysledek": 15
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "10-6",
+    "popis": "Odečtení společného času od času prvního zedníka.",
+    "rada": "Časy nelze přímo odečítat. Druhý zedník udělá za den 1/6 - 1/10 = 1/15 zdi, sám ji postaví za 15 dní.",
+    "podtrhnout": "postaví zeď společně za 6 dní"
+   },
+   "B": {
+    "vypocet": "(10+6)/2",
+    "popis": "Spočítán průměr obou zadaných časů.",
+    "rada": "Průměr časů neudává výkon zedníka. Správný výpočet je 1 / (1/6 - 1/10) = 15 dní.",
+    "podtrhnout": "postavil sám druhý zedník?"
+   },
+   "D": {
+    "vypocet": "10+6",
+    "popis": "Sečtení společného času a času prvního zedníka.",
+    "rada": "Druhý zedník nepotřebuje součet obou časů. Z rovnice 1/10 + 1/x = 1/6 vychází 15 dní.",
+    "podtrhnout": "postavil sám druhý zedník?"
+   }
+  }
+ },
+ {
+  "id": 38,
+  "typ": "jednotky",
+  "vzor": "9D/2024 úl. 1",
+  "text": "Trasa do školy měří 3,6 km. {o1} má krok dlouhý 60 cm, {o2} 80 cm.",
+  "otazka": "O kolik kroků udělá {o1} na celé trase více než {o2}?",
+  "nezname": {
+   "x": [
+    0,
+    100000
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "x=360000/60-360000/80"
+  ],
+  "celociselne": [
+   "x"
+  ],
+  "odpoved": {
+   "vyraz": "x",
+   "hodnota": 1500,
+   "jednotka": "kroků"
+  },
+  "reseni": {
+   "x": 1500
+  },
+  "moznosti": {
+   "A": 150,
+   "B": 6000,
+   "C": 1500,
+   "D": 4500,
+   "E": "jiný výsledek"
+  },
+  "spravne": "C",
+  "postup": [
+   {
+    "text": "Délka trasy 3,6 km je 360 000 cm.",
+    "vypocet": "3.6*100000",
+    "vysledek": 360000
+   },
+   {
+    "text": "{o1} udělá 360 000 / 60 kroků.",
+    "vypocet": "360000/60",
+    "vysledek": 6000
+   },
+   {
+    "text": "{o2} udělá 360 000 / 80 kroků.",
+    "vypocet": "360000/80",
+    "vysledek": 4500
+   },
+   {
+    "text": "{o1} udělá o 6 000 - 4 500 kroků více.",
+    "vypocet": "6000-4500",
+    "vysledek": 1500
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "osoby": {
+   "o1": {
+    "rod": "f",
+    "jmeno": "Ema"
+   },
+   "o2": {
+    "rod": "m",
+    "jmeno": "Filip"
+   }
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "36000/60-36000/80",
+    "popis": "Chyba v převodu kilometrů na centimetry (převod 3,6 km jako 36 000 cm místo 360 000 cm).",
+    "rada": "Pozor na převod jednotek: 3,6 km = 360 000 cm. Rozdíl je 360 000 / 60 - 360 000 / 80 = 1 500 kroků.",
+    "podtrhnout": "Trasa do školy měří 3,6 km"
+   },
+   "B": {
+    "vypocet": "360000/60",
+    "popis": "Spočítán počet kroků, které udělá {o1}, místo rozdílu.",
+    "rada": "6 000 kroků udělá {o1}. {o2} udělá 4 500 kroků, spočítej rozdíl: 6 000 - 4 500 = 1 500 kroků.",
+    "podtrhnout": "O kolik kroků udělá {o1} na celé trase více než {o2}?"
+   },
+   "D": {
+    "vypocet": "360000/80",
+    "popis": "Spočítán počet kroků, které udělá {o2}, místo rozdílu.",
+    "rada": "4 500 kroků udělá {o2}. {o1} udělá o 6 000 - 4 500 = 1 500 kroků více.",
+    "podtrhnout": "O kolik kroků udělá {o1} na celé trase více než {o2}?"
+   }
+  }
+ },
+ {
+  "id": 39,
+  "typ": "pohyb",
+  "vzor": "9A/2023 úl. 1",
+  "text": "Vlak jede průměrnou rychlostí 80 km/h.",
+  "otazka": "Kolik minut mu trvá cesta dlouhá 60 km?",
+  "nezname": {
+   "t": [
+    1,
+    300
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "80*t/60=60"
+  ],
+  "celociselne": [
+   "t"
+  ],
+  "odpoved": {
+   "vyraz": "t",
+   "hodnota": 45,
+   "jednotka": "min"
+  },
+  "reseni": {
+   "t": 45
+  },
+  "moznosti": {
+   "A": 0.75,
+   "B": 45,
+   "C": 48,
+   "D": 75,
+   "E": "jiný výsledek"
+  },
+  "spravne": "B",
+  "postup": [
+   {
+    "text": "Čas v hodinách vypočítáme jako dráha dělená rychlostí: 60 / 80 h.",
+    "vypocet": "60/80",
+    "vysledek": 0.75
+   },
+   {
+    "text": "Hodiny převedeme na minuty vynásobením šedesáti.",
+    "vypocet": "0.75*60",
+    "vysledek": 45
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "60/80",
+    "popis": "Uvedení času v hodinách místo v minutách.",
+    "rada": "Číslo 0,75 udává čas v hodinách. Otázka žádá minuty: 0,75 * 60 = 45 minut.",
+    "podtrhnout": "Kolik minut mu trvá cesta dlouhá 60 km?"
+   },
+   "C": {
+    "vypocet": "60*0.8",
+    "popis": "Vynásobení dráhy 60 číslem 0,8 místo správného dělení dráhy rychlostí.",
+    "rada": "Čas se počítá jako dráha dělená rychlostí: t = 60 / 80 h = 0,75 h = 45 minut.",
+    "podtrhnout": "rychlostí 80 km/h"
+   },
+   "D": {
+    "vypocet": "60/80*100",
+    "popis": "Záměna desetinné části hodiny (0,75 h) za 75 minut.",
+    "rada": "Jedna hodina má 60 minut, ne 100. Čas 0,75 hodiny odpovídá 0,75 * 60 = 45 minutám.",
+    "podtrhnout": "Kolik minut mu trvá cesta dlouhá 60 km?"
+   }
+  }
+ },
+ {
+  "id": 40,
+  "typ": "pohyb",
+  "vzor": "9B/2024 úl. 1",
+  "text": "Cyklista ujel za 2 hodiny a 15 minut 54 km.",
+  "otazka": "Jakou průměrnou rychlostí jel (v km/h)?",
+  "nezname": {
+   "v": [
+    1,
+    100
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "v*2.25=54"
+  ],
+  "celociselne": [
+   "v"
+  ],
+  "odpoved": {
+   "vyraz": "v",
+   "hodnota": 24,
+   "jednotka": "km/h"
+  },
+  "reseni": {
+   "v": 24
+  },
+  "moznosti": {
+   "A": 18,
+   "B": 27,
+   "C": 24,
+   "D": 135,
+   "E": "jiný výsledek"
+  },
+  "spravne": "C",
+  "postup": [
+   {
+    "text": "Čas 2 hodiny a 15 minut převedeme na hodiny: 2 + 15 / 60 = 2,25 h.",
+    "vypocet": "2+15/60",
+    "vysledek": 2.25
+   },
+   {
+    "text": "Průměrná rychlost je dráha dělená časem: 54 / 2,25 km/h.",
+    "vypocet": "54/2.25",
+    "vysledek": 24
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "54/3",
+    "popis": "Zaokrouhlení celkového času nahoru na 3 hodiny.",
+    "rada": "Čas je 2,25 hodiny, nikoli 3 hodiny. Rychlost spočti jako 54 / 2,25 = 24 km/h.",
+    "podtrhnout": "za 2 hodiny a 15 minut"
+   },
+   "B": {
+    "vypocet": "54/2",
+    "popis": "Zanedbání 15 minut a dělení pouze 2 hodinami.",
+    "rada": "Nezapomeň na 15 minut: 2 hodiny a 15 minut jsou 2,25 hodiny. Rychlost je 54 / 2,25 = 24 km/h.",
+    "podtrhnout": "za 2 hodiny a 15 minut"
+   },
+   "D": {
+    "vypocet": "2*60+15",
+    "popis": "Spočítán celkový čas v minutách místo průměrné rychlosti.",
+    "rada": "Číslo 135 udává pouze čas v minutách. V hodinách je to 2,25 h, rychlost je 54 / 2,25 = 24 km/h.",
+    "podtrhnout": "Jakou průměrnou rychlostí jel (v km/h)?"
+   }
+  }
+ },
+ {
+  "id": 41,
+  "typ": "jednotky",
+  "vzor": "9A/2023 úl. 2",
+  "text": "Do sklenic se nalévá džus po 2 dl. Máme 3 litry džusu.",
+  "otazka": "Kolik sklenic naplníme?",
+  "nezname": {
+   "n": [
+    0,
+    100
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "n*0.2=3"
+  ],
+  "celociselne": [
+   "n"
+  ],
+  "odpoved": {
+   "vyraz": "n",
+   "hodnota": 15,
+   "jednotka": "sklenic"
+  },
+  "reseni": {
+   "n": 15
+  },
+  "moznosti": {
+   "A": 6,
+   "B": 1.5,
+   "C": 15,
+   "D": 150,
+   "E": "jiný výsledek"
+  },
+  "spravne": "C",
+  "postup": [
+   {
+    "text": "Tři litry džusu převedeme na decilitry: 3 * 10 dl.",
+    "vypocet": "3*10",
+    "vysledek": 30
+   },
+   {
+    "text": "Počet sklenic po 2 dl je 30 / 2.",
+    "vypocet": "30/2",
+    "vysledek": 15
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "3*2",
+    "popis": "Vynásobení litrů a decilitrů místo dělení.",
+    "rada": "Nejdříve převeď 3 litry na decilitry (30 dl) a pak děl: 30 / 2 = 15 sklenic.",
+    "podtrhnout": "Kolik sklenic naplníme?"
+   },
+   "B": {
+    "vypocet": "3/2",
+    "popis": "Dělení 3 litrů 2 decilitry bez převodu na stejné jednotky.",
+    "rada": "Nelze dělit litry decilitry přímo. Převeď 3 litry = 30 dl, počet sklenic je 30 / 2 = 15.",
+    "podtrhnout": "Do sklenic se nalévá džus po 2 dl. Máme 3 litry džusu."
+   },
+   "D": {
+    "vypocet": "300/2",
+    "popis": "Chybný převod 3 litrů na 300 dl místo 30 dl.",
+    "rada": "1 litr má 10 decilitrů, tedy 3 l = 30 dl (nikoli 300 dl). Sklenic je 30 / 2 = 15.",
+    "podtrhnout": "Máme 3 litry džusu."
+   }
+  }
+ },
+ {
+  "id": 42,
+  "typ": "jednotky",
+  "vzor": "9A/2023 úl. 2",
+  "text": "Do jedné sklenice se vejde 0,35 litru mléka.",
+  "otazka": "Kolik mililitrů mléka je ve 4 plných sklenicích?",
+  "nezname": {
+   "m": [
+    0,
+    100000
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "m=4*0.35*1000"
+  ],
+  "celociselne": [
+   "m"
+  ],
+  "odpoved": {
+   "vyraz": "m",
+   "hodnota": 1400,
+   "jednotka": "ml"
+  },
+  "reseni": {
+   "m": 1400
+  },
+  "moznosti": {
+   "A": 140,
+   "B": 1400,
+   "C": 14000,
+   "D": 1.4,
+   "E": "jiný výsledek"
+  },
+  "spravne": "B",
+  "postup": [
+   {
+    "text": "Ve 4 sklenicích je 4 * 0,35 litru mléka.",
+    "vypocet": "4*0.35",
+    "vysledek": 1.4
+   },
+   {
+    "text": "Litry převedeme na mililitry vynásobením 1 000.",
+    "vypocet": "1.4*1000",
+    "vysledek": 1400
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "4*0.35*100",
+    "popis": "Chyba v převodu litrů na mililitry (násobení 100 místo 1 000).",
+    "rada": "1 litr má 1 000 ml. Ve 4 sklenicích je 1,4 litru = 1 400 ml.",
+    "podtrhnout": "Kolik mililitrů mléka je ve 4 plných sklenicích?"
+   },
+   "C": {
+    "vypocet": "4*0.35*10000",
+    "popis": "Chyba v převodu litrů na mililitry s přebytečnou nulou navíc.",
+    "rada": "1 litr = 1 000 ml, takže 1,4 litru = 1 400 ml (ne 14 000 ml).",
+    "podtrhnout": "Kolik mililitrů mléka je ve 4 plných sklenicích?"
+   },
+   "D": {
+    "vypocet": "4*0.35",
+    "popis": "Uvedení výsledku v litrech bez požadovaného převodu na mililitry.",
+    "rada": "Ve 4 sklenicích je sice 1,4 litru, ale otázka žádá mililitry: 1,4 * 1 000 = 1 400 ml.",
+    "podtrhnout": "Kolik mililitrů mléka je ve 4 plných sklenicích?"
+   }
+  }
+ },
+ {
+  "id": 43,
+  "typ": "ceny a soustava",
+  "vzor": "9D/2024 úl. 7",
+  "text": "Za 3 rohlíky a 2 housky zaplatíme 23 Kč. Za 1 rohlík a 2 housky zaplatíme 13 Kč.",
+  "otazka": "Kolik korun stojí jedna houska?",
+  "nezname": {
+   "r": [
+    0,
+    50
+   ],
+   "h": [
+    0,
+    50
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "3*r+2*h=23",
+   "r+2*h=13"
+  ],
+  "celociselne": [
+   "r",
+   "h"
+  ],
+  "odpoved": {
+   "vyraz": "h",
+   "hodnota": 4,
+   "jednotka": "Kč"
+  },
+  "reseni": {
+   "r": 5,
+   "h": 4
+  },
+  "moznosti": {
+   "A": 10,
+   "B": 4,
+   "C": 5,
+   "D": 6.5,
+   "E": "jiný výsledek"
+  },
+  "spravne": "B",
+  "postup": [
+   {
+    "text": "Odečtením nákupů zjistíme cenu 2 rohlíků: 23 - 13 Kč.",
+    "vypocet": "23-13",
+    "vysledek": 10
+   },
+   {
+    "text": "Jeden rohlík stojí 10 / 2 Kč.",
+    "vypocet": "10/2",
+    "vysledek": 5
+   },
+   {
+    "text": "Za 2 housky zaplatíme 13 - 5 Kč.",
+    "vypocet": "13-5",
+    "vysledek": 8
+   },
+   {
+    "text": "Jedna houska stojí 8 / 2 Kč.",
+    "vypocet": "8/2",
+    "vysledek": 4
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "23-13",
+    "popis": "Spočítána cena za dva rohlíky (rozdíl obou nákupů) místo ceny housky.",
+    "rada": "Částka 10 Kč je cena dvou rohlíků. Jeden rohlík stojí 5 Kč, houska pak (13 - 5) / 2 = 4 Kč.",
+    "podtrhnout": "Kolik korun stojí jedna houska?"
+   },
+   "C": {
+    "vypocet": "(23-13)/2",
+    "popis": "Spočítána cena jednoho rohlíku místo hledané ceny housky.",
+    "rada": "Pozor, otázka se ptá na housku. Rohlík stojí 5 Kč, jedna houska stojí (13 - 5) / 2 = 4 Kč.",
+    "podtrhnout": "Kolik korun stojí jedna houska?"
+   },
+   "D": {
+    "vypocet": "13/2",
+    "popis": "Vydělení druhého nákupu dvěma bez odečtení ceny rohlíku.",
+    "rada": "Ve druhém nákupu je i rohlík za 5 Kč. Dvě housky stojí 13 - 5 = 8 Kč, jedna houska 4 Kč.",
+    "podtrhnout": "Za 1 rohlík a 2 housky zaplatíme 13 Kč"
+   }
+  }
+ },
+ {
+  "id": 44,
+  "typ": "ceny a soustava",
+  "vzor": "9D/2024 úl. 7",
+  "text": "Na představení přišlo 120 diváků. Dospělí platili 180 Kč, děti 110 Kč. Všichni dohromady zaplatili 17 680 Kč.",
+  "otazka": "Kolik dětí bylo na představení?",
+  "nezname": {
+   "d": [
+    0,
+    120
+   ]
+  },
+  "pomocne": {
+   "a": "120-d"
+  },
+  "podminky": [
+   "180*a+110*d=17680"
+  ],
+  "celociselne": [
+   "d"
+  ],
+  "odpoved": {
+   "vyraz": "d",
+   "hodnota": 56,
+   "jednotka": "dětí"
+  },
+  "reseni": {
+   "d": 56
+  },
+  "moznosti": {
+   "A": 56,
+   "B": 60,
+   "C": 64,
+   "D": 70,
+   "E": "jiný výsledek"
+  },
+  "spravne": "A",
+  "postup": [
+   {
+    "text": "Kdyby všech 120 diváků byli dospělí, vybralo by se 120 * 180 Kč.",
+    "vypocet": "120*180",
+    "vysledek": 21600
+   },
+   {
+    "text": "Skutečný výběr je o 21 600 - 17 680 Kč nižší.",
+    "vypocet": "21600-17680",
+    "vysledek": 3920
+   },
+   {
+    "text": "Každé dítě zaplatí o 180 - 110 = 70 Kč méně než dospělý.",
+    "vypocet": "180-110",
+    "vysledek": 70
+   },
+   {
+    "text": "Dětí bylo 3 920 / 70.",
+    "vypocet": "3920/70",
+    "vysledek": 56
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "B": {
+    "vypocet": "120/2",
+    "popis": "Předpoklad rovnoměrného rozdělení na polovinu dětí a dospělých.",
+    "rada": "Dětí a dospělých nebylo stejně. Počet dětí spočti jako (120 * 180 - 17 680) / (180 - 110) = 56.",
+    "podtrhnout": "Dospělí platili 180 Kč, děti 110 Kč"
+   },
+   "C": {
+    "vypocet": "120-(120*180-17680)/(180-110)",
+    "popis": "Spočítán počet dospělých místo počtu dětí.",
+    "rada": "Pozor, otázka se ptá na děti. Dospělých bylo 64, dětí bylo 120 - 64 = 56.",
+    "podtrhnout": "Kolik dětí bylo na představení?"
+   },
+   "D": {
+    "vypocet": "180-110",
+    "popis": "Uvedení rozdílu cen vstupenek místo počtu dětí.",
+    "rada": "Částka 70 Kč je cenový rozdíl vstupenek. Počet dětí na představení je 56.",
+    "podtrhnout": "Kolik dětí bylo na představení?"
+   }
+  }
+ },
+ {
+  "id": 45,
+  "typ": "ceny a soustava",
+  "vzor": "9D/2024 úl. 7",
+  "text": "Skupina 20 turistů si objednala oběd. Menu A stálo 160 Kč, menu B 190 Kč. Celkem zaplatili 3 470 Kč.",
+  "otazka": "Kolik turistů si dalo menu B?",
+  "nezname": {
+   "b": [
+    0,
+    20
+   ]
+  },
+  "pomocne": {
+   "a": "20-b"
+  },
+  "podminky": [
+   "160*a+190*b=3470"
+  ],
+  "celociselne": [
+   "b"
+  ],
+  "odpoved": {
+   "vyraz": "b",
+   "hodnota": 9,
+   "jednotka": "turistů"
+  },
+  "reseni": {
+   "b": 9
+  },
+  "moznosti": {
+   "A": 9,
+   "B": 11,
+   "C": 10,
+   "D": 30,
+   "E": "jiný výsledek"
+  },
+  "spravne": "A",
+  "postup": [
+   {
+    "text": "Kdyby si všech 20 turistů dalo levnější menu A, zaplatili by 20 * 160 Kč.",
+    "vypocet": "20*160",
+    "vysledek": 3200
+   },
+   {
+    "text": "Příplatek za dražší menu je 3 470 - 3 200 Kč.",
+    "vypocet": "3470-3200",
+    "vysledek": 270
+   },
+   {
+    "text": "Jedno menu B je o 190 - 160 Kč dražší než menu A.",
+    "vypocet": "190-160",
+    "vysledek": 30
+   },
+   {
+    "text": "Menu B si dalo 270 / 30 turistů.",
+    "vypocet": "270/30",
+    "vysledek": 9
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "B": {
+    "vypocet": "20-(3470-20*160)/(190-160)",
+    "popis": "Spočítán počet turistů s menu A místo počtu turistů s menu B.",
+    "rada": "Pozor, otázka se ptá na menu B. Menu A si dalo 11 turistů, menu B si zvolilo 20 - 11 = 9 turistů.",
+    "podtrhnout": "Kolik turistů si dalo menu B?"
+   },
+   "C": {
+    "vypocet": "20/2",
+    "popis": "Předpoklad stejného rozdělení turistů na obě menu napůl.",
+    "rada": "Turisté se nerozdělili napůl. Menu B si dalo (3 470 - 20 * 160) / (190 - 160) = 9 turistů.",
+    "podtrhnout": "Menu A stálo 160 Kč, menu B 190 Kč"
+   },
+   "D": {
+    "vypocet": "190-160",
+    "popis": "Uvedení cenového rozdílu mezi oběma menu místo počtu turistů.",
+    "rada": "Číslo 30 Kč je cenový rozdíl mezi menu. Počet turistů s menu B je 9.",
+    "podtrhnout": "Kolik turistů si dalo menu B?"
+   }
+  }
+ },
+ {
+  "id": 46,
+  "typ": "ceny a soustava",
+  "vzor": "9D/2024 úl. 6",
+  "text": "V garáži stojí auta a motorky, dohromady 23 vozidel. Všechna vozidla mají dohromady 76 kol.",
+  "otazka": "Kolik aut stojí v garáži?",
+  "nezname": {
+   "a": [
+    0,
+    23
+   ]
+  },
+  "pomocne": {
+   "m": "23-a"
+  },
+  "podminky": [
+   "4*a+2*m=76"
+  ],
+  "celociselne": [
+   "a"
+  ],
+  "odpoved": {
+   "vyraz": "a",
+   "hodnota": 15,
+   "jednotka": "aut"
+  },
+  "reseni": {
+   "a": 15
+  },
+  "moznosti": {
+   "A": 8,
+   "B": 46,
+   "C": 15,
+   "D": 19,
+   "E": "jiný výsledek"
+  },
+  "spravne": "C",
+  "postup": [
+   {
+    "text": "Kdyby všechna 23 vozidla byla motorky, měla by dohromady 23 * 2 kol.",
+    "vypocet": "23*2",
+    "vysledek": 46
+   },
+   {
+    "text": "Zbývající kola patří autům (každé auto má o 2 kola více): 76 - 46 kol.",
+    "vypocet": "76-46",
+    "vysledek": 30
+   },
+   {
+    "text": "Každé auto má o 4 - 2 = 2 kola více než motorka.",
+    "vypocet": "4-2",
+    "vysledek": 2
+   },
+   {
+    "text": "Aut stojí v garáži 30 / 2.",
+    "vypocet": "30/2",
+    "vysledek": 15
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "23-(76-23*2)/(4-2)",
+    "popis": "Spočítán počet motorek místo počtu aut.",
+    "rada": "Pozor, otázka se ptá na auta. V garáži stojí 8 motorek, aut je 23 - 8 = 15.",
+    "podtrhnout": "Kolik aut stojí v garáži?"
+   },
+   "B": {
+    "vypocet": "23*2",
+    "popis": "Spočítán počet kol při předpokladu, že všechna vozidla mají jen 2 kola.",
+    "rada": "Číslo 46 udává kola pro dvoukolová vozidla. Zbývající kola (76 - 46 = 30) patří autům: aut je 30 / 2 = 15.",
+    "podtrhnout": "Všechna vozidla mají dohromady 76 kol"
+   },
+   "D": {
+    "vypocet": "76/4",
+    "popis": "Předpoklad, že všechna vozidla v garáži mají 4 kola.",
+    "rada": "Všechna vozidla nejsou auta, část tvoří motorky se 2 koly. V garáži stojí 15 aut a 8 motorek.",
+    "podtrhnout": "V garáži stojí auta a motorky"
+   }
+  }
+ },
+ {
+  "id": 47,
+  "typ": "celočíselné",
+  "vzor": "9D/2023 úl. 7",
+  "text": "Parkoviště má 60 míst pro osobní auta. Autobus zabere 3 místa. Na plně obsazeném parkovišti stojí stejný počet osobních aut jako autobusů.",
+  "otazka": "Kolik autobusů stojí na parkovišti?",
+  "nezname": {
+   "b": [
+    0,
+    60
+   ]
+  },
+  "pomocne": {
+   "a": "b"
+  },
+  "podminky": [
+   "a+3*b=60"
+  ],
+  "celociselne": [
+   "b"
+  ],
+  "odpoved": {
+   "vyraz": "b",
+   "hodnota": 15,
+   "jednotka": "autobusů"
+  },
+  "reseni": {
+   "b": 15
+  },
+  "moznosti": {
+   "A": 45,
+   "B": 15,
+   "C": 20,
+   "D": 30,
+   "E": "jiný výsledek"
+  },
+  "spravne": "B",
+  "postup": [
+   {
+    "text": "Jedno auto zabere 1 místo a jeden autobus 3 místa, dohromady 1 + 3 = 4 místa.",
+    "vypocet": "1+3",
+    "vysledek": 4
+   },
+   {
+    "text": "Počet autobusů (i aut) je 60 / 4.",
+    "vypocet": "60/4",
+    "vysledek": 15
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "60/(1+3)*3",
+    "popis": "Spočítán počet parkovacích míst zabraných autobusy místo počtu samotných autobusů.",
+    "rada": "Autobusy zaberou 45 míst, ale každý potřebuje 3 místa. Samotných autobusů je 45 / 3 = 15.",
+    "podtrhnout": "Kolik autobusů stojí na parkovišti?"
+   },
+   "C": {
+    "vypocet": "60/3",
+    "popis": "Dělení celkové kapacity 3 místy bez započtení osobních aut.",
+    "rada": "Na parkovišti stojí stejný počet aut i autobusů. Každá dvojice zabere 1 + 3 = 4 místa: 60 / 4 = 15 autobusů.",
+    "podtrhnout": "stejný počet osobních aut jako autobusů"
+   },
+   "D": {
+    "vypocet": "60/2",
+    "popis": "Rozdělení kapacity 60 míst na dvě stejné části bez zohlednění velikosti autobusu.",
+    "rada": "Autobus zabere 3 místa, ne jedno. Dvojice auto + autobus zabere 4 místa: 60 / 4 = 15 autobusů.",
+    "podtrhnout": "Autobus zabere 3 místa"
+   }
+  }
+ },
+ {
+  "id": 48,
+  "typ": "celočíselné",
+  "vzor": "9C/2024 úl. 14",
+  "text": "{o1} přečetl o 4 komiksy více než {o2}. {o3} přečetl o čtvrtinu více komiksů než {o2}. {o1} a {o3} přečetli stejně komiksů.",
+  "otazka": "Kolik komiksů přečetl {o1}?",
+  "nezname": {
+   "c": [
+    0,
+    1000
+   ]
+  },
+  "pomocne": {
+   "p": "c+4",
+   "h": "c*5/4"
+  },
+  "podminky": [
+   "p=h"
+  ],
+  "celociselne": [
+   "c",
+   "h"
+  ],
+  "odpoved": {
+   "vyraz": "p",
+   "hodnota": 20,
+   "jednotka": "komiksů"
+  },
+  "reseni": {
+   "c": 16
+  },
+  "moznosti": {
+   "A": 16,
+   "B": 4,
+   "C": 20,
+   "D": 24,
+   "E": "jiný výsledek"
+  },
+  "spravne": "C",
+  "postup": [
+   {
+    "text": "4 komiksy navíc jsou čtvrtina toho, co přečetl {o2}. {o2} tedy přečetl 4 * 4.",
+    "vypocet": "4*4",
+    "vysledek": 16
+   },
+   {
+    "text": "{o1} přečetl o 4 komiksy více než {o2}.",
+    "vypocet": "16+4",
+    "vysledek": 20
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "osoby": {
+   "o1": {
+    "rod": "m",
+    "jmeno": "Petr"
+   },
+   "o2": {
+    "rod": "m",
+    "jmeno": "Cyril"
+   },
+   "o3": {
+    "rod": "m",
+    "jmeno": "Honza"
+   }
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "4*4",
+    "popis": "Spočítán počet komiksů, které přečetl {o2}, a ne ten, na který se ptá otázka.",
+    "rada": "Pozor, otázka se ptá na to, kolik komiksů má {o1}. {o2} přečte 16 komiksů, {o1} má o 4 více: 16 + 4 = 20 komiksů.",
+    "podtrhnout": "Kolik komiksů přečetl {o1}?"
+   },
+   "B": {
+    "vypocet": "4",
+    "popis": "Uveden jen zadaný rozdíl 4 místo celkového počtu komiksů.",
+    "rada": "Číslo 4 je pouze rozdíl. {o1} má celkem 16 + 4 = 20 komiksů.",
+    "podtrhnout": "Kolik komiksů přečetl {o1}?"
+   },
+   "D": {
+    "vypocet": "4*4+4+4",
+    "popis": "Dvojí přičtení rozdílu 4 komiksů k hotovému výsledku.",
+    "rada": "{o2} má 16 komiksů a {o1} o 4 více, tedy 20 komiksů. Nepřičítej číslo 4 podruhé.",
+    "podtrhnout": "{o1} přečetl o 4 komiksy více než {o2}"
+   }
+  }
+ },
+ {
+  "id": 49,
+  "typ": "celočíselné",
+  "vzor": "9D/2024 úl. 15",
+  "text": "Na pouti stojí lístky na atrakce 15 Kč nebo 20 Kč. {o1} utratil přesně 115 Kč a chtěl mít co nejvíce lístků.",
+  "otazka": "Kolik lístků {o1} koupil?",
+  "nezname": {
+   "a": [
+    0,
+    10
+   ],
+   "b": [
+    0,
+    10
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "15*a+20*b=115"
+  ],
+  "cil": {
+   "max": "a+b"
+  },
+  "celociselne": [
+   "a",
+   "b"
+  ],
+  "odpoved": {
+   "vyraz": "a+b",
+   "hodnota": 7,
+   "jednotka": "lístků"
+  },
+  "reseni": {
+   "a": 5,
+   "b": 2
+  },
+  "moznosti": {
+   "A": 5,
+   "B": 6,
+   "C": 7,
+   "D": 40,
+   "E": "jiný výsledek"
+  },
+  "spravne": "C",
+  "postup": [
+   {
+    "text": "Pro co nejvíce lístků koupíme maximum levnějších lístků po 15 Kč: 5 lístků za 5 * 15 Kč.",
+    "vypocet": "5*15",
+    "vysledek": 75
+   },
+   {
+    "text": "Zbývá 115 - 75 Kč na dražší lístky po 20 Kč.",
+    "vypocet": "115-75",
+    "vysledek": 40
+   },
+   {
+    "text": "Za 40 Kč koupí 40 / 20 = 2 lístky po 20 Kč.",
+    "vypocet": "40/20",
+    "vysledek": 2
+   },
+   {
+    "text": "Celkem koupil 5 + 2 lístků.",
+    "vypocet": "5+2",
+    "vysledek": 7
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "osoby": {
+   "o1": {
+    "rod": "m",
+    "jmeno": "Ondra"
+   }
+  },
+  "chyby": {
+   "A": {
+    "vypocet": "(115-15)/20",
+    "popis": "Dělení částky dražším lístkem (20 Kč) se zanedbáním zbylých peněz.",
+    "rada": "Pro maximum lístků je třeba nakoupit co nejvíce levnějších lístků: 5 lístků po 15 Kč a 2 po 20 Kč dává celkem 7 lístků.",
+    "podtrhnout": "co nejvíce lístků"
+   },
+   "B": {
+    "vypocet": "1+5",
+    "popis": "Volba kombinace za 115 Kč bez dosažení maximálního možného počtu lístků.",
+    "rada": "Kombinace 1 lístku za 15 Kč a 5 po 20 Kč dává 6 lístků. Při nákupu 5 lístků po 15 Kč a 2 po 20 Kč je lístků 7.",
+    "podtrhnout": "co nejvíce lístků"
+   },
+   "D": {
+    "vypocet": "2*20",
+    "popis": "Spočítána útrata za lístky po 20 Kč místo počtu lístků.",
+    "rada": "Částka 40 Kč je útrata za lístky po 20 Kč. Otázka žádá celkový počet lístků: 5 + 2 = 7.",
+    "podtrhnout": "Kolik lístků {o1} koupil?"
+   }
+  }
+ },
+ {
+  "id": 50,
+  "typ": "celočíselné",
+  "vzor": "9D/2023 úl. 7",
+  "text": "Vejce se balí do plných krabiček po 6 a po 10 kusech. Zabalili 76 vajec do 10 krabiček.",
+  "otazka": "Kolik krabiček bylo po 10 vejcích?",
+  "nezname": {
+   "b": [
+    0,
+    10
+   ]
+  },
+  "pomocne": {
+   "a": "10-b"
+  },
+  "podminky": [
+   "6*a+10*b=76"
+  ],
+  "celociselne": [
+   "b"
+  ],
+  "odpoved": {
+   "vyraz": "b",
+   "hodnota": 4,
+   "jednotka": "krabiček"
+  },
+  "reseni": {
+   "b": 4
+  },
+  "moznosti": {
+   "A": 4,
+   "B": 6,
+   "C": 40,
+   "D": 10,
+   "E": "jiný výsledek"
+  },
+  "spravne": "A",
+  "postup": [
+   {
+    "text": "Kdyby bylo všech 10 krabiček po 6 vejcích, zabalili by 10 * 6 vajec.",
+    "vypocet": "10*6",
+    "vysledek": 60
+   },
+   {
+    "text": "Zbývajících 76 - 60 vajec se rozdělí po 4 vejcích do větších krabiček.",
+    "vypocet": "76-60",
+    "vysledek": 16
+   },
+   {
+    "text": "Větší krabička pojme o 10 - 6 = 4 vejce více.",
+    "vypocet": "10-6",
+    "vysledek": 4
+   },
+   {
+    "text": "Krabiček po 10 vejcích bylo 16 / 4.",
+    "vypocet": "16/4",
+    "vysledek": 4
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  },
+  "chyby": {
+   "B": {
+    "vypocet": "10-(76-10*6)/(10-6)",
+    "popis": "Spočítán počet krabiček po 6 vejcích místo po 10 vejcích.",
+    "rada": "Pozor, otázka se ptá na krabičky po 10 vejcích. Menších krabiček bylo 6, po 10 vejcích byly 10 - 6 = 4 krabičky.",
+    "podtrhnout": "Kolik krabiček bylo po 10 vejcích?"
+   },
+   "C": {
+    "vypocet": "4*10",
+    "popis": "Spočítán počet vajec v krabičkách po 10 kusech místo počtu samotných krabiček.",
+    "rada": "Ve větších krabičkách je sice 40 vajec, ale samotných krabiček po 10 vejcích jsou 4.",
+    "podtrhnout": "Kolik krabiček bylo po 10 vejcích?"
+   },
+   "D": {
+    "vypocet": "10",
+    "popis": "Uvedení celkového počtu všech krabiček místo krabiček po 10 vejcích.",
+    "rada": "Číslo 10 je celkový počet všech krabiček dohromady. Krabiček po 10 vejcích jsou pouze 4.",
+    "podtrhnout": "Kolik krabiček bylo po 10 vejcích?"
+   }
+  }
+ },
+ {
+  "id": 51,
+  "typ": "dělení celku",
+  "vzor": "9C/2024 úl. 1",
+  "text": "Školní knihovna koupila 12 stejných knih a zaplatila za ně 2 616 Kč.",
+  "otazka": "Kolik korun stála jedna kniha?",
+  "nezname": {
+   "c": [
+    1,
+    3000
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "12*c=2616"
+  ],
+  "celociselne": [
+   "c"
+  ],
+  "odpoved": {
+   "vyraz": "c",
+   "hodnota": 218,
+   "jednotka": "Kč"
+  },
+  "reseni": {
+   "c": 218
+  },
+  "moznosti": {
+   "A": 21.8,
+   "B": 2604,
+   "C": 31392,
+   "D": 2628,
+   "E": "jiný výsledek"
+  },
+  "spravne": "E",
+  "chyby": {
+   "A": {
+    "vypocet": "2616/120",
+    "popis": "Při dělení posunula desetinnou čárku.",
+    "rada": "Zkontroluj odhad: 12 knih po 20 Kč by stálo jen 240 Kč, to je moc málo. 2 616 : 12 = 218.",
+    "podtrhnout": "jedna kniha"
+   },
+   "B": {
+    "vypocet": "2616-12",
+    "popis": "Odečetla počet knih místo dělení.",
+    "rada": "Cena jedné knihy je celková cena rozdělená na 12 stejných dílů, tedy dělení: 2 616 : 12.",
+    "podtrhnout": "12 stejných knih"
+   },
+   "C": {
+    "vypocet": "2616*12",
+    "popis": "Násobila místo dělení.",
+    "rada": "Jedna kniha musí stát méně než všech 12 dohromady. Dělíme: 2 616 : 12.",
+    "podtrhnout": "jedna kniha"
+   },
+   "D": {
+    "vypocet": "2616+12",
+    "popis": "Sečetla čísla ze zadání.",
+    "rada": "Hledáme cenu jedné knihy z ceny za 12 knih, to je dělení: 2 616 : 12.",
+    "podtrhnout": "12 stejných knih"
+   }
+  },
+  "postup": [
+   {
+    "text": "12 stejných knih stálo dohromady 2 616 Kč, cenu jedné knihy dostaneme dělením.",
+    "vypocet": "2616/12",
+    "vysledek": 218
+   },
+   {
+    "text": "Výsledek 218 Kč mezi možnostmi A až D není, proto je správně E (jiný výsledek). Kontrola: 12 · 218 = 2 616."
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  }
+ },
+ {
+  "id": 52,
+  "typ": "procenta",
+  "vzor": "9D/2024 úl. 2",
+  "text": "Televize stála 12 500 Kč. Cena se snížila o 8 %.",
+  "otazka": "Kolik korun stojí televize teď?",
+  "nezname": {
+   "x": [
+    0,
+    12500
+   ]
+  },
+  "pomocne": {},
+  "podminky": [
+   "x=12500*0.92"
+  ],
+  "celociselne": [
+   "x"
+  ],
+  "odpoved": {
+   "vyraz": "x",
+   "hodnota": 11500,
+   "jednotka": "Kč"
+  },
+  "reseni": {
+   "x": 11500
+  },
+  "moznosti": {
+   "A": 12492,
+   "B": 1000,
+   "C": 13500,
+   "D": 1150,
+   "E": "jiný výsledek"
+  },
+  "spravne": "E",
+  "chyby": {
+   "A": {
+    "vypocet": "12500-8",
+    "popis": "Odečetla 8 Kč místo 8 %.",
+    "rada": "8 % není 8 Kč. Nejdřív spočítej 8 % z 12 500 Kč: 12 500 · 0,08 = 1 000 Kč.",
+    "podtrhnout": "snížila o 8 %"
+   },
+   "B": {
+    "vypocet": "12500*0.08",
+    "popis": "Spočítala jen slevu, ne novou cenu.",
+    "rada": "1 000 Kč je sleva. Otázka se ptá na novou cenu: 12 500 − 1 000.",
+    "podtrhnout": "Kolik korun stojí televize teď"
+   },
+   "C": {
+    "vypocet": "12500*1.08",
+    "popis": "Cenu zvýšila místo snížení.",
+    "rada": "Cena se snížila, takže se platí 92 % původní ceny, ne 108 %.",
+    "podtrhnout": "Cena se snížila"
+   },
+   "D": {
+    "vypocet": "12500*0.092",
+    "popis": "Spletla desetinné číslo: 92 % zapsala jako 0,092.",
+    "rada": "92 % = 0,92. Zkontroluj odhad: po malé slevě musí cena zůstat kolem 11 až 12 tisíc.",
+    "podtrhnout": "snížila o 8 %"
+   }
+  },
+  "postup": [
+   {
+    "text": "Sleva 8 % z 12 500 Kč.",
+    "vypocet": "12500*0.08",
+    "vysledek": 1000
+   },
+   {
+    "text": "Nová cena je původní cena bez slevy.",
+    "vypocet": "12500-1000",
+    "vysledek": 11500
+   },
+   {
+    "text": "11 500 Kč mezi možnostmi A až D není, proto je správně E (jiný výsledek)."
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  }
+ },
+ {
+  "id": 53,
+  "typ": "poměr",
+  "vzor": "9D/2023 úl. 1",
+  "text": "Učitelka rozdělila 72 bonbonů mezi dvě skupiny dětí v poměru 5 : 3.",
+  "otazka": "Kolik bonbonů dostala skupina, která dostala méně?",
+  "nezname": {
+   "k": [
+    1,
+    72
+   ]
+  },
+  "pomocne": {
+   "a": "5*k",
+   "b": "3*k"
+  },
+  "podminky": [
+   "a+b=72"
+  ],
+  "celociselne": [
+   "k"
+  ],
+  "odpoved": {
+   "vyraz": "b",
+   "hodnota": 27,
+   "jednotka": "bonbonů"
+  },
+  "reseni": {
+   "k": 9
+  },
+  "moznosti": {
+   "A": 45,
+   "B": 24,
+   "C": 14.4,
+   "D": 9,
+   "E": "jiný výsledek"
+  },
+  "spravne": "E",
+  "chyby": {
+   "A": {
+    "vypocet": "72/8*5",
+    "popis": "Spočítala větší část místo menší.",
+    "rada": "Ptají se na skupinu, která dostala méně, ta má 3 díly: 3 · 9 = 27.",
+    "podtrhnout": "skupina, která dostala méně"
+   },
+   "B": {
+    "vypocet": "72/3",
+    "popis": "Vydělila celek číslem 3 z poměru.",
+    "rada": "Celek má 5 + 3 = 8 dílů. Jeden díl je 72 : 8 = 9, menší skupina má 3 díly.",
+    "podtrhnout": "v poměru 5 : 3"
+   },
+   "C": {
+    "vypocet": "72/5",
+    "popis": "Vydělila celek číslem 5 z poměru.",
+    "rada": "Nejdřív sečti díly: 5 + 3 = 8. Jeden díl je 72 : 8 = 9.",
+    "podtrhnout": "v poměru 5 : 3"
+   },
+   "D": {
+    "vypocet": "72/8",
+    "popis": "Spočítala jen jeden díl.",
+    "rada": "9 bonbonů je jeden díl. Menší skupina dostala 3 díly: 3 · 9 = 27.",
+    "podtrhnout": "skupina, která dostala méně"
+   }
+  },
+  "postup": [
+   {
+    "text": "Poměr 5 : 3 znamená dohromady 8 dílů. Jeden díl:",
+    "vypocet": "72/8",
+    "vysledek": 9
+   },
+   {
+    "text": "Menší skupina má 3 díly.",
+    "vypocet": "3*9",
+    "vysledek": 27
+   },
+   {
+    "text": "27 mezi možnostmi A až D není, proto je správně E (jiný výsledek)."
+   }
+  ],
+  "overeni": {
+   "nezavisle": "gemini-3.8-flash (pi)",
+   "datum": "2026-11-10",
+   "shoda": true
+  }
+ }
+]
