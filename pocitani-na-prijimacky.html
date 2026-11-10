@@ -710,18 +710,18 @@ function genDesetinna(level){
     const tp=level===1?pick(['abc','aqv','abpc']):pick(['xyzwv','xyvwz','xyzwv']);
     const task='Vypočtěte. Dodržuj přednost operací.';
     if(tp==='abc'){const a=d1(5,99),b=pick([Fr(ri(2,9)),d1(2,19)]),c=d1(2,59);const op=pick(['+','-']);const m=F.mul(b,c),r=op==='+'?F.add(a,m):F.sub(a,m);
-      return{kind:'num',ans:r,task,prompt:`${decStr(a)}${opS(op)}${decStr(b)} · ${decStr(c)} =`,steps:[`Násobení má přednost: ${decStr(b)} · ${decStr(c)} = ${decStr(m)}`,`${decStr(a)}${opS(op)}${decStr(m)} = ${decStr(r)}`],plain:`${decP(a)}${op}${decP(b)}*${decP(c)}`}}
+      return{kind:'num',ans:r,task,prompt:`${decStr(a)}${opS(op)}${decStr(b)} · ${decStr(c)} =`,steps:[`${K('Násobení má přednost')}: ${decStr(b)} · ${decStr(c)} = ${decStr(m)}`,`${decStr(a)}${opS(op)}${decStr(m)} = ${N(decStr(r))}`],plain:`${decP(a)}${op}${decP(b)}*${decP(c)}`}}
     if(tp==='aqv'){const v=pick(divs),q=d1(2,40),w=F.mul(q,v),a=d1(5,99);const op=pick(['+','-']);const r=op==='+'?F.add(a,q):F.sub(a,q);
-      return{kind:'num',ans:r,task,prompt:`${decStr(a)}${opS(op)}${decStr(w)} : ${decStr(v)} =`,steps:[`Dělení má přednost: ${decStr(w)} : ${decStr(v)} = ${decStr(q)}`,`${decStr(a)}${opS(op)}${decStr(q)} = ${decStr(r)}`],plain:`${decP(a)}${op}${decP(w)}:${decP(v)}`}}
+      return{kind:'num',ans:r,task,prompt:`${decStr(a)}${opS(op)}${decStr(w)} : ${decStr(v)} =`,steps:[`${K('Dělení má přednost')}: ${decStr(w)} : ${decStr(v)} = ${decStr(q)}`,`${decStr(a)}${opS(op)}${decStr(q)} = ${N(decStr(r))}`],plain:`${decP(a)}${op}${decP(w)}:${decP(v)}`}}
     if(tp==='abpc'){const a=pick([Fr(ri(2,9)),d1(2,9)]),b=d1(10,60),c=d1(2,40);const op=pick(['+','-']);const s=op==='+'?F.add(b,c):F.sub(b,c);const r=F.mul(a,s);
-      return{kind:'num',ans:r,task,prompt:`${decStr(a)} · (${decStr(b)}${opS(op)}${decStr(c)}) =`,steps:[`Nejdřív závorka: ${decStr(b)}${opS(op)}${decStr(c)} = ${decStr(s)}`,`${decStr(a)} · ${decHp(s)} = ${decStr(r)}`],plain:`${decP(a)}*(${decP(b)}${op}${decP(c)})`}}
+      return{kind:'num',ans:r,task,prompt:`${decStr(a)} · (${decStr(b)}${opS(op)}${decStr(c)}) =`,steps:[`${K('Nejdřív závorka')}: ${decStr(b)}${opS(op)}${decStr(c)} = ${decStr(s)}`,`${decStr(a)} · ${decHp(s)} = ${N(decStr(r))}`],plain:`${decP(a)}*(${decP(b)}${op}${decP(c)})`}}
     if(tp==='xyzwv'){const x=d1(2,9),y=d1(5,60),z=d1(5,60);const s=F.sub(y,z);if(F.isZero(s))continue;const m=F.mul(x,s);const v=pick(divs),q=d1(2,30),w=F.mul(q,v);const op=pick(['+','-']);const r=op==='+'?F.add(m,q):F.sub(m,q);
       return{kind:'num',ans:r,task,prompt:`${decStr(x)} · (${decStr(y)} ${MINUS} ${decStr(z)})${opS(op)}${decStr(w)} : ${decStr(v)} =`,
-        steps:[`Nejdřív závorka: ${decStr(y)} ${MINUS} ${decStr(z)} = ${decStr(s)}`,`Pak násobení a dělení: ${decStr(x)} · ${decHp(s)} = ${decStr(m)} a ${decStr(w)} : ${decStr(v)} = ${decStr(q)}`,`Nakonec: ${decStr(m)}${opS(op)}${decStr(q)} = ${decStr(r)}`],
+        steps:[`${K('Nejdřív závorka')}: ${decStr(y)} ${MINUS} ${decStr(z)} = ${decStr(s)}`,`Pak násobení a dělení: ${decStr(x)} · ${decHp(s)} = ${decStr(m)} a ${decStr(w)} : ${decStr(v)} = ${decStr(q)}`,`Nakonec: ${decStr(m)}${opS(op)}${decStr(q)} = ${N(decStr(r))}`],
         plain:`${decP(x)}*(${decP(y)}-${decP(z)})${op}${decP(w)}:${decP(v)}`}}
     if(tp==='xyvwz'){const v=pick(divs),q=d1(-30,40);if(F.isZero(q))continue;const y=d1(2,50),x=F.add(F.mul(q,v),y);if(x.n<=0)continue;const w=d1(2,9),z=d1(2,30),m=F.mul(w,z),r=F.sub(q,m);const xy=F.sub(x,y);
       return{kind:'num',ans:r,task,prompt:`(${decStr(x)} ${MINUS} ${decStr(y)}) : ${decStr(v)} ${MINUS} ${decStr(w)} · ${decStr(z)} =`,
-        steps:[`Nejdřív závorka: ${decStr(x)} ${MINUS} ${decStr(y)} = ${decStr(xy)}`,`Pak dělení a násobení: ${decHp(xy)} : ${decStr(v)} = ${decStr(q)} a ${decStr(w)} · ${decStr(z)} = ${decStr(m)}`,`Nakonec: ${decStr(q)} ${MINUS} ${decStr(m)} = ${decStr(r)}`],
+        steps:[`${K('Nejdřív závorka')}: ${decStr(x)} ${MINUS} ${decStr(y)} = ${decStr(xy)}`,`Pak dělení a násobení: ${decHp(xy)} : ${decStr(v)} = ${decStr(q)} a ${decStr(w)} · ${decStr(z)} = ${decStr(m)}`,`Nakonec: ${decStr(q)} ${MINUS} ${decStr(m)} = ${N(decStr(r))}`],
         plain:`(${decP(x)}-${decP(y)}):${decP(v)}-${decP(w)}*${decP(z)}`}}
   }
 }
@@ -731,13 +731,13 @@ const MT={
   sq:()=>{const k=ri(2,15);return{html:`${k}²`,plain:`${k}^2`,val:Fr(k*k),expl:`${k}² = ${k} · ${k} = ${k*k}`}},
   cube:()=>{const k=ri(2,5);return{html:`${k}³`,plain:`${k}^3`,val:Fr(k*k*k),expl:`${k}³ = ${k} · ${k} · ${k} = ${k*k*k}`}},
   root:()=>{const k=ri(2,20);return{html:`√<span class="ov">${k*k}</span>`,plain:`√${k*k}`,val:Fr(k),expl:`√${k*k} = ${k}, protože ${k}² = ${k*k}`}},
-  negPar:()=>{const k=ri(2,9);return{html:`(${MINUS}${k})²`,plain:`(-${k})^2`,val:Fr(k*k),expl:`(${MINUS}${k})² = (${MINUS}${k}) · (${MINUS}${k}) = ${k*k}, mínus krát mínus je plus`}},
-  negCube:()=>{const k=ri(2,4);return{html:`(${MINUS}${k})³`,plain:`(-${k})^3`,val:Fr(-k*k*k),expl:`(${MINUS}${k})³ = (${MINUS}${k}) · (${MINUS}${k}) · (${MINUS}${k}) = ${MINUS}${k*k*k}, lichá mocnina záporného čísla je záporná`}},
-  prod:()=>{const c=ri(2,5),k=ri(2,6);return{html:`${c} · ${k}²`,plain:`${c}*${k}^2`,val:Fr(c*k*k),expl:`nejdřív mocnina, pak násobení: ${c} · ${k}² = ${c} · ${k*k} = ${c*k*k}`}},
+  negPar:()=>{const k=ri(2,9);return{html:`(${MINUS}${k})²`,plain:`(-${k})^2`,val:Fr(k*k),expl:`(${MINUS}${k})² = (${MINUS}${k}) · (${MINUS}${k}) = ${k*k}, ${K('mínus krát mínus je plus')}`}},
+  negCube:()=>{const k=ri(2,4);return{html:`(${MINUS}${k})³`,plain:`(-${k})^3`,val:Fr(-k*k*k),expl:`(${MINUS}${k})³ = (${MINUS}${k}) · (${MINUS}${k}) · (${MINUS}${k}) = ${MINUS}${k*k*k}, ${K('lichá mocnina záporného čísla je záporná')}`}},
+  prod:()=>{const c=ri(2,5),k=ri(2,6);return{html:`${c} · ${k}²`,plain:`${c}*${k}^2`,val:Fr(c*k*k),expl:`${K('nejdřív mocnina, pak násobení')}: ${c} · ${k}² = ${c} · ${k*k} = ${c*k*k}`}},
   fracSq:()=>{const f=rfr(6,7);const s=F.pow(f,2);return{html:`(${fracH(f)})²`,plain:`${frP(f)}^2`,val:s,expl:`(${fracH(f)})² = ${frBox(f.n+'²',f.d+'²')} = ${fracH(s)}`}},
-  rootFrac:()=>{let a,b;do{a=ri(1,9);b=ri(2,10)}while(gcd(a,b)>1);return{html:`√<span class="ov">${frBox(a*a,b*b)}</span>`,plain:`√(${a*a}/${b*b})`,val:Fr(a,b),expl:`√<span class="ov">${frBox(a*a,b*b)}</span> = ${frBox(a,b)}, odmocníme zvlášť čitatel i jmenovatel`}},
-  decSq:()=>{const k=ri(1,9),f=Fr(k,10),s=F.pow(f,2);return{html:`0,${k}²`,plain:`0.${k}^2`,val:s,expl:`0,${k}² = 0,${k} · 0,${k} = ${decStr(s)}, desetinná místa se sčítají`}},
-  leadNeg:()=>{const k=ri(2,9);return{html:`${MINUS}${k}²`,plain:`-${k}^2`,val:Fr(-k*k),expl:`${MINUS}${k}² = ${MINUS}${k*k}. Pozor: mínus není v závorce, takže se nemocní`}}
+  rootFrac:()=>{let a,b;do{a=ri(1,9);b=ri(2,10)}while(gcd(a,b)>1);return{html:`√<span class="ov">${frBox(a*a,b*b)}</span>`,plain:`√(${a*a}/${b*b})`,val:Fr(a,b),expl:`√<span class="ov">${frBox(a*a,b*b)}</span> = ${frBox(a,b)}, ${K('odmocníme zvlášť čitatel i jmenovatel')}`}},
+  decSq:()=>{const k=ri(1,9),f=Fr(k,10),s=F.pow(f,2);return{html:`0,${k}²`,plain:`0.${k}^2`,val:s,expl:`0,${k}² = 0,${k} · 0,${k} = ${decStr(s)}, ${K('desetinná místa se sčítají')}`}},
+  leadNeg:()=>{const k=ri(2,9);return{html:`${MINUS}${k}²`,plain:`-${k}^2`,val:Fr(-k*k),expl:`${MINUS}${k}² = ${MINUS}${k*k}. Pozor, ${X('mínus není v závorce, takže se nemocní')}`}}
 };
 function genMocniny(level){
   for(let t=0;t<2000;t++){
@@ -754,7 +754,7 @@ function genMocniny(level){
     const prompt=terms.map((x,i)=>i===0?x.html:opS(ops[i])+x.html).join('')+' =';
     const plain=terms.map((x,i)=>i===0?x.plain:ops[i]+x.plain).join('');
     const sum=terms.map((x,i)=>i===0?fmt(x.val):opS(ops[i])+fmtP(x.val)).join('');
-    return{kind:'num',ans:res,task:'Vypočtěte.',prompt,steps:terms.map(x=>x.expl).concat([`Dosadíme a spočítáme: ${sum} = ${fmt(res)}`]),plain,solFmt:fmt===fracH?'frac':'dec'};
+    return{kind:'num',ans:res,task:'Vypočtěte.',prompt,steps:terms.map(x=>x.expl).concat([`Dosadíme a spočítáme: ${sum} = ${N(fmt(res))}`]),plain,solFmt:fmt===fracH?'frac':'dec'};
   }
 }
 
@@ -765,22 +765,22 @@ function genProcenta(level){
     const tp=level===1?pick(['cast','kolik','zvys','sniz']):pick(['cast','kolik','zcelku','puvodni','okolik','zvys']);
     if(tp==='cast'){const p=pick(nice);const base=100/gcd(p,100);const Z=base*ri(1,Math.floor(2000/base));if(Z<20)continue;const r=Z*p/100;const one=Fr(Z,100);
       const ctx=pick([`Kolik je ${p} % z ${Z}?`,`Ve škole je ${Z} žáků a ${p} % z nich dojíždí autobusem. Kolik žáků dojíždí?`,`Nemocnice má ${Z} lůžek, ${p} % z nich je na interně. Kolik lůžek je na interně?`]);
-      return{kind:'num',unit:true,ans:Fr(r),task:'Vypočtěte.',prompt:`<span class="txt">${ctx}</span>`,steps:[`1 % z ${Z} je ${Z} : 100 = ${decStr(one)}`,`${p} % je ${p} · ${decStr(one)} = ${r}`,`Jinak: ${p} % = ${decStr(Fr(p,100))}, takže ${decStr(Fr(p,100))} · ${Z} = ${r}`]}}
+      return{kind:'num',unit:true,ans:Fr(r),task:'Vypočtěte.',prompt:`<span class="txt">${ctx}</span>`,steps:[`1 % z ${Z} je ${Z} : 100 = ${decStr(one)}`,`${p} % je ${p} · ${decStr(one)} = ${N(r)}`,`Jinak: ${p} % = ${decStr(Fr(p,100))}, takže ${decStr(Fr(p,100))} · ${Z} = ${r}`]}}
     if(tp==='kolik'){const B=pick([20,25,40,50,80,120,150,200,250,300,400,500,800]);const opts=[];for(let p=5;p<=95;p+=5)if(B*p%100===0)opts.push(p);const p=pick(opts);const A=B*p/100;
       const ctx=pick([`Kolik procent je ${A} z ${B}?`,`V testu bylo ${B} bodů a Bára získala ${A}. Kolik procent bodů získala?`]);
-      return{kind:'num',unit:true,ans:Fr(p),task:'Vypočtěte.',prompt:`<span class="txt">${ctx}</span>`,steps:[`Část vydělíme celkem: ${A} : ${B} = ${decStr(Fr(A,B))}`,`${decStr(Fr(A,B))} je ${p} %, protože 1 = 100 %`]}}
+      return{kind:'num',unit:true,ans:Fr(p),task:'Vypočtěte.',prompt:`<span class="txt">${ctx}</span>`,steps:[`${K('Část vydělíme celkem')}: ${A} : ${B} = ${decStr(Fr(A,B))}`,`${decStr(Fr(A,B))} je ${N(p+' %')}, protože ${K('1 = 100 %')}`]}}
     if(tp==='zvys'||tp==='sniz'){const p=pick(nice);const base=100/gcd(p,100);const Z=base*ri(1,Math.floor(3000/base));if(Z<50)continue;const ch=Z*p/100;const r=tp==='zvys'?Z+ch:Z-ch;
       const ctx=tp==='zvys'?`Cena ${Z} Kč se zvýšila o ${p} %. Kolik korun stojí zboží teď?`:`Bunda stála ${Z} Kč, teď je ve slevě ${p} %. Kolik korun stojí po slevě?`;
       const k=tp==='zvys'?Fr(100+p,100):Fr(100-p,100);
-      return{kind:'num',unit:true,ans:Fr(r),task:'Vypočtěte.',prompt:`<span class="txt">${ctx}</span>`,steps:[`${p} % z ${Z} je ${Z} : 100 · ${p} = ${ch}`,tp==='zvys'?`${Z} + ${ch} = ${r} Kč`:`${Z} ${MINUS} ${ch} = ${r} Kč`,`Rychleji: ${tp==='zvys'?'nová cena je':'po slevě platíme'} ${tp==='zvys'?100+p:100-p} % původní ceny, tedy ${Z} · ${decStr(k)} = ${r}`]}}
-    if(tp==='zcelku'){const p=pick(nice);const base=100/gcd(p,100);const X=base*ri(1,Math.floor(1500/base));if(X<20)continue;const A=X*p/100;
-      return{kind:'num',unit:true,ans:Fr(X),task:'Vypočtěte.',prompt:`<span class="txt">${p} % neznámého čísla je ${A}. Jaké je to číslo?</span>`,steps:[`${p} % … ${A}, takže 1 % … ${A} : ${p} = ${numH(Fr(A,p))}`,`100 % … ${numH(Fr(A,p))} · 100 = ${X}`]}}
-    if(tp==='puvodni'){const p=pick([10,20,25,30,40,50,15]);const base=100/gcd(100-p,100);const X=base*ri(1,Math.floor(3000/base));if(X<50)continue;const C=X*(100-p)/100;
-      return{kind:'num',unit:true,ans:Fr(X),task:'Vypočtěte.',trap:'K ceně po slevě nepřičítej procenta. Sleva byla z původní ceny, ne z nové.',prompt:`<span class="txt">Po slevě ${p} % stojí boty ${C} Kč. Kolik korun stály před slevou?</span>`,
-        steps:[`Po slevě ${p} % platíme ${100-p} % původní ceny, takže ${100-p} % … ${C} Kč`,`1 % … ${C} : ${100-p} = ${numH(Fr(C,100-p))} Kč`,`100 % … ${numH(Fr(C,100-p))} · 100 = ${X} Kč`,`Pozor, nejde jen přičíst ${p} % k ${C}. Procenta se počítají z původní ceny.`]}}
+      return{kind:'num',unit:true,ans:Fr(r),task:'Vypočtěte.',prompt:`<span class="txt">${ctx}</span>`,steps:[`${p} % z ${Z} je ${Z} : 100 · ${p} = ${ch}`,tp==='zvys'?`${Z} + ${ch} = ${N(r+' Kč')}`:`${Z} ${MINUS} ${ch} = ${N(r+' Kč')}`,`Rychleji: ${tp==='zvys'?'nová cena je':'po slevě platíme'} ${tp==='zvys'?100+p:100-p} % původní ceny, tedy ${Z} · ${decStr(k)} = ${r}`]}}
+    if(tp==='zcelku'){const p=pick(nice);const base=100/gcd(p,100);const Xc=base*ri(1,Math.floor(1500/base));if(Xc<20)continue;const A=Xc*p/100;
+      return{kind:'num',unit:true,ans:Fr(Xc),task:'Vypočtěte.',prompt:`<span class="txt">${p} % neznámého čísla je ${A}. Jaké je to číslo?</span>`,steps:[`${p} % … ${A}, takže 1 % … ${A} : ${p} = ${numH(Fr(A,p))}`,`100 % … ${numH(Fr(A,p))} · 100 = ${N(Xc)}`]}}
+    if(tp==='puvodni'){const p=pick([10,20,25,30,40,50,15]);const base=100/gcd(100-p,100);const Xc=base*ri(1,Math.floor(3000/base));if(Xc<50)continue;const C=Xc*(100-p)/100;
+      return{kind:'num',unit:true,ans:Fr(Xc),task:'Vypočtěte.',trap:'<b class="hx">K ceně po slevě nepřičítej procenta.</b> Sleva byla z původní ceny, ne z nové.',prompt:`<span class="txt">Po slevě ${p} % stojí boty ${C} Kč. Kolik korun stály před slevou?</span>`,
+        steps:[`Po slevě ${p} % ${K(`platíme ${100-p} % původní ceny`)}, takže ${100-p} % … ${C} Kč`,`1 % … ${C} : ${100-p} = ${numH(Fr(C,100-p))} Kč`,`100 % … ${numH(Fr(C,100-p))} · 100 = ${N(Xc+' Kč')}`,`Pozor, ${X(`nejde jen přičíst ${p} % k ${C}`)}. Procenta se počítají z původní ceny.`]}}
     if(tp==='okolik'){const p=pick(nice);const base=100/gcd(p,100);const B=base*ri(1,Math.floor(800/base));if(B<10)continue;const A=B+B*p/100;
       return{kind:'num',unit:true,ans:Fr(p),task:'Vypočtěte.',prompt:`<span class="txt">O kolik procent je číslo ${A} větší než číslo ${B}?</span>`,
-        trap:'Procenta počítáš z čísla, se kterým porovnáváš, tedy z toho za slovem „než“.',steps:[`Rozdíl: ${A} ${MINUS} ${B} = ${A-B}`,`Porovnáváme s číslem ${B} (to je 100 %): ${A-B} : ${B} = ${decStr(Fr(A-B,B))}, tedy ${p} %`]}}
+        trap:'Procenta počítáš z čísla, se kterým porovnáváš, tedy <b class="hx">z toho za slovem „než“</b>.',steps:[`Rozdíl: ${A} ${MINUS} ${B} = ${A-B}`,`${K(`Porovnáváme s číslem ${B} (to je 100 %)`)}: ${A-B} : ${B} = ${decStr(Fr(A-B,B))}, tedy ${N(p+' %')}`]}}
   }
 }
 
@@ -792,45 +792,45 @@ function genRoznasobovani(level){
     const tp=level===1?pick(['r1','r2','r3']):pick(['r4','r5','r6','r7','r8']);
     if(tp==='r1'){const a=ri(2,7),b=ri(1,6),c=riNZ(-9,9),d=ri(2,7),e=ri(1,6),f=riNZ(-9,9);
       const B=lin(b,c),E=lin(e,f);const p1=prodT([T(a,0)],B),p2=prodT([T(-d,0)],E);const res=sumT(p1.concat(p2));if(P.nz(res)===0)continue;
-      return{kind:'poly',v,ans:res,task,trap:'Mínus před číslem a závorkou mění znaménka obou členů v závorce.',prompt:`${a} · (${termsH(B,v)}) ${MINUS} ${d} · (${termsH(E,v)}) =`,
-        steps:[S('Číslo před závorkou vynásobí každý člen v závorce.',`${a} · (${termsH(B,v)}) = ${termsH(p1,v)}`),S(`Druhou závorku násobíme číslem ${MINUS}${d}, i s tím mínusem. Proto se změní znaménka obou členů.`,`${MINUS}${d} · (${termsH(E,v)}) = ${termsH(p2,v)}`),S('Sečteme členy se stejnou mocninou: zvlášť členy s proměnnou, zvlášť čísla.',`${termsH(p1.concat(p2),v)} = ${polyH(res,v)}`)],plain:`${a}*(${polyPlain(sumT(B),v)})-${d}*(${polyPlain(sumT(E),v)})`}}
+      return{kind:'poly',v,ans:res,task,trap:'Mínus před číslem a závorkou <b class="hx">mění znaménka obou členů</b> v závorce.',prompt:`${a} · (${termsH(B,v)}) ${MINUS} ${d} · (${termsH(E,v)}) =`,
+        steps:[S(`Číslo před závorkou vynásobí ${K('každý člen v závorce')}.`,`${a} · (${termsH(B,v)}) = ${termsH(p1,v)}`),S(`Druhou závorku násobíme číslem ${MINUS}${d}, ${K('i s tím mínusem')}. Proto se ${X('změní znaménka obou členů')}.`,`${MINUS}${d} · (${termsH(E,v)}) = ${termsH(p2,v)}`),S(`Sečteme členy se stejnou mocninou: ${K('zvlášť členy s proměnnou, zvlášť čísla')}.`,`${termsH(p1.concat(p2),v)} = ${N(polyH(res,v))}`)],plain:`${a}*(${polyPlain(sumT(B),v)})-${d}*(${polyPlain(sumT(E),v)})`}}
     if(tp==='r2'||tp==='r3'){const a=tp==='r2'?1:ri(2,5),c=tp==='r2'?1:ri(1,4),b=riNZ(-9,9),d=riNZ(-9,9);const A=lin(a,b),B=lin(c,d);const pr=prodT(A,B);const res=sumT(pr);
       return{kind:'poly',v,ans:res,task,trap:'Dvě závorky: každý člen první závorky násobíš každým členem druhé. Vzniknou 4 součiny.',prompt:`(${termsH(A,v)}) · (${termsH(B,v)}) =`,
-        steps:[S('Každý člen první závorky vynásobíme každým členem druhé závorky. Vzniknou čtyři součiny. Pozor na znaménka: mínus krát mínus je plus.',termsH(pr,v)),S('Sečteme členy se stejnou mocninou:',polyH(res,v))],plain:`(${polyPlain(sumT(A),v)})*(${polyPlain(sumT(B),v)})`}}
+        steps:[S(`${K('Každý člen první závorky vynásobíme každým členem druhé závorky.')} Vzniknou čtyři součiny. Pozor na znaménka: ${X('mínus krát mínus je plus')}.`,termsH(pr,v)),S('Sečteme členy se stejnou mocninou:',N(polyH(res,v)))],plain:`(${polyPlain(sumT(A),v)})*(${polyPlain(sumT(B),v)})`}}
     if(tp==='r4'){const a=riNZ(-9,9),b=ri(1,9),c=ri(2,5);const A=lin(1,a),B=lin(1,-b);const sq=[T(1,2),T(2*a,1),T(a*a,0)];const pr=prodT(B,[T(c,1)]);const res=sumT(sq.concat(pr));
-      return{kind:'poly',v,ans:res,task,trap:`Druhá mocnina závorky má tři členy: (${V(v)} + 3)² = ${V(v)}² + 6${V(v)} + 9, ne ${V(v)}² + 9.`,prompt:`(${termsH(A,v)})² + (${termsH(B,v)}) · ${c}${V(v)} =`,
-        steps:[S(`Druhou mocninu spočítáme podle vzorce (první ${a>0?'+':MINUS} druhý)² = první² ${a>0?'+':MINUS} 2 · první · druhý + druhý². Tenhle vzorec najdeš i v testu.`,`(${termsH(A,v)})² = ${V(v)}² ${a>0?'+':MINUS} 2 · ${V(v)} · ${Math.abs(a)} + ${Math.abs(a)}² = ${termsH(sq,v)}`),S(`Závorku vynásobíme ${c}${V(v)}: každý člen zvlášť.`,`(${termsH(B,v)}) · ${c}${V(v)} = ${termsH(pr,v)}`),S('Sečteme členy se stejnou mocninou:',`${termsH(sq.concat(pr),v)} = ${polyH(res,v)}`)],
+      return{kind:'poly',v,ans:res,task,trap:`Druhá mocnina závorky má tři členy: (${V(v)} + 3)² = ${V(v)}² + 6${V(v)} + 9, <b class="hx">ne ${V(v)}² + 9</b>.`,prompt:`(${termsH(A,v)})² + (${termsH(B,v)}) · ${c}${V(v)} =`,
+        steps:[S(`Druhou mocninu spočítáme podle vzorce ${K(`(první ${a>0?'+':MINUS} druhý)² = první² ${a>0?'+':MINUS} 2 · první · druhý + druhý²`)}. Tenhle vzorec najdeš i v testu.`,`(${termsH(A,v)})² = ${V(v)}² ${a>0?'+':MINUS} 2 · ${V(v)} · ${Math.abs(a)} + ${Math.abs(a)}² = ${termsH(sq,v)}`),S(`Závorku vynásobíme ${c}${V(v)}: každý člen zvlášť.`,`(${termsH(B,v)}) · ${c}${V(v)} = ${termsH(pr,v)}`),S('Sečteme členy se stejnou mocninou:',`${termsH(sq.concat(pr),v)} = ${N(polyH(res,v))}`)],
         plain:`(${polyPlain(sumT(A),v)})^2+(${polyPlain(sumT(B),v)})*${c}*${v}`}}
     if(tp==='r5'){const a=ri(2,15),m=ri(1,3),c=ri(1,4),b=c+m,d=ri(2,6),e=ri(2,9),p=-ri(2,5),q=ri(1,-p-1),s=p+q,g=ri(1,9);
       const A=lin(1,-a),D=lin(d,-e);const p1=prodT(A,[T(m,1)]);const p2=prodT([T(-s,0)],D);const all=p1.concat(p2,[T(-g,0)]);const res=sumT(all);
       return{kind:'poly',v,ans:res,task,trap:'Nejdřív zjednoduš to, co je uvnitř závorek, teprve potom násob.',prompt:`(${termsH(A,v)}) · (${b}${V(v)} ${MINUS} ${c===1?'':c}${V(v)}) ${MINUS} (${termsH(D,v)}) · (${MINUS}${-p} + ${q}) ${MINUS} ${g} =`,
-        steps:[S('Nejdřív zjednodušíme obsah závorek, ve kterých jsou podobné členy. Ušetříš si spoustu práce.',`${b}${V(v)} ${MINUS} ${c===1?'':c}${V(v)} = ${mono(Fr(m),v)}${SEP}${MINUS}${-p} + ${q} = ${MINUS}${-s}`),
+        steps:[S(`${K('Nejdřív zjednodušíme obsah závorek')}, ve kterých jsou podobné členy. Ušetříš si spoustu práce.`,`${b}${V(v)} ${MINUS} ${c===1?'':c}${V(v)} = ${mono(Fr(m),v)}${SEP}${MINUS}${-p} + ${q} = ${MINUS}${-s}`),
           S('První součin:',`(${termsH(A,v)}) · ${mono(Fr(m),v)} = ${termsH(p1,v)}`),
-          S(`Druhý součin. Před závorkou je mínus a násobíme číslem ${MINUS}${-s}: mínus krát mínus je plus.`,`${MINUS}(${termsH(D,v)}) · (${MINUS}${-s}) = ${termsH(p2,v)}`),
-          S(`Sečteme všechno i s posledním ${MINUS}${g}:`,`${termsH(all,v)} = ${polyH(res,v)}`)],
+          S(`Druhý součin. Před závorkou je mínus a násobíme číslem ${MINUS}${-s}: ${X('mínus krát mínus je plus')}.`,`${MINUS}(${termsH(D,v)}) · (${MINUS}${-s}) = ${termsH(p2,v)}`),
+          S(`Sečteme všechno i s posledním ${MINUS}${g}:`,`${termsH(all,v)} = ${N(polyH(res,v))}`)],
         plain:`(${polyPlain(sumT(A),v)})*(${b}*${v}-${c}*${v})-(${polyPlain(sumT(D),v)})*(${p}+${q})-${g}`}}
     if(tp==='r6'){const a=ri(2,4),b=riNZ(-9,9),c=ri(1,9),d=riNZ(-9,9);const A=lin(a,b),B=lin(1,-c),Dd=lin(1,d);const p1=prodT(A,B);const sq=[T(1,2),T(2*d,1),T(d*d,0)];const nsq=sq.map(x=>T(F.neg(x.c),x.k));const res=sumT(p1.concat(nsq));
-      return{kind:'poly',v,ans:res,task,trap:'Výsledek druhé mocniny nech v závorce, dokud neodstraníš mínus před ní. Jinak změníš znaménko jen u prvního členu.',prompt:`(${termsH(A,v)}) · (${termsH(B,v)}) ${MINUS} (${termsH(Dd,v)})² =`,
-        steps:[S('První součin: každý člen s každým.',`(${termsH(A,v)}) · (${termsH(B,v)}) = ${termsH(p1,v)} = ${polyH(sumT(p1),v)}`),S('Druhou mocninu spočítáme podle vzorce. Výsledek necháme v závorce, protože před ní je mínus.',`(${termsH(Dd,v)})² = ${termsH(sq,v)}`),S('Mínus před závorkou změní znaménka všech tří členů:',`${MINUS}(${termsH(sq,v)}) = ${termsH(nsq,v)}`),S('Sečteme:',`${termsH(sumT(p1).length?polyTerms(sumT(p1)).concat(nsq):nsq,v)} = ${polyH(res,v)}`)],
+      return{kind:'poly',v,ans:res,task,trap:'Výsledek druhé mocniny nech v závorce, dokud neodstraníš mínus před ní. <b class="hx">Jinak změníš znaménko jen u prvního členu.</b>',prompt:`(${termsH(A,v)}) · (${termsH(B,v)}) ${MINUS} (${termsH(Dd,v)})² =`,
+        steps:[S('První součin: každý člen s každým.',`(${termsH(A,v)}) · (${termsH(B,v)}) = ${termsH(p1,v)} = ${polyH(sumT(p1),v)}`),S(`Druhou mocninu spočítáme podle vzorce. ${K('Výsledek necháme v závorce')}, protože před ní je mínus.`,`(${termsH(Dd,v)})² = ${termsH(sq,v)}`),S(`${X('Mínus před závorkou změní znaménka všech tří členů')}:`,`${MINUS}(${termsH(sq,v)}) = ${termsH(nsq,v)}`),S('Sečteme:',`${termsH(sumT(p1).length?polyTerms(sumT(p1)).concat(nsq):nsq,v)} = ${N(polyH(res,v))}`)],
         plain:`(${polyPlain(sumT(A),v)})*(${polyPlain(sumT(B),v)})-(${polyPlain(sumT(Dd),v)})^2`}}
     if(tp==='r7'){const a=ri(1,3),b=riNZ(-5,5),c=ri(2,9),d=ri(2,5),e=riNZ(-6,6);
       const A=lin(a,b),E=lin(1,-e);const sq1=[T(a*a,2),T(2*a*b,1),T(b*b,0)];const sq2=[T(1,2),T(-2*e,1),T(e*e,0)];const nsq2=sq2.map(x=>T(F.mul(x.c,Fr(-d)),x.k));const all=sq1.concat([T(-c,1)],nsq2);const res=sumT(all);if(P.nz(res)<2)continue;
-      return{kind:'poly',v,ans:res,task,trap:`U ${MINUS}${d} · (…)² nejdřív umocni závorku, pak teprve násob číslem ${d}. Mocnina má přednost před násobením.`,
+      return{kind:'poly',v,ans:res,task,trap:`U ${MINUS}${d} · (…)² <b class="hx">nejdřív umocni závorku</b>, pak teprve násob číslem ${d}. Mocnina má přednost před násobením.`,
         prompt:`(${termsH(A,v)})² ${MINUS} ${V(v)} · ${c} ${MINUS} ${d} · (${termsH(E,v)})² =`,
         steps:[S('První závorku umocníme podle vzorce (první + druhý)² = první² + 2 · první · druhý + druhý².',`(${termsH(A,v)})² = ${termsH(sq1,v)}`),
           S(`Prostřední člen je jen součin: ${V(v)} · ${c} = ${c}${V(v)}, s mínusem před ním ${MINUS}${c}${V(v)}.`),
-          S(`U ${MINUS}${d} · (${termsH(E,v)})² má přednost mocnina. Nejdřív tedy umocníme závorku a výsledek necháme v závorce:`,`(${termsH(E,v)})² = ${termsH(sq2,v)}`),
-          S(`Teď závorku vynásobíme číslem ${MINUS}${d}. Násobíme každý člen a mínus změní všechna znaménka:`,`${MINUS}${d} · (${termsH(sq2,v)}) = ${termsH(nsq2,v)}`),
-          S('Všechno sepíšeme za sebe a sečteme členy se stejnou mocninou:',`${termsH(all,v)} = ${polyH(res,v)}`)],
+          S(`U ${MINUS}${d} · (${termsH(E,v)})² ${K('má přednost mocnina')}. Nejdřív tedy umocníme závorku a výsledek necháme v závorce:`,`(${termsH(E,v)})² = ${termsH(sq2,v)}`),
+          S(`Teď závorku vynásobíme číslem ${MINUS}${d}. Násobíme každý člen a ${X('mínus změní všechna znaménka')}:`,`${MINUS}${d} · (${termsH(sq2,v)}) = ${termsH(nsq2,v)}`),
+          S('Všechno sepíšeme za sebe a sečteme členy se stejnou mocninou:',`${termsH(all,v)} = ${N(polyH(res,v))}`)],
         plain:`(${a}*${v}+(${b}))^2-${v}*${c}-${d}*(${v}-(${e}))^2`}}
     if(tp==='r8'){const a=ri(2,4),b=ri(1,5),c=ri(2,3),d=ri(1,2),e=ri(2,4),f=ri(1,5),g=ri(1,5),h=ri(2,3);
       const p1=prodT([T(1,1)],lin(a,-b)),p2=prodT([T(c+d,1)],lin(e,f)),p3=[T(g*g,0),T(-h*h,2)];const all=p1.concat(p2,p3);const res=sumT(all);
       return{kind:'poly',v,ans:res,task,trap:'Mínus před závorkou se záporným obsahem dává plus. Poslední součin je vzorec (a − b)(a + b) = a² − b².',
         prompt:`${V(v)} · (${termsH(lin(a,-b),v)}) ${MINUS} (${MINUS}${c}${V(v)} ${MINUS} ${d===1?'':d}${V(v)}) · (${termsH(lin(e,f),v)}) + (${g} ${MINUS} ${h}${V(v)}) · (${g} + ${h}${V(v)}) =`,
         steps:[S('První součin:',`${V(v)} · (${termsH(lin(a,-b),v)}) = ${termsH(p1,v)}`),
-          S(`Ve druhé závorce sečteme podobné členy: ${MINUS}${c}${V(v)} ${MINUS} ${d===1?'':d}${V(v)} = ${MINUS}${c+d}${V(v)}. Před závorkou je mínus, takže mínus krát mínus dá plus.`,`${MINUS}(${MINUS}${c+d}${V(v)}) · (${termsH(lin(e,f),v)}) = ${c+d}${V(v)} · (${termsH(lin(e,f),v)}) = ${termsH(p2,v)}`),
-          S('Třetí součin je vzorec (první − druhý)(první + druhý) = první² − druhý². Nemusíš násobit každý s každým.',`(${g} ${MINUS} ${h}${V(v)})(${g} + ${h}${V(v)}) = ${g}² ${MINUS} (${h}${V(v)})² = ${termsH(p3,v)}`),
-          S('Sečteme všechno:',`${termsH(all,v)} = ${polyH(res,v)}`)],
+          S(`Ve druhé závorce sečteme podobné členy: ${MINUS}${c}${V(v)} ${MINUS} ${d===1?'':d}${V(v)} = ${MINUS}${c+d}${V(v)}. Před závorkou je mínus, takže ${X('mínus krát mínus dá plus')}.`,`${MINUS}(${MINUS}${c+d}${V(v)}) · (${termsH(lin(e,f),v)}) = ${c+d}${V(v)} · (${termsH(lin(e,f),v)}) = ${termsH(p2,v)}`),
+          S(`Třetí součin je vzorec ${K('(první − druhý)(první + druhý) = první² − druhý²')}. Nemusíš násobit každý s každým.`,`(${g} ${MINUS} ${h}${V(v)})(${g} + ${h}${V(v)}) = ${g}² ${MINUS} (${h}${V(v)})² = ${termsH(p3,v)}`),
+          S('Sečteme všechno:',`${termsH(all,v)} = ${N(polyH(res,v))}`)],
         plain:`${v}*(${a}*${v}-${b})-(-${c}*${v}-${d}*${v})*(${e}*${v}+${f})+(${g}-${h}*${v})*(${g}+${h}*${v})`}}
   }
 }
@@ -844,7 +844,7 @@ function genVytykani(level){
       const steps=[S(`Nejdřív výraz upravíme. ${V(v)} · (${MINUS}${V(v)}) = ${MINUS}${V(v)}² (plus krát mínus je mínus). U ${p}² · ${q}${V(v)} má přednost mocnina: ${p}² = ${p*p}, takže ${p*p} · ${q}${V(v)} = ${Bc}${V(v)}.`,`${MINUS}${V(v)}² ${MINUS} ${Bc}${V(v)} + ${r}${V(v)}²`),
         S(`Sečteme členy s ${V(v)}²: ${MINUS}${V(v)}² + ${r}${V(v)}² = ${A}${V(v)}².`,polyH(exp,v))];
       if(g>1)steps.push(S(`Největší společný dělitel čísel ${A} a ${Bc} je ${g}. Oba členy navíc obsahují ${V(v)}, takže vytkneme ${outH}.`));else steps.push(S(`Čísla ${A} a ${Bc} nemají společného dělitele, ale oba členy obsahují ${V(v)}, takže vytkneme ${V(v)}.`));
-      steps.push(S('Každý člen vydělíme tím, co vytýkáme, a výsledky napíšeme do závorky:',`${polyH(exp,v)} = ${outH}(${polyH(inner,v)})`));
+      steps.push(S(`${K('Každý člen vydělíme tím, co vytýkáme')}, a výsledky napíšeme do závorky:`,`${polyH(exp,v)} = ${N(`${outH}(${polyH(inner,v)})`)}`));
       steps.push(S('Kontrola: když závorku roznásobíš, musí vyjít upravený výraz.'));
       return{kind:'factor',mode:'common',v,ans:exp,task:'Upravte a rozložte na součin vytknutím.',trap:'Nejdřív výraz uprav a sečti podobné členy, teprve potom vytýkej.',prompt:`${V(v)} · (${MINUS}${V(v)}) ${MINUS} ${p}² · ${q}${V(v)} + ${r}${V(v)}² =`,steps,sol:`${outS}(${polySol(inner,v)})`,plain:`${v}*(-${v})-${p}^2*${q}*${v}+${r}*${v}^2`};
     }
@@ -858,10 +858,10 @@ function genVytykani(level){
     const outH=(k===1?'':k)+(withX?V(v):'');const outS=(k===1?'':k)+(withX?v:'');
     const coefs=polyTerms(exp).map(x=>Math.abs(x.c.n));
     const steps=[];
-    if(k>1)steps.push(S(`Hledáme největší číslo, kterým jdou vydělit všechny koeficienty ${coefs.join(', ')}. Je to ${k}.`));
+    if(k>1)steps.push(S(`Hledáme ${K('největší číslo, kterým jdou vydělit všechny koeficienty')} ${coefs.join(', ')}. Je to ${N(k)}.`));
     if(withX)steps.push(S(`Každý člen obsahuje ${V(v)}, takže vytkneme i ${V(v)}.`));
-    steps.push(S(`Každý člen vydělíme činitelem ${outH} a výsledky napíšeme do závorky:`,`${polyH(exp,v)} = ${outH}(${polyH(inner,v)})`));
-    steps.push(S('Kontrola: když závorku roznásobíš, musí vyjít zadaný výraz. V závorce už nesmí jít nic dalšího vytknout.'));
+    steps.push(S(`${K(`Každý člen vydělíme činitelem ${outH}`)} a výsledky napíšeme do závorky:`,`${polyH(exp,v)} = ${N(`${outH}(${polyH(inner,v)})`)}`));
+    steps.push(S(`Kontrola: když závorku roznásobíš, musí vyjít zadaný výraz. ${X('V závorce už nesmí jít nic dalšího vytknout.')}`));
     return{kind:'factor',mode:'common',v,ans:exp,task:'Rozložte na součin vytknutím. Vytkněte co nejvíc (číslo i proměnnou).',trap:'Vytkni největší společný dělitel čísel i proměnnou, kterou mají všechny členy. Kontroluj roznásobením.',prompt:`${polyH(exp,v)} =`,steps,sol:`${outS}(${polySol(inner,v)})`,plain:polyPlain(exp,v)};
   }
 }
@@ -873,12 +873,12 @@ function genVzorce(level){
     const pv=(b)=>b===1?V(v):`${b}${V(v)}`;const pq=(b)=>b===1?`${V(v)}²`:`(${b}${V(v)})²`;
     const U='umocneni',R='rozklad';
     if(tp==='e1'||tp==='e3'){const b=tp==='e1'?1:ri(2,5),a=ri(1,9),s=pick([1,-1]);if(gcd(a,b)>1&&tp==='e3')continue;const res=[Fr(a*a),Fr(2*a*b*s),Fr(b*b)];const sg=s>0?'+':MINUS;
-      return{kind:'poly',v,ans:res,guide:U,task:'Umocněte podle vzorce (výsledek bez závorek).',trap:'Druhá mocnina dvojčlenu má tři členy. Prostřední člen 2 · první · druhý nesmíš vynechat.',prompt:`(${pv(b)} ${sg} ${a})² =`,
-        steps:[S(`Vzorec: (první ${sg} druhý)² = první² ${sg} 2 · první · druhý + druhý². První člen je ${pv(b)}, druhý ${a}.`),S('Dosadíme a spočítáme každý člen:',`${pq(b)} ${sg} 2 · ${pv(b)} · ${a} + ${a}² = ${polyH(res,v)}`)],plain:`(${b}*${v}${s>0?'+':'-'}${a})^2`}}
+      return{kind:'poly',v,ans:res,guide:U,task:'Umocněte podle vzorce (výsledek bez závorek).',trap:'Druhá mocnina dvojčlenu má tři členy. <b class="hx">Prostřední člen 2 · první · druhý nesmíš vynechat.</b>',prompt:`(${pv(b)} ${sg} ${a})² =`,
+        steps:[S(`Vzorec: ${K(`(první ${sg} druhý)² = první² ${sg} 2 · první · druhý + druhý²`)}. První člen je ${pv(b)}, druhý ${a}.`),S('Dosadíme a spočítáme každý člen:',`${pq(b)} ${sg} 2 · ${pv(b)} · ${a} + ${a}² = ${N(polyH(res,v))}`)],plain:`(${b}*${v}${s>0?'+':'-'}${a})^2`}}
     if(tp==='e2'||tp==='e4'){const b=tp==='e2'?1:ri(2,5),a=ri(1,12);const res=[Fr(-a*a),Fr(0),Fr(b*b)];const first=pick([0,1]);
       const f1=`(${pv(b)} + ${a})`,f2=`(${pv(b)} ${MINUS} ${a})`;
       return{kind:'poly',v,ans:res,guide:U,task:'Roznásobte podle vzorce (výsledek bez závorek).',trap:'(a + b)(a − b) = a² − b². Prostřední členy se odečtou, vyjdou jen dva členy.',prompt:`${first?f1+' · '+f2:f2+' · '+f1} =`,
-        steps:[S(`Vzorec: (první + druhý)(první ${MINUS} druhý) = první² ${MINUS} druhý². Když bys násobila každý s každým, prostřední členy se odečtou.`),S('Dosadíme:',`${pq(b)} ${MINUS} ${a}² = ${polyH(res,v)}`)],plain:`(${b}*${v}+${a})*(${b}*${v}-${a})`}}
+        steps:[S(`Vzorec: ${K(`(první + druhý)(první ${MINUS} druhý) = první² ${MINUS} druhý²`)}. Když bys násobila každý s každým, prostřední členy se odečtou.`),S('Dosadíme:',`${pq(b)} ${MINUS} ${a}² = ${N(polyH(res,v))}`)],plain:`(${b}*${v}+${a})*(${b}*${v}-${a})`}}
     if(tp==='e5'||tp==='e6'){
       const dec=tp==='e6';let A,B;
       if(dec){A=Fr(ri(1,9),10);B=pick([Fr(ri(1,9),10),Fr(ri(1,5))])}
@@ -889,47 +889,47 @@ function genVzorce(level){
       const res=sumT(sq1.concat(mid.map(x=>T(s>0?x.c:F.neg(x.c),x.k)),sq2));
       const sg=s>0?'+':MINUS;const h1=termsH([t1],v,dec),h2=termsH([t2a],v,dec);
       return{kind:'poly',v,dec,ans:res,guide:U,task:dec?'Umocněte a zjednodušte (výsledek bez závorek).':'Umocněte a zjednodušte. Zlomky zapište v základním tvaru.',
-        trap:dec?'0,3² = 0,09, ne 0,9. Při násobení desetinných čísel se počty desetinných míst sčítají.':'Zlomek umocníš tak, že umocníš čitatel i jmenovatel. U prostředního členu 2 · první · druhý nezapomeň zkrátit.',
+        trap:dec?'0,3² = 0,09, <b class="hx">ne 0,9</b>. Při násobení desetinných čísel se počty desetinných míst sčítají.':'Zlomek umocníš tak, že umocníš čitatel i jmenovatel. U prostředního členu 2 · první · druhý nezapomeň zkrátit.',
         prompt:`(${termsH([t1,t2],v,dec)})² =`,
-        steps:[S(`Vzorec: (první ${sg} druhý)² = první² ${sg} 2 · první · druhý + druhý². První člen je ${h1}, druhý ${h2}.`),
+        steps:[S(`Vzorec: ${K(`(první ${sg} druhý)² = první² ${sg} 2 · první · druhý + druhý²`)}. První člen je ${h1}, druhý ${h2}.`),
           S(dec?'První člen na druhou. Číslo i proměnnou umocníme zvlášť, desetinná místa se sčítají:':'První člen na druhou. Umocníme čitatel, jmenovatel i proměnnou:',`(${h1})² = ${termsH(sq1,v,dec)}`),
-          S('Prostřední člen: 2 · první · druhý. Nejdřív vynásob čísla, pak zkrať.',`2 · ${h1} · ${h2} = ${termsH(mid,v,dec)}`),
+          S(`Prostřední člen: 2 · první · druhý. ${K('Nejdřív vynásob čísla, pak zkrať.')}`,`2 · ${h1} · ${h2} = ${termsH(mid,v,dec)}`),
           S('Druhý člen na druhou:',`(${h2})² = ${termsH(sq2,v,dec)}`),
-          S(`Výsledek. Znaménko prostředního členu je ${s>0?'plus':'mínus'}, stejné jako v závorce. Pořadí členů nevadí, uznává se jakékoli.`,polyH(res,v,dec))],
+          S(`Výsledek. Znaménko prostředního členu je ${s>0?'plus':'mínus'}, stejné jako v závorce. Pořadí členů nevadí, uznává se jakékoli.`,N(polyH(res,v,dec)))],
         plain:`(${polyPlain(sumT([t1,t2]),v)})^2`}}
     if(tp==='e7'){const q=ri(2,5),m=ri(1,4),rev=Math.random()<0.4;const c=rev?F.sub(Fr(m),Fr(1,q)):F.sub(Fr(1,q),Fr(m));const res=[Fr(0),Fr(0),F.mul(c,c)];
       const inner=rev?`${m===1?'':m}${V(v)} ${MINUS} ${frBox(V(v),q)}`:`${frBox(V(v),q)} ${MINUS} ${m===1?'':m}${V(v)}`;
       const conv=rev?`${frBox(m*q+V(v),q)} ${MINUS} ${frBox(V(v),q)}`:`${frBox(V(v),q)} ${MINUS} ${frBox(m*q+V(v),q)}`;
       return{kind:'poly',v,ans:res,guide:U,task:'Umocněte a zjednodušte. Výsledek zapište zlomkem v základním tvaru.',trap:'Oba členy v závorce obsahují stejnou proměnnou. Nejdřív je sečti (odečti), pak teprve umocňuj.',prompt:`(${inner})² =`,
-        steps:[S(`Pozor: oba členy v závorce obsahují ${V(v)}, jsou to podobné členy. Nejdřív je tedy odečteme. Převedeme je na společného jmenovatele ${q}.`,`${inner} = ${conv} = ${termsH([T(c,1)],v)}`),
-          S('Teď umocníme jediný člen: zvlášť čitatel, jmenovatel i proměnnou. Záporné číslo na druhou je kladné.',`(${termsH([T(c,1)],v)})² = ${frBox(Math.abs(c.n)+'²',c.d+'²')}${V(v)}² = ${polyH(res,v)}`),
+        steps:[S(`Pozor: ${X(`oba členy v závorce obsahují ${V(v)}`)}, jsou to podobné členy. Nejdřív je tedy odečteme. Převedeme je na společného jmenovatele ${q}.`,`${inner} = ${conv} = ${termsH([T(c,1)],v)}`),
+          S('Teď umocníme jediný člen: zvlášť čitatel, jmenovatel i proměnnou. Záporné číslo na druhou je kladné.',`(${termsH([T(c,1)],v)})² = ${frBox(Math.abs(c.n)+'²',c.d+'²')}${V(v)}² = ${N(polyH(res,v))}`),
           S('Šlo by to i vzorcem, ale vyšlo by totéž s mnohem větší šancí na chybu.')],
         plain:rev?`(${m}*${v}-${v}/${q})^2`:`(${v}/${q}-${m}*${v})^2`}}
     if(tp==='f1'||tp==='f2'){const b=tp==='f1'?1:ri(2,5),a=ri(1,12);if(gcd(a,b)>1)continue;const exp=[Fr(-a*a),Fr(0),Fr(b*b)];
       return{kind:'factor',mode:'formula',v,ans:exp,guide:R,task:'Rozložte na součin pomocí vzorce.',trap:'Najdi, z čeho jsou oba členy druhou mocninou. Výsledek je součin dvou závorek: jedna s plus, druhá s mínus.',prompt:`${polyH(exp,v)} =`,
-        steps:[S(`Vzorec: první² ${MINUS} druhý² = (první + druhý)(první ${MINUS} druhý). Hledáme, z čeho jsou oba členy druhou mocninou.`),S(`${b*b===1?'':b*b}${V(v)}² = ${pq(b)} a ${a*a} = ${a}²:`,`${polyH(exp,v)} = ${pq(b)} ${MINUS} ${a}² = (${pv(b)} + ${a})(${pv(b)} ${MINUS} ${a})`)],sol:`(${b===1?'':b}${v}+${a})(${b===1?'':b}${v}-${a})`,plain:polyPlain(exp,v)}}
+        steps:[S(`Vzorec: ${K(`první² ${MINUS} druhý² = (první + druhý)(první ${MINUS} druhý)`)}. Hledáme, z čeho jsou oba členy druhou mocninou.`),S(`${b*b===1?'':b*b}${V(v)}² = ${pq(b)} a ${a*a} = ${a}²:`,`${polyH(exp,v)} = ${pq(b)} ${MINUS} ${a}² = ${N(`(${pv(b)} + ${a})(${pv(b)} ${MINUS} ${a})`)}`)],sol:`(${b===1?'':b}${v}+${a})(${b===1?'':b}${v}-${a})`,plain:polyPlain(exp,v)}}
     if(tp==='f3'){const b=pick([1,1,2,3]),a=ri(1,9),s=pick([1,-1]);if(gcd(a,b)>1)continue;const exp=[Fr(a*a),Fr(2*a*b*s),Fr(b*b)];const sg=s>0?'+':MINUS;
       return{kind:'factor',mode:'formula',v,ans:exp,guide:R,task:'Rozložte na součin pomocí vzorce.',trap:'Prostřední člen musí být přesně 2 · první · druhý. Znaménko v závorce je stejné jako u prostředního členu.',prompt:`${polyH(exp,v)} =`,
-        steps:[S(`Vzorec: první² ${sg} 2 · první · druhý + druhý² = (první ${sg} druhý)². První a poslední člen jsou druhé mocniny: ${pq(b)} a ${a}².`),S('Ověříme prostřední člen a zapíšeme součin:',`2 · ${pv(b)} · ${a} = ${termsH([T(2*a*b,1)],v)}, sedí, takže ${polyH(exp,v)} = (${pv(b)} ${sg} ${a})²`)],sol:`(${b===1?'':b}${v}${s>0?'+':'-'}${a})^2`,plain:polyPlain(exp,v)}}
-    if(tp==='f4'){const n=ri(4,15),N=n*n;const ds=[];for(let a=2;a<=30;a++)if(N%a===0&&a!==n&&N/a<=40&&N/a>=2)ds.push(a);if(!ds.length)continue;const a=pick(ds),b=N/a;const plus=Math.random()<0.5;
-      const exp=[Fr(-N),Fr(0),Fr(1)];
+        steps:[S(`Vzorec: ${K(`první² ${sg} 2 · první · druhý + druhý² = (první ${sg} druhý)²`)}. První a poslední člen jsou druhé mocniny: ${pq(b)} a ${a}².`),S('Ověříme prostřední člen a zapíšeme součin:',`2 · ${pv(b)} · ${a} = ${termsH([T(2*a*b,1)],v)}, sedí, takže ${polyH(exp,v)} = ${N(`(${pv(b)} ${sg} ${a})²`)}`)],sol:`(${b===1?'':b}${v}${s>0?'+':'-'}${a})^2`,plain:polyPlain(exp,v)}}
+    if(tp==='f4'){const n=ri(4,15),NN=n*n;const ds=[];for(let a=2;a<=30;a++)if(NN%a===0&&a!==n&&NN/a<=40&&NN/a>=2)ds.push(a);if(!ds.length)continue;const a=pick(ds),b=NN/a;const plus=Math.random()<0.5;
+      const exp=[Fr(-NN),Fr(0),Fr(1)];
       const prompt=plus?`${V(v)} · (${V(v)} + ${a}) ${MINUS} ${a} · (${V(v)} + ${b}) =`:`${V(v)} · (${V(v)} ${MINUS} ${a}) + ${a} · (${V(v)} ${MINUS} ${b}) =`;
-      const ex=plus?`${V(v)}² + ${a}${V(v)} ${MINUS} ${a}${V(v)} ${MINUS} ${N}`:`${V(v)}² ${MINUS} ${a}${V(v)} + ${a}${V(v)} ${MINUS} ${N}`;
-      return{kind:'factor',mode:'formula',v,ans:exp,guide:R,task:'Upravte a výsledný výraz rozložte na součin pomocí vzorce.',trap:'Nejdřív roznásob a uprav, rozkládáš až výsledek. Za úpravu bez rozkladu body nejsou.',prompt,
-        steps:[S('Roznásobíme obě závorky:',ex),S(`Členy s ${V(v)} se odečtou:`,`${V(v)}² ${MINUS} ${N}`),S(`Teď vzorec první² ${MINUS} druhý² = (první + druhý)(první ${MINUS} druhý). ${N} = ${n}² (tabulka druhých mocnin 11 až 20 je v testu).`,`${V(v)}² ${MINUS} ${n}² = (${V(v)} + ${n})(${V(v)} ${MINUS} ${n})`)],sol:`(${v}+${n})(${v}-${n})`,
+      const ex=plus?`${V(v)}² + ${a}${V(v)} ${MINUS} ${a}${V(v)} ${MINUS} ${NN}`:`${V(v)}² ${MINUS} ${a}${V(v)} + ${a}${V(v)} ${MINUS} ${NN}`;
+      return{kind:'factor',mode:'formula',v,ans:exp,guide:R,task:'Upravte a výsledný výraz rozložte na součin pomocí vzorce.',trap:'Nejdřív roznásob a uprav, rozkládáš až výsledek. <b class="hx">Za úpravu bez rozkladu body nejsou.</b>',prompt,
+        steps:[S('Roznásobíme obě závorky:',ex),S(`Členy s ${V(v)} se odečtou:`,`${V(v)}² ${MINUS} ${NN}`),S(`Teď vzorec první² ${MINUS} druhý² = (první + druhý)(první ${MINUS} druhý). ${NN} = ${n}² (tabulka druhých mocnin 11 až 20 je v testu).`,`${V(v)}² ${MINUS} ${n}² = ${N(`(${V(v)} + ${n})(${V(v)} ${MINUS} ${n})`)}`)],sol:`(${v}+${n})(${v}-${n})`,
         plain:plus?`${v}*(${v}+${a})-${a}*(${v}+${b})`:`${v}*(${v}-${a})+${a}*(${v}-${b})`}}
     if(tp==='f5'){const n=ri(2,12),d=ri(1,9),c=n*n+d;const exp=[Fr(n*n),Fr(0),Fr(-1)];
-      return{kind:'factor',mode:'formula',v,ans:exp,guide:R,task:'Upravte a výsledný výraz rozložte na součin pomocí vzorce.',trap:'Mínus před závorkou mění znaménka všech členů uvnitř: −(1 − x²) = −1 + x².',prompt:`${c} ${MINUS} (${d} ${MINUS} ${V(v)}²) ${MINUS} ${V(v)} · 2${V(v)} =`,
-        steps:[S(`Odstraníme závorku. Mínus před ní změní znaménka obou členů. A ${V(v)} · 2${V(v)} = 2${V(v)}².`,`${c} ${MINUS} ${d} + ${V(v)}² ${MINUS} 2${V(v)}²`),S(`Sečteme čísla a členy s ${V(v)}²:`,`${n*n} ${MINUS} ${V(v)}²`),S(`Rozdíl druhých mocnin: ${n*n} = ${n}², takže použijeme první² ${MINUS} druhý² = (první + druhý)(první ${MINUS} druhý). Pozor, první je tady číslo ${n}.`,`${n}² ${MINUS} ${V(v)}² = (${n} + ${V(v)})(${n} ${MINUS} ${V(v)})`)],
+      return{kind:'factor',mode:'formula',v,ans:exp,guide:R,task:'Upravte a výsledný výraz rozložte na součin pomocí vzorce.',trap:'Mínus před závorkou <b class="hx">mění znaménka všech členů uvnitř</b>: −(1 − x²) = −1 + x².',prompt:`${c} ${MINUS} (${d} ${MINUS} ${V(v)}²) ${MINUS} ${V(v)} · 2${V(v)} =`,
+        steps:[S(`Odstraníme závorku. ${X('Mínus před ní změní znaménka obou členů.')} A ${V(v)} · 2${V(v)} = 2${V(v)}².`,`${c} ${MINUS} ${d} + ${V(v)}² ${MINUS} 2${V(v)}²`),S(`Sečteme čísla a členy s ${V(v)}²:`,`${n*n} ${MINUS} ${V(v)}²`),S(`Rozdíl druhých mocnin: ${n*n} = ${n}², takže použijeme první² ${MINUS} druhý² = (první + druhý)(první ${MINUS} druhý). Pozor, první je tady číslo ${n}.`,`${n}² ${MINUS} ${V(v)}² = ${N(`(${n} + ${V(v)})(${n} ${MINUS} ${V(v)})`)}`)],
         sol:`(${n}+${v})(${n}-${v})`,plain:`${c}-(${d}-${v}^2)-${v}*2*${v}`}}
     if(tp==='f6'){const n=ri(2,12),k=ri(2,6);if(gcd(n,k)>1)continue;const exp=[Fr(n*n),Fr(0),Fr(-k*k)];
-      return{kind:'factor',mode:'formula',v,ans:exp,guide:R,task:'Rozložte na součin podle vzorce.',trap:`(${MINUS}${k}${V(v)})² = ${k*k}${V(v)}². Mínus v závorce na druhou zmizí.`,prompt:`${n*n} ${MINUS} (${MINUS}${k}${V(v)})² =`,
-        steps:[S(`Nejdřív druhá mocnina. Mínus je uvnitř závorky, takže se umocní taky: (${MINUS}${k}${V(v)}) · (${MINUS}${k}${V(v)}) = ${k*k}${V(v)}².`,`${n*n} ${MINUS} ${k*k}${V(v)}²`),S(`Rozdíl druhých mocnin: ${n*n} = ${n}² a ${k*k}${V(v)}² = (${k}${V(v)})².`,`${n}² ${MINUS} (${k}${V(v)})² = (${n} + ${k}${V(v)})(${n} ${MINUS} ${k}${V(v)})`)],
+      return{kind:'factor',mode:'formula',v,ans:exp,guide:R,task:'Rozložte na součin podle vzorce.',trap:`(${MINUS}${k}${V(v)})² = ${k*k}${V(v)}². <b class="hx">Mínus v závorce na druhou zmizí.</b>`,prompt:`${n*n} ${MINUS} (${MINUS}${k}${V(v)})² =`,
+        steps:[S(`Nejdřív druhá mocnina. ${X('Mínus je uvnitř závorky, takže se umocní taky')}: (${MINUS}${k}${V(v)}) · (${MINUS}${k}${V(v)}) = ${k*k}${V(v)}².`,`${n*n} ${MINUS} ${k*k}${V(v)}²`),S(`Rozdíl druhých mocnin: ${n*n} = ${n}² a ${k*k}${V(v)}² = (${k}${V(v)})².`,`${n}² ${MINUS} (${k}${V(v)})² = ${N(`(${n} + ${k}${V(v)})(${n} ${MINUS} ${k}${V(v)})`)}`)],
         sol:`(${n}+${k}${v})(${n}-${k}${v})`,plain:`${n*n}-(-${k}*${v})^2`}}
     if(tp==='f7'){const b=pick([1,2,3]),a=ri(1,9),s=pick([1,-1]);if(gcd(a,b)>1)continue;const exp=[Fr(a*a),Fr(2*a*b*s),Fr(b*b)];const sg=s>0?'+':MINUS;
-      return{kind:'factor',mode:'formula',v,ans:exp,guide:R,task:'Upravte a výsledný výraz rozložte na součin pomocí vzorce.',trap:'Trojčlen po úpravě ještě není výsledek. Bez rozkladu na součin dostaneš jen polovinu bodů.',
+      return{kind:'factor',mode:'formula',v,ans:exp,guide:R,task:'Upravte a výsledný výraz rozložte na součin pomocí vzorce.',trap:'Trojčlen po úpravě ještě není výsledek. <b class="hx">Bez rozkladu na součin dostaneš jen polovinu bodů.</b>',
         prompt:`${V(v)} · (${b*b===1?'':b*b}${V(v)} ${sg} ${2*a*b}) + ${a*a} =`,
-        steps:[S('Roznásobíme závorku:',polyH(exp,v)),S(`Tenhle trojčlen je vzorec první² ${sg} 2 · první · druhý + druhý². První člen je ${pq(b)}, poslední ${a}². Prostřední musí být 2 · ${pv(b)} · ${a} = ${2*a*b}${V(v)}, a to sedí.`),S('Zapíšeme jako součin:',`${polyH(exp,v)} = (${pv(b)} ${sg} ${a})²`)],
+        steps:[S('Roznásobíme závorku:',polyH(exp,v)),S(`Tenhle trojčlen je vzorec ${K(`první² ${sg} 2 · první · druhý + druhý²`)}. První člen je ${pq(b)}, poslední ${a}². Prostřední musí být 2 · ${pv(b)} · ${a} = ${2*a*b}${V(v)}, a to sedí.`),S('Zapíšeme jako součin:',`${polyH(exp,v)} = ${N(`(${pv(b)} ${sg} ${a})²`)}`)],
         sol:`(${b===1?'':b}${v}${s>0?'+':'-'}${a})^2`,plain:`${v}*(${b*b}*${v}${s>0?'+':'-'}${2*a*b})+${a*a}`}}
   }
 }
@@ -938,23 +938,23 @@ function genVzorce(level){
 function linSolve(A,C,v,dec){
   const f=dec?(x=>decStr(x)):(x=>fracH(x)); const x=F.div(C,A);
   if(F.eq(A,Fr(1))) return {x,steps:[]};
-  if(F.eq(A,Fr(-1))) return {x,steps:[S('Obě strany vynásobíme (−1), aby vyšlo samotné x.',`${V(v)} = ${numH(x)}`)]};
-  return {x,steps:[S(`Obě strany vydělíme číslem u ${V(v)}. Tenhle poslední krok nevynechávej, bez něj je bod dolů.`,`${V(v)} = ${f(C)} : ${dec?decHp(A):fracHp(A)} = ${numH(x)}`)]};
+  if(F.eq(A,Fr(-1))) return {x,steps:[S(`Obě strany vynásobíme (−1), aby vyšlo ${K('samotné x')}.`,`${V(v)} = ${N(numH(x))}`)]};
+  return {x,steps:[S(`${K(`Obě strany vydělíme číslem u ${V(v)}`)}. ${X('Tenhle poslední krok nevynechávej')}, bez něj je bod dolů.`,`${V(v)} = ${f(C)} : ${dec?decHp(A):fracHp(A)} = ${N(numH(x))}`)]};
 }
 const signed=(c,body)=>c.n<0?` ${MINUS} ${body}`:` + ${body}`;
 const RZ='rovnice-zlomky';
 function genEqSpecial(level){
   for(let t=0;t<500;t++){
     const a=ri(2,5),b=level===1?1:ri(1,4),c=riNZ(-9,9),d=level===1?0:ri(1,a*b-1),all=Math.random()<0.5;
-    const co=a*b-d;let K=a*c;if(!all){K=a*c+riNZ(-9,9)}
-    const R=[T(co,1),T(K,0)];
+    const co=a*b-d;let KK=a*c;if(!all){KK=a*c+riNZ(-9,9)}
+    const R=[T(co,1),T(KK,0)];
     const lhs=`${a} · (${termsH(lin(b,c),'x')})${d?' '+MINUS+' '+(d===1?'':d)+V('x'):''}`;
     const steps=[S('Roznásobíme závorku:',`${termsH([T(a*b,1),T(a*c,0)].concat(d?[T(-d,1)]:[]),'x')} = ${termsH(R,'x')}`)];
     if(d)steps.push(S(`Sečteme členy s ${V('x')}:`,`${termsH([T(co,1),T(a*c,0)],'x')} = ${termsH(R,'x')}`));
-    steps.push(S(`Členy s ${V('x')} převedeme doleva, čísla doprava (při převodu měníme znaménko):`,`${termsH([T(co,1),T(-co,1)],'x')} = ${termsH([T(K,0),T(-a*c,0)],'x')}`));
-    steps.push(S(`Členy s ${V('x')} se úplně odečetly:`,`0 · ${V('x')} = ${intH(K-a*c)}`));
-    if(all)steps.push(S(`Rovnost 0 = 0 platí vždycky, ať za ${V('x')} dosadíme jakékoli číslo. Závěr musíš napsat slovy, jinak přijdeš o bod:`,'Rovnice má nekonečně mnoho řešení, řešením je každé reálné číslo.'));
-    else steps.push(S(`Rovnost 0 = ${intH(K-a*c)} neplatí nikdy, ať za ${V('x')} dosadíme cokoli. Závěr musíš napsat slovy, jinak přijdeš o bod:`,'Rovnice nemá řešení.'));
+    steps.push(S(`Členy s ${V('x')} převedeme doleva, čísla doprava (při převodu měníme znaménko):`,`${termsH([T(co,1),T(-co,1)],'x')} = ${termsH([T(KK,0),T(-a*c,0)],'x')}`));
+    steps.push(S(`Členy s ${V('x')} se úplně odečetly:`,`0 · ${V('x')} = ${intH(KK-a*c)}`));
+    if(all)steps.push(S(`Rovnost 0 = 0 platí vždycky, ať za ${V('x')} dosadíme jakékoli číslo. ${X('Závěr musíš napsat slovy')}, jinak přijdeš o bod:`,N('Rovnice má nekonečně mnoho řešení, řešením je každé reálné číslo.')));
+    else steps.push(S(`Rovnost 0 = ${intH(KK-a*c)} neplatí nikdy, ať za ${V('x')} dosadíme cokoli. ${X('Závěr musíš napsat slovy')}, jinak přijdeš o bod:`,N('Rovnice nemá řešení.')));
     return{kind:'eq',v:'x',ans:{special:all?'all':'none'},task:'Řešte rovnici. Na papír piš celý postup, zkoušku zapisovat nemusíš.',trap:'Nejdřív roznásob závorku (oba členy), pak teprve převáděj. Co přejde na druhou stranu, změní znaménko.',
       prompt:`${lhs} = ${termsH(R,'x')}`,steps,plain:`${a}*(${b}*x+(${c}))-${d}*x=${polyPlain(sumT(R),'x')}`};
   }
@@ -966,22 +966,22 @@ function genEqSquares(){
     if(tpl==='T1'){const a=riNZ(-6,6),b=riNZ(-9,9);const co=2*a-b;if(co===0)continue;const c=co*x0+a*a;
       const sq=[T(1,2),T(2*a,1),T(a*a,0)],pr=prodT([T(1,1)],lin(1,b)),neg=pr.map(x=>T(F.neg(x.c),x.k));const sl=linSolve(Fr(co),Fr(c-a*a),'x');
       return{kind:'eq',v:'x',ans:Fr(x0),task,trap,prompt:`(${termsH(lin(1,a),'x')})² ${MINUS} ${V('x')} · (${termsH(lin(1,b),'x')}) = ${intH(c)}`,
-        steps:[S('Druhou mocninu závorky spočítáme podle vzorce:',`(${termsH(lin(1,a),'x')})² = ${termsH(sq,'x')}`),S(`Roznásobíme ${V('x')} · (…). Výsledek necháme v závorce, protože před ním je mínus:`,`${V('x')} · (${termsH(lin(1,b),'x')}) = ${termsH(pr,'x')}`),
-          S('Odstraníme závorku. Mínus před ní změní znaménka obou členů:',`${termsH(sq.concat(neg),'x')} = ${intH(c)}`),S(`${V('x')}² ${MINUS} ${V('x')}² = 0, členy s ${V('x')}² se odečtou. Zbyde lineární rovnice:`,`${termsH([T(co,1),T(a*a,0)],'x')} = ${intH(c)}`),
+        steps:[S('Druhou mocninu závorky spočítáme podle vzorce:',`(${termsH(lin(1,a),'x')})² = ${termsH(sq,'x')}`),S(`Roznásobíme ${V('x')} · (…). ${K('Výsledek necháme v závorce')}, protože před ním je mínus:`,`${V('x')} · (${termsH(lin(1,b),'x')}) = ${termsH(pr,'x')}`),
+          S(`Odstraníme závorku. ${X('Mínus před ní změní znaménka obou členů')}:`,`${termsH(sq.concat(neg),'x')} = ${intH(c)}`),S(`${V('x')}² ${MINUS} ${V('x')}² = 0, členy s ${V('x')}² se odečtou. Zbyde lineární rovnice:`,`${termsH([T(co,1),T(a*a,0)],'x')} = ${intH(c)}`),
           S('Číslo převedeme doprava a změníme mu znaménko:',`${mono(Fr(co),'x')} = ${intH(c-a*a)}`)].concat(sl.steps),plain:`(x+(${a}))^2-x*(x+(${b}))=${c}`}}
     if(tpl==='T2'){const a=riNZ(-6,6),b=riNZ(-6,6),c=riNZ(-6,6);const co=b-a-2*c;if(co===0)continue;const k0=-a*b-c*c;const d=co*x0+k0;
       const pr=prodT(lin(1,-a),lin(1,b)),sq=[T(1,2),T(2*c,1),T(c*c,0)],neg=sq.map(x=>T(F.neg(x.c),x.k));const sl=linSolve(Fr(co),Fr(d-k0),'x');
       return{kind:'eq',v:'x',ans:Fr(x0),task,trap,prompt:`(${termsH(lin(1,-a),'x')}) · (${termsH(lin(1,b),'x')}) ${MINUS} (${termsH(lin(1,c),'x')})² = ${intH(d)}`,
-        steps:[S('První součin: každý člen s každým.',`(${termsH(lin(1,-a),'x')}) · (${termsH(lin(1,b),'x')}) = ${termsH(pr,'x')}`),S('Druhou mocninu spočítáme podle vzorce a necháme ji v závorce, protože před ní je mínus:',`(${termsH(lin(1,c),'x')})² = ${termsH(sq,'x')}`),
-          S('Odstraníme závorku, mínus změní znaménka všech tří členů:',`${termsH(pr.concat(neg),'x')} = ${intH(d)}`),S(`Členy s ${V('x')}² se odečtou. Sečteme zbytek:`,`${termsH([T(co,1),T(k0,0)],'x')} = ${intH(d)}`),
+        steps:[S('První součin: každý člen s každým.',`(${termsH(lin(1,-a),'x')}) · (${termsH(lin(1,b),'x')}) = ${termsH(pr,'x')}`),S(`Druhou mocninu spočítáme podle vzorce a ${K('necháme ji v závorce')}, protože před ní je mínus:`,`(${termsH(lin(1,c),'x')})² = ${termsH(sq,'x')}`),
+          S(`Odstraníme závorku, ${X('mínus změní znaménka všech tří členů')}:`,`${termsH(pr.concat(neg),'x')} = ${intH(d)}`),S(`Členy s ${V('x')}² se odečtou. Sečteme zbytek:`,`${termsH([T(co,1),T(k0,0)],'x')} = ${intH(d)}`),
           S('Číslo převedeme doprava:',`${mono(Fr(co),'x')} = ${intH(d-k0)}`)].concat(sl.steps),plain:`(x-(${a}))*(x+(${b}))-(x+(${c}))^2=${d}`}}
     if(tpl==='T3'){const p=pick([Fr(2),Fr(3),Fr(1,2)]),a=riNZ(-6,6),b=riNZ(-6,6);if(p.d===2&&(x0+a)%2!==0)continue;const co=F.add(p,Fr(2*b));if(F.isZero(co))continue;
       const e=F.add(F.sub(F.mul(p,Fr(x0+a)),Fr((x0-b)*(x0-b))),Fr(x0*x0));if(e.d!==1)continue;
       const pe=[T(p,1),T(F.mul(p,Fr(a)),0)],sq=[T(1,2),T(-2*b,1),T(b*b,0)],neg=sq.map(x=>T(F.neg(x.c),x.k));const k0=F.sub(F.mul(p,Fr(a)),Fr(b*b));const sl=linSolve(co,F.sub(e,k0),'x');
       const pH=p.d===1?`${p.n}`:frBox(1,2);
       return{kind:'eq',v:'x',ans:Fr(x0),task,trap,prompt:`${pH} · (${termsH(lin(1,a),'x')}) ${MINUS} (${termsH(lin(1,-b),'x')})² = ${intH(e.n)} ${MINUS} ${V('x')}²`,
-        steps:[S('Roznásobíme první závorku:',`${pH} · (${termsH(lin(1,a),'x')}) = ${termsH(pe,'x')}`),S('Druhou mocninu spočítáme podle vzorce a necháme ji v závorce, před ní je mínus:',`(${termsH(lin(1,-b),'x')})² = ${termsH(sq,'x')}`),
-          S('Odstraníme závorku, mínus změní znaménka všech tří členů:',`${termsH(pe.concat(neg),'x')} = ${intH(e.n)} ${MINUS} ${V('x')}²`),
+        steps:[S('Roznásobíme první závorku:',`${pH} · (${termsH(lin(1,a),'x')}) = ${termsH(pe,'x')}`),S(`Druhou mocninu spočítáme podle vzorce a ${K('necháme ji v závorce')}, před ní je mínus:`,`(${termsH(lin(1,-b),'x')})² = ${termsH(sq,'x')}`),
+          S(`Odstraníme závorku, ${X('mínus změní znaménka všech tří členů')}:`,`${termsH(pe.concat(neg),'x')} = ${intH(e.n)} ${MINUS} ${V('x')}²`),
           S(`Na obou stranách je ${MINUS}${V('x')}². Když k oběma stranám přičteme ${V('x')}², zmizí. Sečteme zbytek:`,`${termsH([T(co,1),T(k0,0)],'x')} = ${intH(e.n)}`),
           S('Číslo převedeme doprava:',`${mono(co,'x')} = ${fracH(F.sub(e,k0))}`)].concat(sl.steps),plain:`${frP(p)}*(x+(${a}))-(x-(${b}))^2=${e.n}-x^2`}}
   }
@@ -995,19 +995,19 @@ function genRovnice(level){
     const task='Řešte rovnici. Na papír piš celý postup, zkoušku zapisovat nemusíš.';
     if(tp==='e1'){const a=riNZ(-9,9),c=riNZ(-9,9);if(a===c)continue;const x0=ri(-9,12),b=riNZ(-15,15),d=(a-c)*x0+b;
       const L=[T(a,1),T(b,0)],R=[T(c,1),T(d,0)];const A=Fr(a-c),C=Fr(d-b);const s=linSolve(A,C,v);
-      return{kind:'eq',v,ans:Fr(x0),task,trap:'Když člen převádíš na druhou stranu, změní se mu znaménko.',prompt:`${termsH(L,v)} = ${termsH(R,v)}`,
-        steps:[S(`Členy s ${V(v)} převedeme na levou stranu, čísla na pravou. Co přejde na druhou stranu, změní znaménko.`,`${termsH([T(a,1),T(-c,1)],v)} = ${termsH([T(d,0),T(-b,0)],v)}`),S('Sečteme:',`${mono(A,v)} = ${fracH(C)}`)].concat(s.steps),
+      return{kind:'eq',v,ans:Fr(x0),task,trap:'Když člen převádíš na druhou stranu, <b class="hx">změní se mu znaménko</b>.',prompt:`${termsH(L,v)} = ${termsH(R,v)}`,
+        steps:[S(`Členy s ${V(v)} převedeme na levou stranu, čísla na pravou. ${K('Co přejde na druhou stranu, změní znaménko.')}`,`${termsH([T(a,1),T(-c,1)],v)} = ${termsH([T(d,0),T(-b,0)],v)}`),S('Sečteme:',`${mono(A,v)} = ${fracH(C)}`)].concat(s.steps),
         plain:`${polyPlain(sumT(L),v)}=${polyPlain(sumT(R),v)}`}}
     if(tp==='e2'){const a=ri(2,6),b=riNZ(-9,9),c=riNZ(-12,12),d=riNZ(-6,6);if(a===d)continue;const x0=ri(-8,10);const B=-a*b+c;const E=(a-d)*x0+B;
       const R=[T(d,1),T(E,0)];const exp=[T(a,1),T(-a*b,0),T(c,0)];const A=Fr(a-d),C=Fr(E-B);const s=linSolve(A,C,v);
       return{kind:'eq',v,ans:Fr(x0),task,trap:'Nejdřív roznásob závorku (oba členy), pak teprve převáděj. Co přejde na druhou stranu, změní znaménko.',prompt:`${a} · (${termsH(lin(1,-b),v)})${signed(Fr(c),Math.abs(c))} = ${termsH(R,v)}`,
-        steps:[S('Roznásobíme závorku, číslo před ní násobí oba členy:',`${termsH(exp,v)} = ${termsH(R,v)}`),S('Sečteme čísla na levé straně:',`${termsH([T(a,1),T(B,0)],v)} = ${termsH(R,v)}`),S(`Převedeme ${V(v)} doleva a čísla doprava, se změnou znaménka:`,`${termsH([T(a,1),T(-d,1)],v)} = ${termsH([T(E,0),T(-B,0)],v)}`),S('Sečteme:',`${mono(A,v)} = ${fracH(C)}`)].concat(s.steps),
+        steps:[S(`Roznásobíme závorku, číslo před ní ${K('násobí oba členy')}:`,`${termsH(exp,v)} = ${termsH(R,v)}`),S('Sečteme čísla na levé straně:',`${termsH([T(a,1),T(B,0)],v)} = ${termsH(R,v)}`),S(`Převedeme ${V(v)} doleva a čísla doprava, ${K('se změnou znaménka')}:`,`${termsH([T(a,1),T(-d,1)],v)} = ${termsH([T(E,0),T(-B,0)],v)}`),S('Sečteme:',`${mono(A,v)} = ${fracH(C)}`)].concat(s.steps),
         plain:`${a}*(${v}-(${b}))+(${c})=${polyPlain(sumT(R),v)}`}}
     if(tp==='e3'){const p=Fr(ri(1,9),10),q=ri(2,5),r=pick([2,4,5,6,8,10,12,15,20]);const rr=Fr(r,100);const s=Fr(ri(10,60),10);const TT=pick([Fr(1),Fr(1),Fr(1,2),Fr(2)]);
       const qr=F.mul(Fr(q),rr),qs=F.mul(Fr(q),s),A=F.add(p,qr),u=F.sub(TT,A);if(u.n<=0||decStr(u)===null)continue;
       let x0=ri(-10,30);if(TT.d===2&&x0%2)x0++;const tt=F.sub(F.mul(TT,Fr(x0)),qs);
       const rhs=termsH([T(tt,0),T(F.neg(u),1)],v,true);const sl=linSolve(TT,F.add(tt,qs),v,true);
-      return{kind:'eq',v,ans:Fr(x0),task,trap:'Pozor na desetinná místa: 5 · 0,04 = 0,2. Když chceš, můžeš celou rovnici vynásobit 100 a počítat s celými čísly.',prompt:`${monoD(p,v)} + ${q} · (${monoD(rr,v)} ${MINUS} ${decStr(s)}) = ${rhs}`,
+      return{kind:'eq',v,ans:Fr(x0),task,trap:'Pozor na desetinná místa: <b class="hx">5 · 0,04 = 0,2</b>. Když chceš, můžeš celou rovnici vynásobit 100 a počítat s celými čísly.',prompt:`${monoD(p,v)} + ${q} · (${monoD(rr,v)} ${MINUS} ${decStr(s)}) = ${rhs}`,
         steps:[S('Roznásobíme závorku, číslo před ní násobí oba členy:',`${q} · (${monoD(rr,v)} ${MINUS} ${decStr(s)}) = ${monoD(qr,v)} ${MINUS} ${decStr(qs)}`),
           S('Rovnice teď vypadá takhle:',`${monoD(p,v)} + ${monoD(qr,v)} ${MINUS} ${decStr(qs)} = ${rhs}`),
           S(`Sečteme členy s ${V(v)} na levé straně:`,`${monoD(A,v)} ${MINUS} ${decStr(qs)} = ${rhs}`),
@@ -1017,18 +1017,18 @@ function genRovnice(level){
       const L=lcm(b,d),m1=L/b,m2=L/d;const eL=e.n*L;const n1=termsH(lin(1,a),v),n2=termsH(lin(1,-c),v);
       const expd=[T(m1,1),T(m1*a,0),T(-m2,1),T(m2*c,0)];const A=Fr(m1-m2),B=m1*a+m2*c,C=Fr(eL-B);const sl=linSolve(A,C,v);
       const br=(m,s)=>m===1?`(${s})`:`${m} · (${s})`;
-      return{kind:'eq',v,ans:Fr(x0),guide:RZ,task,trap:'Násob každý člen na obou stranách, i číslo bez zlomku. Čitatel dej do závorky, hlavně když je před zlomkem mínus.',prompt:`${frBox(n1,b)} ${MINUS} ${frBox(n2,d)} = ${intH(e.n)}`,
-        steps:[S(`Celou rovnici vynásobíme společným jmenovatelem ${L}, aby zmizely zlomky. Násobíme každý člen na obou stranách, i číslo ${intH(e.n)} vpravo. Čitatele dáme do závorek.`,`${br(m1,n1)} ${MINUS} ${br(m2,n2)} = ${intH(eL)}`),
-          S('Roznásobíme. Mínus před druhou závorkou změní obě znaménka:',`${termsH(expd,v)} = ${intH(eL)}`),
+      return{kind:'eq',v,ans:Fr(x0),guide:RZ,task,trap:'Násob každý člen na obou stranách, <b class="hx">i číslo bez zlomku</b>. Čitatel dej do závorky, hlavně když je před zlomkem mínus.',prompt:`${frBox(n1,b)} ${MINUS} ${frBox(n2,d)} = ${intH(e.n)}`,
+        steps:[S(`Celou rovnici vynásobíme společným jmenovatelem ${L}, aby zmizely zlomky. ${K('Násobíme každý člen na obou stranách')}, ${X(`i číslo ${intH(e.n)} vpravo`)}. Čitatele dáme do závorek.`,`${br(m1,n1)} ${MINUS} ${br(m2,n2)} = ${intH(eL)}`),
+          S(`Roznásobíme. ${X('Mínus před druhou závorkou změní obě znaménka')}:`,`${termsH(expd,v)} = ${intH(eL)}`),
           S('Sloučíme:',`${termsH([T(A,1),T(B,0)],v)} = ${intH(eL)}`),S('Číslo převedeme doprava:',`${mono(A,v)} = ${fracH(C)}`)].concat(sl.steps),
         plain:`(x+(${a}))/${b}-(x-(${c}))/${d}=${e.n}`}}
     if(tp==='e5'){const b=pick([2,2,4,5]),r=ri(1,4*b);if(r%b===0)continue;const D=Fr(r,b);if(decStr(D)===null)continue;const c=ri(1,4),a=riNZ(-9,9),x0=ri(-8,12);
       const num=F.sub(F.mul(D,Fr(x0)),F.add(Fr(a-x0,b),Fr(c*x0)));if(num.d!==1)continue;const e=num.n; // a−x over b + c x = D x − e  ⇒ e = D x0 − (a−x0)/b − c x0
       const bD=F.mul(D,Fr(b));if(bD.d!==1)continue;const co=b*c-1-bD.n;if(co===0)continue;const C=-b*e-a;const sl=linSolve(Fr(co),Fr(C),v);
       const rhs=termsH([T(D,1),T(-e,0)],v,true);
-      return{kind:'eq',v,ans:Fr(x0),guide:RZ,task,trap:'Násob každý člen na obou stranách, i ty bez zlomku. Čitatel ve zlomku dej do závorky.',
+      return{kind:'eq',v,ans:Fr(x0),guide:RZ,task,trap:'Násob každý člen na obou stranách, <b class="hx">i ty bez zlomku</b>. Čitatel ve zlomku dej do závorky.',
         prompt:`${frBox(termsH([T(a,0),T(-1,1)],v),b)} + ${c===1?'':c}${V(v)} = ${rhs}`,
-        steps:[S(`Celou rovnici vynásobíme číslem ${b}, aby zmizel zlomek. Násobíme každý člen na obou stranách. Zlomek se zkrátí a jeho čitatel zůstane v závorce.`,`(${termsH([T(a,0),T(-1,1)],v)}) + ${b} · ${c===1?'':c}${V(v)} = ${b} · ${decStr(D)}${V(v)} ${e>=0?MINUS:'+'} ${b} · ${Math.abs(e)}`),
+        steps:[S(`Celou rovnici vynásobíme číslem ${b}, aby zmizel zlomek. ${K('Násobíme každý člen na obou stranách.')} Zlomek se zkrátí a jeho čitatel zůstane v závorce.`,`(${termsH([T(a,0),T(-1,1)],v)}) + ${b} · ${c===1?'':c}${V(v)} = ${b} · ${decStr(D)}${V(v)} ${e>=0?MINUS:'+'} ${b} · ${Math.abs(e)}`),
           S('Spočítáme součiny a odstraníme závorku (před ní je plus, znaménka se nemění):',`${termsH([T(a,0),T(-1,1),T(b*c,1)],v)} = ${termsH([T(bD,1),T(-b*e,0)],v)}`),
           S(`Členy s ${V(v)} převedeme doleva, čísla doprava, se změnou znaménka:`,`${termsH([T(-1,1),T(b*c,1),T(-bD.n,1)],v)} = ${termsH([T(-b*e,0),T(-a,0)],v)}`),
           S('Sečteme:',`${mono(Fr(co),v)} = ${intH(C)}`)].concat(sl.steps),
@@ -1040,7 +1040,7 @@ function genRovnice(level){
       const f1=frBox(termsH(lin(1,a),v),b),f3=frBox(termsH(lin(1,-d),v),e);
       return{kind:'eq',v,ans:Fr(x0),guide:RZ,task,trap:'Vynásob celou rovnici společným jmenovatelem všech zlomků. Každý čitatel dej do závorky.',
         prompt:`${m===1?'':m+' · '}${f1} ${MINUS} ${frBox(V(v),c)} = ${f3}`,
-        steps:[S(`Společný jmenovatel čísel ${b}, ${c} a ${e} je ${L}. Celou rovnici jím vynásobíme. Každý zlomek se zkrátí a čitatele dáme do závorek.`,`${k1===1?'':k1+' · '}(${termsH(lin(1,a),v)}) ${MINUS} ${k2===1?'':k2}${V(v)} = ${k3===1?'':k3+' · '}(${termsH(lin(1,-d),v)})`),
+        steps:[S(`Společný jmenovatel čísel ${b}, ${c} a ${e} je ${N(L)}. ${K('Celou rovnici jím vynásobíme')}. Každý zlomek se zkrátí a čitatele dáme do závorek.`,`${k1===1?'':k1+' · '}(${termsH(lin(1,a),v)}) ${MINUS} ${k2===1?'':k2}${V(v)} = ${k3===1?'':k3+' · '}(${termsH(lin(1,-d),v)})`),
           S('Roznásobíme závorky:',`${termsH(lhsT,v)} = ${termsH(rhsT,v)}`),
           S(`Členy s ${V(v)} převedeme doleva, čísla doprava, se změnou znaménka:`,`${termsH([T(k1,1),T(-k2,1),T(-k3,1)],v)} = ${termsH([T(-k3*d,0),T(-k1*a,0)],v)}`),
           S('Sečteme:',`${mono(Fr(co),v)} = ${intH(C)}`)].concat(sl.steps),
@@ -1058,13 +1058,13 @@ function genSoustavy(level){
     const x0=ri(-6,9),y0=ri(-8,9);
     if(tp==='s1'){const S=x0+y0,D=x0-y0;
       return{kind:'sys',ans:{x:Fr(x0),y:Fr(y0)},task,prompt:`<span class="sys">${eqXY(1,1,S)}<br>${eqXY(1,-1,D)}</span>`,
-        steps:[`Rovnice sečteme, ${V('y')} se odečte: 2${V('x')} = ${intH(S)} + ${D<0?'('+intH(D)+')':D} = ${intH(S+D)}`,`${V('x')} = ${intH(S+D)} : 2 = ${intH(x0)}`,`Dosadíme do první rovnice: ${intH(x0)} + ${V('y')} = ${intH(S)}, takže ${V('y')} = ${intH(S)} ${MINUS} ${x0<0?'('+intH(x0)+')':x0} = ${intH(y0)}`],
+        steps:[`${K('Rovnice sečteme')}, ${V('y')} se odečte: 2${V('x')} = ${intH(S)} + ${D<0?'('+intH(D)+')':D} = ${intH(S+D)}`,`${V('x')} = ${intH(S+D)} : 2 = ${N(intH(x0))}`,`Dosadíme do první rovnice: ${intH(x0)} + ${V('y')} = ${intH(S)}, takže ${V('y')} = ${intH(S)} ${MINUS} ${x0<0?'('+intH(x0)+')':x0} = ${N(intH(y0))}`],
         eqs:[`x+y=${S}`,`x-y=${D}`]}}
     if(tp==='s2'){const a=riNZ(-4,4),c=riNZ(-5,5),d=riNZ(-5,5);if(c+d*a===0)continue;const b=y0-a*x0,e=c*x0+d*y0;
       const yH=termsH([T(a,1),T(b,0)],'x');const ex=[T(c,1),T(d*a,1),T(d*b,0)];const A=Fr(c+d*a),B=d*b;const sl=linSolve(A,Fr(e-B),'x');
       return{kind:'sys',ans:{x:Fr(x0),y:Fr(y0)},task,prompt:`<span class="sys">${V('y')} = ${yH}<br>${eqXY(c,d,e)}</span>`,
-        steps:[`Z první rovnice dosadíme za ${V('y')} do druhé: ${xyT(c,0)}${d<0?' '+MINUS+' ':' + '}${Math.abs(d)===1?'':Math.abs(d)+' · '}(${yH}) = ${intH(e)}`,
-          `Roznásobíme: ${termsH(ex.map(x=>x),'x')} = ${intH(e)}`,`Sloučíme a číslo převedeme doprava: ${mono(A,'x')} = ${intH(e-B)}`].concat(sl.steps,[`Dosadíme do první rovnice: ${V('y')} = ${a===1?'':a===-1?MINUS:a+' · '}${a===1||a===-1?(x0<0?'('+intH(x0)+')':x0):(x0<0?'('+intH(x0)+')':x0)}${b===0?'':(b<0?' '+MINUS+' '+(-b):' + '+b)} = ${intH(y0)}`]),
+        steps:[`${K(`Z první rovnice dosadíme za ${V('y')} do druhé`)}: ${xyT(c,0)}${d<0?' '+MINUS+' ':' + '}${Math.abs(d)===1?'':Math.abs(d)+' · '}(${yH}) = ${intH(e)}`,
+          `Roznásobíme: ${termsH(ex.map(x=>x),'x')} = ${intH(e)}`,`Sloučíme a číslo převedeme doprava: ${mono(A,'x')} = ${intH(e-B)}`].concat(sl.steps,[`Dosadíme do první rovnice: ${V('y')} = ${a===1?'':a===-1?MINUS:a+' · '}${a===1||a===-1?(x0<0?'('+intH(x0)+')':x0):(x0<0?'('+intH(x0)+')':x0)}${b===0?'':(b<0?' '+MINUS+' '+(-b):' + '+b)} = ${N(intH(y0))}`]),
         eqs:[`y=${polyPlain(sumT([T(a,1),T(b,0)]),'x')}`,`${c}*x+(${d})*y=${e}`]}}
     if(tp==='s3'){const a=ri(2,6),d=ri(1,5);if(a===d)continue;const b=riNZ(-5,5);const c=a*x0-(y0+b),n=y0-d*x0;
       const eq2=`${termsH([T(d,1),T(n,0)],'x')} = ${V('y')}`;const inner=termsH([T(d,1),T(n,0)],'x');const inner2=termsH([T(d,1),T(n+b,0)],'x');
@@ -1073,20 +1073,20 @@ function genSoustavy(level){
         steps:[`Druhá rovnice už má vyjádřené ${V('y')} = ${inner}. Dosadíme do první:`,
           `${a}${V('x')} ${MINUS} (${inner}${b<0?' '+MINUS+' '+(-b):' + '+b}) = ${intH(c)}`,
           `Upravíme závorku: ${a}${V('x')} ${MINUS} (${inner2}) = ${intH(c)}`,
-          `Odstraníme závorku, mínus před ní mění znaménka: ${termsH([T(a,1),T(-d,1),T(B,0)],'x')} = ${intH(c)}`,
-          `${termsH([T(A,1),T(B,0)],'x')} = ${intH(c)}, takže ${mono(A,'x')} = ${intH(c-B)}`].concat(sl.steps,[`Dosadíme ${V('x')} = ${intH(x0)} do druhé rovnice: ${V('y')} = ${d===1?'':d+' · '}${x0<0?'('+intH(x0)+')':x0}${n===0?'':(n<0?' '+MINUS+' '+(-n):' + '+n)} = ${intH(y0)}`]),
+          `Odstraníme závorku, ${X('mínus před ní mění znaménka')}: ${termsH([T(a,1),T(-d,1),T(B,0)],'x')} = ${intH(c)}`,
+          `${termsH([T(A,1),T(B,0)],'x')} = ${intH(c)}, takže ${mono(A,'x')} = ${intH(c-B)}`].concat(sl.steps,[`Dosadíme ${V('x')} = ${intH(x0)} do druhé rovnice: ${V('y')} = ${d===1?'':d+' · '}${x0<0?'('+intH(x0)+')':x0}${n===0?'':(n<0?' '+MINUS+' '+(-n):' + '+n)} = ${N(intH(y0))}`]),
         eqs:[`${a}*x-(y+(${b}))=${c}`,`${d}*x+(${n})=y`]}}
     if(tp==='s4'){const a1=riNZ(-5,5),b1=riNZ(-5,5),a2=riNZ(-5,5),b2=riNZ(-5,5);if(a1*b2-a2*b1===0)continue;if(Math.abs(b1)===1&&Math.abs(b2)===1&&Math.random()<0.5)continue;
       const c1=a1*x0+b1*y0,c2=a2*x0+b2*y0;const l=lcm(Math.abs(b1),Math.abs(b2));let k1=l/b1,k2=-l/b2;if(k1<0){k1=-k1;k2=-k2}
       const A=k1*a1+k2*a2,C=k1*c1+k2*c2;if(A===0)continue;const sl=linSolve(Fr(A),Fr(C),'x');
       const kH=k=>k<0?`(${MINUS}${-k})`:k;
       const steps=[];
-      if(k1===1&&k2===1){steps.push(`Koeficienty u ${V('y')} jsou opačná čísla, takže rovnice můžeme rovnou sečíst a ${V('y')} se odečte.`)}
-      else{steps.push(`Chceme, aby se při sečtení rovnic odečetlo ${V('y')}. ${k1===1?'První rovnici necháme':'První rovnici vynásobíme číslem '+kH(k1)}, ${k2===1?'druhou necháme':'druhou vynásobíme číslem '+kH(k2)}:`);
+      if(k1===1&&k2===1){steps.push(`Koeficienty u ${V('y')} jsou ${K('opačná čísla')}, takže rovnice můžeme rovnou sečíst a ${V('y')} se odečte.`)}
+      else{steps.push(`Chceme, aby se ${K(`při sečtení rovnic odečetlo ${V('y')}`)}. ${k1===1?'První rovnici necháme':'První rovnici vynásobíme číslem '+kH(k1)}, ${k2===1?'druhou necháme':'druhou vynásobíme číslem '+kH(k2)}:`);
       steps.push(`${eqXY(k1*a1,k1*b1,k1*c1)}<br>${eqXY(k2*a2,k2*b2,k2*c2)}`);}
       steps.push(`Sečteme rovnice: ${mono(Fr(A),'x')} = ${intH(C)}`);
       steps.push(...sl.steps);
-      steps.push(`Dosadíme do první rovnice: ${a1===1?'':a1===-1?MINUS:a1+' · '}${x0<0?'('+intH(x0)+')':x0}${b1<0?' '+MINUS+' ':' + '}${Math.abs(b1)===1?'':Math.abs(b1)}${V('y')} = ${intH(c1)}, takže ${termsH([T(b1,1)],'y')} = ${intH(c1-a1*x0)} a ${V('y')} = ${intH(y0)}`);
+      steps.push(`Dosadíme do první rovnice: ${a1===1?'':a1===-1?MINUS:a1+' · '}${x0<0?'('+intH(x0)+')':x0}${b1<0?' '+MINUS+' ':' + '}${Math.abs(b1)===1?'':Math.abs(b1)}${V('y')} = ${intH(c1)}, takže ${termsH([T(b1,1)],'y')} = ${intH(c1-a1*x0)} a ${V('y')} = ${N(intH(y0))}`);
       return{kind:'sys',ans:{x:Fr(x0),y:Fr(y0)},task,prompt:`<span class="sys">${eqXY(a1,b1,c1)}<br>${eqXY(a2,b2,c2)}</span>`,steps,eqs:[`${a1}*x+(${b1})*y=${c1}`,`${a2}*x+(${b2})*y=${c2}`]}}
   }
 }
@@ -1101,10 +1101,10 @@ function genCela(level){
     if(level===1){
       const a=riNZ(-20,20),b=riNZ(-20,20),op=pick(['+','-']);if(a>0&&b>0)continue;
       const y=op==='+'?b:-b,r=a+y;const steps=[];
-      if(b<0)steps.push(S(op==='+'?'Přičíst záporné číslo je totéž jako ho odečíst. Plus a mínus vedle sebe dají mínus.':'Odečíst záporné číslo je totéž jako ho přičíst. Mínus a mínus vedle sebe dají plus.',`${intH(a)}${opS(op)}(${intH(b)}) = ${sgnList([a,y])}`));
-      steps.push(S(`Na číselné ose začneme na čísle ${intH(a)} a posuneme se o ${Math.abs(y)} ${y>0?'doprava, protože přičítáme':'doleva, protože odečítáme'}. Skončíme na čísle ${intH(r)}.`,`${sgnList([a,y])} = ${intH(r)}`));
+      if(b<0)steps.push(S(op==='+'?`${K('Přičíst záporné číslo je totéž jako ho odečíst.')} Plus a mínus vedle sebe dají mínus.`:`${K('Odečíst záporné číslo je totéž jako ho přičíst.')} Mínus a mínus vedle sebe dají plus.`,`${intH(a)}${opS(op)}(${intH(b)}) = ${sgnList([a,y])}`));
+      steps.push(S(`Na číselné ose začneme na čísle ${intH(a)} a posuneme se o ${Math.abs(y)} ${y>0?'doprava, protože přičítáme':'doleva, protože odečítáme'}. Skončíme na čísle ${intH(r)}.`,`${sgnList([a,y])} = ${N(intH(r))}`));
       return{kind:'num',ans:Fr(r),task:'Vypočtěte.',prompt:`${intH(a)}${opS(op)}${pN(b)} =`,steps,plain:`${a}${op}${pP(b)}`,
-        trap:'Dvě znaménka vedle sebe: + (−3) je totéž co − 3, ale − (−3) je totéž co + 3.'};
+        trap:'Dvě znaménka vedle sebe: + (−3) je totéž co − 3, ale <b class="hx">− (−3) je totéž co + 3</b>.'};
     }
     const first=riNZ(-25,25),items=[];for(let i=1,n=pick([4,4,5]);i<n;i++)items.push({op:pick(['+','-']),v:riNZ(-25,25)});
     const vals=[first].concat(items.map(x=>x.op==='+'?x.v:-x.v));
@@ -1112,16 +1112,16 @@ function genCela(level){
     const r=vals.reduce((s,v)=>s+v,0),pos=vals.filter(v=>v>0),neg=vals.filter(v=>v<0).map(v=>-v);
     const Ps=pos.reduce((s,v)=>s+v,0),Ns=neg.reduce((s,v)=>s+v,0);
     const lhs=intH(first)+items.map(x=>opS(x.op)+pN(x.v)).join('');
-    const steps=[S('Nejdřív odstraníme závorky. Plus a mínus vedle sebe dají mínus, mínus a mínus dají plus.',`${lhs} = ${sgnList(vals)}`),
+    const steps=[S(`Nejdřív odstraníme závorky. ${K('Plus a mínus vedle sebe dají mínus, mínus a mínus dají plus.')}`,`${lhs} = ${sgnList(vals)}`),
       pos.length>1?S('Sečteme zvlášť všechna kladná čísla:',`${pos.join(' + ')} = ${Ps}`):S(`Kladné číslo je tu jen jedno: ${Ps}.`),
       neg.length>1?S('Sečteme zvlášť všechna záporná čísla, zatím bez mínusu:',`${neg.join(' + ')} = ${Ns}`):S(`Záporné číslo je tu jen jedno: ${MINUS}${Ns}.`),
-      S(`Kladná dávají dohromady ${Ps}, záporná ${MINUS}${Ns}. ${Ps===Ns?'Je jich stejně, výsledek je nula.':(Ps>Ns?'Kladných je víc, výsledek je kladný.':'Záporných je víc, výsledek je záporný.')}`,`${Ps} ${MINUS} ${Ns} = ${intH(r)}`)];
+      S(`Kladná dávají dohromady ${Ps}, záporná ${MINUS}${Ns}. ${Ps===Ns?'Je jich stejně, výsledek je nula.':(Ps>Ns?'Kladných je víc, výsledek je kladný.':'Záporných je víc, výsledek je záporný.')}`,`${Ps} ${MINUS} ${Ns} = ${N(intH(r))}`)];
     return{kind:'num',ans:Fr(r),task:'Vypočtěte.',prompt:`${lhs} =`,steps,plain:`${first}`+items.map(x=>x.op+pP(x.v)).join(''),
-      trap:'Nepočítej narychlo zleva doprava. Sečti zvlášť kladná a zvlášť záporná čísla, pak je od sebe odečti.'};
+      trap:'<b class="hx">Nepočítej narychlo zleva doprava.</b> Sečti zvlášť kladná a zvlášť záporná čísla, pak je od sebe odečti.'};
   }
 }
 function signNote(fs){const k=fs.filter(v=>v<0).length;
-  return k===0?'Všechna čísla jsou kladná, výsledek je kladný.':k===1?'Jedno číslo je záporné, proto je výsledek záporný.':k===2?'Dvě záporná čísla: mínus krát mínus je plus.':'Tři záporná čísla: lichý počet mínusů dá mínus.'}
+  return k===0?'Všechna čísla jsou kladná, výsledek je kladný.':k===1?`Jedno číslo je záporné, proto je ${X('výsledek záporný')}.`:k===2?`Dvě záporná čísla: ${K('mínus krát mínus je plus')}.`:`Tři záporná čísla: ${X('lichý počet mínusů dá mínus')}.`}
 function genNasobeni(level){
   for(let t=0;t<3000;t++){
     const task='Vypočtěte.';
@@ -1136,14 +1136,14 @@ function genNasobeni(level){
       return{kind:'num',ans:Fr(r),task,prompt:`${a*z} · ${b} =`,steps:[S('Vynásobíme čísla bez nul:',`${a} · ${b} = ${a*b}`),S(`A připíšeme ${z===10?'jednu nulu':'dvě nuly'}:`,`${a*z} · ${b} = ${r}`)],plain:`${a*z}*${b}`,
         trap:'Nuly na konci odlož stranou, vynásob zbytek a nuly pak připiš.'}}
     if(tp==='smul'){const a=riAbs(2,12),b=riAbs(2,12);if(a>0&&b>0)continue;const r=a*b;
-      return{kind:'num',ans:Fr(r),task,prompt:`${intH(a)} · ${pN(b)} =`,steps:[S('Nejdřív vynásobíme čísla bez znamének:',`${Math.abs(a)} · ${Math.abs(b)} = ${Math.abs(r)}`),S(signNote([a,b]),`${intH(a)} · ${pN(b)} = ${intH(r)}`)],plain:`${a}*${pP(b)}`,
-        trap:'Plus krát mínus je mínus, mínus krát mínus je plus.'}}
+      return{kind:'num',ans:Fr(r),task,prompt:`${intH(a)} · ${pN(b)} =`,steps:[S('Nejdřív vynásobíme čísla bez znamének:',`${Math.abs(a)} · ${Math.abs(b)} = ${Math.abs(r)}`),S(signNote([a,b]),`${intH(a)} · ${pN(b)} = ${N(intH(r))}`)],plain:`${a}*${pP(b)}`,
+        trap:'<b class="hx">Plus krát mínus je mínus</b>, mínus krát mínus je plus.'}}
     if(tp==='sdiv'){const q=riAbs(2,12),d=riAbs(2,12);if(q>0&&d>0)continue;const n=q*d;
-      return{kind:'num',ans:Fr(q),task,prompt:`${intH(n)} : ${pN(d)} =`,steps:[S('Nejdřív vydělíme čísla bez znamének:',`${Math.abs(n)} : ${Math.abs(d)} = ${Math.abs(q)}`),S(signNote([n,d])+' U dělení platí stejné pravidlo jako u násobení.',`${intH(n)} : ${pN(d)} = ${intH(q)}`)],plain:`${n}:${pP(d)}`,
+      return{kind:'num',ans:Fr(q),task,prompt:`${intH(n)} : ${pN(d)} =`,steps:[S('Nejdřív vydělíme čísla bez znamének:',`${Math.abs(n)} : ${Math.abs(d)} = ${Math.abs(q)}`),S(signNote([n,d])+' U dělení platí stejné pravidlo jako u násobení.',`${intH(n)} : ${pN(d)} = ${N(intH(q))}`)],plain:`${n}:${pP(d)}`,
         trap:'Znaménko u dělení se určuje stejně jako u násobení.'}}
     if(tp==='three'){const f=[riAbs(2,6),riAbs(2,6),riAbs(2,6)];if(f.every(v=>v>0))continue;const r=f[0]*f[1]*f[2];
-      return{kind:'num',ans:Fr(r),task,prompt:`${intH(f[0])} · ${pN(f[1])} · ${pN(f[2])} =`,steps:[S('Nejdřív vynásobíme čísla bez znamének:',`${Math.abs(f[0])} · ${Math.abs(f[1])} · ${Math.abs(f[2])} = ${Math.abs(f[0]*f[1])} · ${Math.abs(f[2])} = ${Math.abs(r)}`),S('Teď znaménko. Spočítáme záporná čísla. '+signNote(f),`${intH(f[0])} · ${pN(f[1])} · ${pN(f[2])} = ${intH(r)}`)],
-        plain:`${f[0]}*${pP(f[1])}*${pP(f[2])}`,trap:'Sudý počet mínusů dá plus, lichý počet mínusů dá mínus.'}}
+      return{kind:'num',ans:Fr(r),task,prompt:`${intH(f[0])} · ${pN(f[1])} · ${pN(f[2])} =`,steps:[S('Nejdřív vynásobíme čísla bez znamének:',`${Math.abs(f[0])} · ${Math.abs(f[1])} · ${Math.abs(f[2])} = ${Math.abs(f[0]*f[1])} · ${Math.abs(f[2])} = ${Math.abs(r)}`),S('Teď znaménko. Spočítáme záporná čísla. '+signNote(f),`${intH(f[0])} · ${pN(f[1])} · ${pN(f[2])} = ${N(intH(r))}`)],
+        plain:`${f[0]}*${pP(f[1])}*${pP(f[2])}`,trap:'Sudý počet mínusů dá plus, <b class="hx">lichý počet mínusů dá mínus</b>.'}}
     if(tp==='big'){const a=ri(13,49),b=ri(3,9);if(a%10===0)continue;const s=pick([1,1,-1]),A=s*a,r=A*b,tn=a-a%10,on=a%10;
       const steps=[S(`Větší číslo rozložíme na desítky a jednotky: ${a} = ${tn} + ${on}. Každou část vynásobíme zvlášť a sečteme.`,`${a} · ${b} = ${tn} · ${b} + ${on} · ${b} = ${tn*b} + ${on*b} = ${a*b}`)];
       if(s<0)steps.push(S(signNote([A,b]),`${intH(A)} · ${b} = ${intH(r)}`));
@@ -1155,27 +1155,27 @@ function genPrednost(level){
   for(let t=0;t<3000;t++){
     if(level===1){const tp=pick(['p1','p2','p3']);
       if(tp==='p1'){const b=ri(2,9),c=ri(2,9),op=pick(['+','-']);const a=op==='+'?ri(2,30):ri(b*c,b*c+30);const m=b*c,r=op==='+'?a+m:a-m;
-        return{kind:'num',ans:Fr(r),task,prompt:`${a}${opS(op)}${b} · ${c} =`,steps:[S('Násobení má přednost před sčítáním a odčítáním.',`${b} · ${c} = ${m}`),S(`Teď ${op==='+'?'sečteme':'odečteme'}:`,`${a}${opS(op)}${m} = ${r}`)],plain:`${a}${op}${b}*${c}`,
-          trap:'Nepočítej zleva doprava. Násobení má přednost.'}}
+        return{kind:'num',ans:Fr(r),task,prompt:`${a}${opS(op)}${b} · ${c} =`,steps:[S(`${K('Násobení má přednost')} před sčítáním a odčítáním.`,`${b} · ${c} = ${m}`),S(`Teď ${op==='+'?'sečteme':'odečteme'}:`,`${a}${opS(op)}${m} = ${N(r)}`)],plain:`${a}${op}${b}*${c}`,
+          trap:'<b class="hx">Nepočítej zleva doprava.</b> Násobení má přednost.'}}
       if(tp==='p2'){const c=ri(2,9),op=pick(['+','-']);let a=ri(2,15),b=ri(2,15);if(op==='-'&&a<=b)continue;const s=op==='+'?a+b:a-b,r=s*c;
-        return{kind:'num',ans:Fr(r),task,prompt:`(${a}${opS(op)}${b}) · ${c} =`,steps:[S('Závorka má přednost před vším ostatním.',`${a}${opS(op)}${b} = ${s}`),S('Výsledek závorky vynásobíme:',`${s} · ${c} = ${r}`)],plain:`(${a}${op}${b})*${c}`,
+        return{kind:'num',ans:Fr(r),task,prompt:`(${a}${opS(op)}${b}) · ${c} =`,steps:[S(`${K('Závorka má přednost')} před vším ostatním.`,`${a}${opS(op)}${b} = ${s}`),S('Výsledek závorky vynásobíme:',`${s} · ${c} = ${N(r)}`)],plain:`(${a}${op}${b})*${c}`,
           trap:'Nejdřív závorka, potom násobení.'}}
       const a=ri(2,9),b=ri(2,9),d=ri(2,9),k=ri(2,9),c=d*k,m=a*b;if(m<k)continue;
-      return{kind:'num',ans:Fr(m-k),task,prompt:`${a} · ${b} ${MINUS} ${c} : ${d} =`,steps:[S('Násobení a dělení mají přednost před odčítáním. Spočítáme obě:',`${a} · ${b} = ${m}${SEP}${c} : ${d} = ${k}`),S('Teď odečteme:',`${m} ${MINUS} ${k} = ${m-k}`)],plain:`${a}*${b}-${c}:${d}`,
+      return{kind:'num',ans:Fr(m-k),task,prompt:`${a} · ${b} ${MINUS} ${c} : ${d} =`,steps:[S(`${K('Násobení a dělení mají přednost')} před odčítáním. Spočítáme obě:`,`${a} · ${b} = ${m}${SEP}${c} : ${d} = ${k}`),S('Teď odečteme:',`${m} ${MINUS} ${k} = ${N(m-k)}`)],plain:`${a}*${b}-${c}:${d}`,
         trap:'Násobení i dělení spočítej dřív než odčítání.'};
     }
     const tp=pick(['q1','q2','q3']);
     if(tp==='q1'){const a=riAbs(2,6),b=riNZ(-9,9),c=riNZ(-9,9),e=riAbs(2,6),k=riNZ(-9,9);if(b===c)continue;const d=e*k,s=b-c,m=a*s,r=m+k;
       return{kind:'num',ans:Fr(r),task,prompt:`${intH(a)} · (${intH(b)} ${MINUS} ${pN(c)}) + ${pN(d)} : ${pN(e)} =`,
-        steps:[S('Nejdřív závorka.',`${intH(b)} ${MINUS} ${pN(c)} = ${intH(s)}`),S('Pak násobení a dělení, ty mají přednost před sčítáním:',`${intH(a)} · ${pN(s)} = ${intH(m)}${SEP}${intH(d)} : ${pN(e)} = ${intH(k)}`),S('Nakonec sečteme:',`${intH(m)} + ${pN(k)} = ${intH(r)}`)],
-        plain:`${a}*(${b}-${pP(c)})+${pP(d)}:${pP(e)}`,trap:'Pořadí: závorka, násobení a dělení, sčítání. Hlídej znaménka.'}}
+        steps:[S(`${K('Nejdřív závorka.')}`,`${intH(b)} ${MINUS} ${pN(c)} = ${intH(s)}`),S('Pak násobení a dělení, ty mají přednost před sčítáním:',`${intH(a)} · ${pN(s)} = ${intH(m)}${SEP}${intH(d)} : ${pN(e)} = ${intH(k)}`),S('Nakonec sečteme:',`${intH(m)} + ${pN(k)} = ${N(intH(r))}`)],
+        plain:`${a}*(${b}-${pP(c)})+${pP(d)}:${pP(e)}`,trap:'Pořadí: závorka, násobení a dělení, sčítání. <b class="hx">Hlídej znaménka.</b>'}}
     if(tp==='q2'){const a=riNZ(-20,20),b=riAbs(2,6),c=riNZ(-9,9),d=riNZ(-9,9);const s=c+d;if(s===0)continue;const m=b*s,r=a-m;
       return{kind:'num',ans:Fr(r),task,prompt:`${intH(a)} ${MINUS} ${pN(b)} · (${intH(c)} + ${pN(d)}) =`,
-        steps:[S('Nejdřív závorka.',`${intH(c)} + ${pN(d)} = ${intH(s)}`),S('Pak násobení, má přednost před odčítáním:',`${pN(b)} · ${pN(s)} = ${intH(m)}`),S('Nakonec odečteme výsledek násobení. Pozor na znaménka.',`${intH(a)} ${MINUS} ${pN(m)} = ${intH(r)}`)],
-        plain:`${a}-${pP(b)}*(${c}+${pP(d)})`,trap:`Neodčítej ${intH(a)} ${MINUS} ${pN(b)} jako první. Násobení má přednost.`}}
+        steps:[S(`${K('Nejdřív závorka.')}`,`${intH(c)} + ${pN(d)} = ${intH(s)}`),S('Pak násobení, má přednost před odčítáním:',`${pN(b)} · ${pN(s)} = ${intH(m)}`),S(`Nakonec odečteme výsledek násobení. ${X('Pozor na znaménka.')}`,`${intH(a)} ${MINUS} ${pN(m)} = ${N(intH(r))}`)],
+        plain:`${a}-${pP(b)}*(${c}+${pP(d)})`,trap:`<b class="hx">Neodčítej ${intH(a)} ${MINUS} ${pN(b)} jako první.</b> Násobení má přednost.`}}
     const c=riAbs(2,6),k=riNZ(-9,9),b=riNZ(-9,9),a=b+c*k,d=riAbs(2,6),e=riNZ(-9,9);if(a===0)continue;const m=d*e,r=k-m;
     return{kind:'num',ans:Fr(r),task,prompt:`(${intH(a)} ${MINUS} ${pN(b)}) : ${pN(c)} ${MINUS} ${pN(d)} · ${pN(e)} =`,
-      steps:[S('Nejdřív závorka.',`${intH(a)} ${MINUS} ${pN(b)} = ${intH(c*k)}`),S('Pak dělení a násobení:',`${intH(c*k)} : ${pN(c)} = ${intH(k)}${SEP}${pN(d)} · ${pN(e)} = ${intH(m)}`),S('Nakonec odečteme:',`${intH(k)} ${MINUS} ${pN(m)} = ${intH(r)}`)],
+      steps:[S(`${K('Nejdřív závorka.')}`,`${intH(a)} ${MINUS} ${pN(b)} = ${intH(c*k)}`),S('Pak dělení a násobení:',`${intH(c*k)} : ${pN(c)} = ${intH(k)}${SEP}${pN(d)} · ${pN(e)} = ${intH(m)}`),S('Nakonec odečteme:',`${intH(k)} ${MINUS} ${pN(m)} = ${N(intH(r))}`)],
       plain:`(${a}-${pP(b)}):${pP(c)}-${pP(d)}*${pP(e)}`,trap:'Závorka, pak dělení a násobení, nakonec odčítání.'};
   }
 }
@@ -1187,14 +1187,14 @@ function genDelitelnost(level){
       const a=g*m,b=g*n;if(Math.max(a,b)>(level===1?60:150))continue;const da=divisorsOf(a),db=divisorsOf(b),com=da.filter(x=>db.includes(x));
       return{kind:'num',ans:Fr(g),task:'Vypočtěte.',prompt:`<span class="txt">Najdi největšího společného dělitele čísel ${a} a ${b}.</span>`,
         steps:[S(`Vypíšeme všechna čísla, kterými jde vydělit ${a} (dělitele):`,`${a}: ${da.join(', ')}`),S(`Totéž pro číslo ${b}:`,`${b}: ${db.join(', ')}`),
-          S(`V obou seznamech jsou čísla ${com.join(', ')}. Největší z nich je ${g}.`,`D(${a}; ${b}) = ${g}`)],plain:`${g}`,
+          S(`V obou seznamech jsou čísla ${com.join(', ')}. ${K('Největší z nich')} je ${g}.`,`D(${a}; ${b}) = ${N(g)}`)],plain:`${g}`,
         trap:'Největší společný dělitel nemůže být větší než menší z obou čísel. Použiješ ho při krácení zlomků.'};
     }
     const a=ri(2,level===1?12:30),b=ri(level===1?2:4,level===1?12:30);if(a===b)continue;const L=lcm(a,b),big=Math.max(a,b),small=Math.min(a,b);
     if(L/big>(level===1?6:8)||(level===2&&L<30))continue;const mult=[];for(let i=1;i*big<=L;i++)mult.push(i*big);
     return{kind:'num',ans:Fr(L),task:'Vypočtěte.',prompt:`<span class="txt">Najdi nejmenší společný násobek čísel ${a} a ${b}.</span>`,
-      steps:[S(`Vypisujeme násobky většího čísla ${big} a hledáme první, který jde vydělit i číslem ${small}:`,mult.join(', ')),
-        S(`${L} : ${small} = ${L/small}, to jde beze zbytku. Nejmenší společný násobek je tedy ${L}. Stejně se hledá nejmenší společný jmenovatel zlomků.`,`n(${a}; ${b}) = ${L}`)],plain:`${L}`,
+      steps:[S(`Vypisujeme násobky většího čísla ${big} a hledáme ${K(`první, který jde vydělit i číslem ${small}`)}:`,mult.join(', ')),
+        S(`${L} : ${small} = ${L/small}, to jde beze zbytku. Nejmenší společný násobek je tedy ${L}. Stejně se hledá nejmenší společný jmenovatel zlomků.`,`n(${a}; ${b}) = ${N(L)}`)],plain:`${L}`,
       trap:`Součin ${a} · ${b} = ${a*b} je společný násobek, ale ne vždy nejmenší.`};
   }
 }
@@ -1203,20 +1203,20 @@ function genKraceni(level){
     const tp=level===1?pick(['krat','krat','d2z']):pick(['krat','d2z','z2d']);
     if(tp==='krat'){const q=ri(2,level===1?10:15),p=ri(1,2*q),k=ri(2,level===1?9:15);if(gcd(p,q)!==1)continue;const n=p*k,d=q*k;
       return{kind:'num',fraction:true,ans:Fr(p,q),task:'Zkraťte zlomek na základní tvar.',prompt:`${frBox(n,d)} =`,
-        steps:[S(`Hledáme největší číslo, kterým jdou vydělit čitatel ${n} i jmenovatel ${d}. Je to ${k}. Když ho hned nevidíš, krať postupně menšími čísly (2, 3, 5…), dokud to jde.`),
-          S('Čitatel i jmenovatel vydělíme stejným číslem, hodnota zlomku se tím nezmění:',`${frBox(n,d)} = ${frBox(n+' : '+k,d+' : '+k)} = ${fracH(Fr(p,q))}`),
+        steps:[S(`Hledáme ${K(`největší číslo, kterým jdou vydělit čitatel ${n} i jmenovatel ${d}`)}. Je to ${N(k)}. Když ho hned nevidíš, krať postupně menšími čísly (2, 3, 5…), dokud to jde.`),
+          S('Čitatel i jmenovatel vydělíme stejným číslem, hodnota zlomku se tím nezmění:',`${frBox(n,d)} = ${frBox(n+' : '+k,d+' : '+k)} = ${N(fracH(Fr(p,q)))}`),
           S(`Čísla ${p} a ${q} už společného dělitele nemají, zlomek je v základním tvaru.`)],plain:`${n}/${d}`,
         trap:'Krátí se čitatel i jmenovatel stejným číslem. Krať, dokud to jde.'}}
     if(tp==='d2z'){const pl=level===1?pick([1,2]):pick([1,2,2,3]),den=Math.pow(10,pl),k=ri(1,den-1);if(k%10===0)continue;const n=pick([0,0,0,1,2])*den+k,g=gcd(n,den);if(g===1)continue;
       const res=Fr(n,den),dec=decStr(res);
       return{kind:'num',fraction:true,ans:res,task:'Převeďte na zlomek v základním tvaru.',prompt:`${dec} =`,
-        steps:[S(`Číslo ${dec} má ${pl} ${pl===1?'desetinné místo':'desetinná místa'}, proto ho zapíšeme jako zlomek se jmenovatelem ${den}.`,`${dec} = ${frBox(n,den)}`),
-          S(`Zkrátíme. ${n} i ${den} jdou vydělit ${g}:`,`${frBox(n,den)} = ${frBox(n+' : '+g,den+' : '+g)} = ${fracH(res)}`)],plain:`${n}/${den}`,
+        steps:[S(`Číslo ${dec} má ${pl} ${pl===1?'desetinné místo':'desetinná místa'}, proto ho zapíšeme jako ${K(`zlomek se jmenovatelem ${den}`)}.`,`${dec} = ${frBox(n,den)}`),
+          S(`Zkrátíme. ${n} i ${den} jdou vydělit ${g}:`,`${frBox(n,den)} = ${frBox(n+' : '+g,den+' : '+g)} = ${N(fracH(res))}`)],plain:`${n}/${den}`,
         trap:'Počet desetinných míst = počet nul ve jmenovateli: 0,35 = 35/100.'}}
     const q=pick([2,4,5,8,20,25,50]),p=ri(1,2*q);if(gcd(p,q)!==1)continue;const P=[10,100,1000].find(x=>x%q===0),k=P/q,res=Fr(p,q),zeros=String(P).length-1;
     return{kind:'num',decimal:true,ans:res,task:'Převeďte na desetinné číslo.',prompt:`${frBox(p,q)} =`,
-      steps:[S(`Zlomek rozšíříme tak, aby ve jmenovateli bylo ${P}. Protože ${q} · ${k} = ${P}, násobíme čitatel i jmenovatel číslem ${k}.`,`${frBox(p,q)} = ${frBox(p+' · '+k,q+' · '+k)} = ${frBox(p*k,P)}`),
-        S(`Jmenovatel ${P} má ${zeros} ${zeros===1?'nulu':'nuly'}, takže výsledek má ${zeros} ${zeros===1?'desetinné místo':'desetinná místa'}.`,`${frBox(p*k,P)} = ${decStr(res)}`)],plain:`${p}/${q}`,
+      steps:[S(`Zlomek rozšíříme tak, aby ${K(`ve jmenovateli bylo ${P}`)}. Protože ${q} · ${k} = ${P}, násobíme čitatel i jmenovatel číslem ${k}.`,`${frBox(p,q)} = ${frBox(p+' · '+k,q+' · '+k)} = ${frBox(p*k,P)}`),
+        S(`Jmenovatel ${P} má ${zeros} ${zeros===1?'nulu':'nuly'}, takže výsledek má ${zeros} ${zeros===1?'desetinné místo':'desetinná místa'}.`,`${frBox(p*k,P)} = ${N(decStr(res))}`)],plain:`${p}/${q}`,
       trap:'Rozšiř zlomek na jmenovatel 10, 100 nebo 1000. Nebo vyděl čitatel jmenovatelem.'};
   }
 }
@@ -1241,7 +1241,7 @@ const TOPICS=[
   {id:'soustavy',g:3,name:'Soustavy rovnic',ref:'jako úloha 5.2',gen:genSoustavy}
 ];
 const GUIDE_DEFAULT={celacisla:'celacisla',nasobeni:'nasobeni',prednost:'prednost',delitelnost:'delitelnost',kraceni:'kraceni',zlomky:'zlomky',slozene:'slozene',desetinna:'desetinna',mocniny:'mocniny',procenta:'procenta',roznasobovani:'roznasobovani',vytykani:'vytykani',vzorce:'umocneni',rovnice:'rovnice',soustavy:'soustavy'};
-const TRAP_DEFAULT={desetinna:'Pořadí: závorka, pak násobení a dělení, nakonec sčítání a odčítání. Nepočítej zleva doprava.',mocniny:'Mocnina má přednost před násobením. −3² = −9, ale (−3)² = 9.',procenta:'Vždy si ujasni, co je 100 %, tedy z čeho procenta počítáš.',soustavy:'Dopočítej obě neznámé. Když spočítáš jen jednu, je bod dolů.'};
+const TRAP_DEFAULT={desetinna:'Pořadí: závorka, pak násobení a dělení, nakonec sčítání a odčítání. <b class="hx">Nepočítej zleva doprava.</b>',mocniny:'Mocnina má přednost před násobením. <b class="hx">−3² = −9, ale (−3)² = 9.</b>',procenta:'Vždy si ujasni, <b class="hx">co je 100 %</b>, tedy z čeho procenta počítáš.',soustavy:'<b class="hx">Dopočítej obě neznámé.</b> Když spočítáš jen jednu, je bod dolů.'};
 function generate(topicId,level){
   const tp=TOPICS.find(t=>t.id===topicId);const p=tp.gen(level);
   p.topic=topicId;p.level=level;p.guide=p.guide||GUIDE_DEFAULT[topicId];p.trap=p.trap||TRAP_DEFAULT[topicId]||'';p.id=Date.now().toString(36)+Math.random().toString(36).slice(2,7);
@@ -1289,7 +1289,7 @@ celacisla:{title:'Celá čísla: sčítání a odčítání',
  how:['Představ si číselnou osu. Přičítání je posun doprava, odčítání posun doleva.','Dvě znaménka vedle sebe nahraď jedním: + (−5) je − 5, a − (−5) je + 5.','Když je čísel víc, sečti zvlášť kladná a zvlášť záporná. Pak menší součet odečti od většího a výsledek dostane znaménko většího.'],
  write:['Záporné číslo za znaménkem piš do závorky: 7 + (−3).'],
  why:'Samostatná úloha to v testu není, ale znaménka jsou v každém příkladu. Ztracené mínus stojí body u zlomků, výrazů i rovnic.',
- traps:['−3 − 5 = −8, ne −2. Obě čísla táhnou doleva.','−(−4) = 4.','5 − 8 = −3. Když odčítáš větší číslo od menšího, výsledek je záporný.']},
+ traps:['−3 − 5 = −8, <b class="hx">ne −2</b>. Obě čísla táhnou doleva.','−(−4) = 4.','5 − 8 = −3. Když odčítáš větší číslo od menšího, výsledek je záporný.']},
 nasobeni:{title:'Násobení a dělení',
  how:['Násobilku do 10 · 10 musíš umět zpaměti, v testu není kalkulačka.','Když si nejsi jistá, rozděl si příklad: 7 · 8 = 7 · 5 + 7 · 3 = 35 + 21 = 56.','Větší čísla rozlož na desítky a jednotky: 37 · 6 = 30 · 6 + 7 · 6 = 180 + 42 = 222.','Dělení je opak násobení: 56 : 7 = 8, protože 7 · 8 = 56.','Znaménko: plus krát plus i mínus krát mínus je plus, plus krát mínus je mínus. U dělení stejně.'],
  write:['Čísla násob bez znamének a znaménko urči zvlášť.'],
@@ -1299,7 +1299,7 @@ prednost:{title:'Přednost operací',
  how:['Nejdřív závorky.','Pak mocniny a odmocniny.','Pak násobení a dělení, zleva doprava.','Nakonec sčítání a odčítání, zleva doprava.'],
  write:['Každý krok napiš na nový řádek začínající „=“, ať je vidět pořadí.'],
  why:'Pořadí operací rozhoduje v každé úloze s postupem. Výraz spočítaný ve špatném pořadí je chybný postup, a ten je za 0 bodů.',
- traps:['2 + 3 · 4 = 14, ne 20.','12 : 3 · 2 = 8, ne 2. Násobení a dělení jdou zleva doprava.','10 − (3 − 5) = 10 − (−2) = 12.']},
+ traps:['2 + 3 · 4 = 14, <b class="hx">ne 20</b>.','12 : 3 · 2 = 8, <b class="hx">ne 2</b>. Násobení a dělení jdou zleva doprava.','10 − (3 − 5) = 10 − (−2) = 12.']},
 delitelnost:{title:'Dělitelnost: NSD a NSN',
  how:['Dělitel je číslo, kterým jde dané číslo vydělit beze zbytku. Dělitelé 12: 1, 2, 3, 4, 6, 12.','Největší společný dělitel: vypiš dělitele obou čísel a vezmi největší, který je v obou seznamech. Použiješ ho ke krácení zlomků.','Nejmenší společný násobek: vypisuj násobky většího čísla, dokud nenarazíš na číslo, které jde vydělit i menším. To je společný jmenovatel.','Rychlá pravidla: číslem 2 jdou vydělit sudá čísla, 5 čísla končící 0 nebo 5, 10 čísla končící 0, 3 čísla s ciferným součtem dělitelným 3.'],
  write:['Zápis D(12; 18) = 6 je největší společný dělitel, n(4; 6) = 12 nejmenší společný násobek.'],
@@ -1309,7 +1309,7 @@ kraceni:{title:'Krácení a převody',
  how:['Krátit znamená vydělit čitatel i jmenovatel stejným číslem. Hodnota zlomku se nezmění.','Nejrychleji krátíš největším společným dělitelem. Když ho nevidíš, krať postupně (2, 3, 5…), dokud to jde.','Desetinné číslo na zlomek: 1 desetinné místo = jmenovatel 10, 2 místa = 100, 3 místa = 1000. Pak zkrať.','Zlomek na desetinné číslo: rozšiř ho na jmenovatel 10, 100 nebo 1000, nebo vyděl čitatel jmenovatelem.'],
  write:['Výsledek vždy v základním tvaru: 18/24 = 3/4.'],
  why:'V úloze 3 musí být výsledek zlomek v základním tvaru. Nezkrácený výsledek nebo výsledek jen jako desetinné číslo stojí bod.',
- traps:['0,5 = 5/10 = 1/2, ne 1/5.','0,05 = 5/100 = 1/20.','Krátit jde jen součin, ne součet: v (2 + 4)/4 nekrať dvojku s čtyřkou.']},
+ traps:['0,5 = 5/10 = 1/2, <b class="hx">ne 1/5</b>.','0,05 = 5/100 = 1/20.','Krátit jde jen součin, <b class="hx">ne součet</b>: v (2 + 4)/4 nekrať dvojku s čtyřkou.']},
 zlomky:{title:'Zlomky (úloha 3)',
  how:[`Desetinná čísla ${K('převeď na zlomky')} (0,3 = 3/10). Se zlomky a desetinnými čísly naráz se nepočítá.`,'Dodrž pořadí: závorky, mocniny, pak násobení a dělení, nakonec sčítání a odčítání.',`Sčítání a odčítání: najdi společný jmenovatel, zlomky rozšiř a ${K('sečti jen čitatele')}.`,`Násobení: ${K('čitatel krát čitatel, jmenovatel krát jmenovatel')}. Celé číslo násobí jen čitatel. Krátit můžeš i do kříže před násobením.`,`Dělení: první zlomek nech a ${K('vynásob ho převráceným druhým')} (čitatel a jmenovatel prohodíš).`,`Výsledek ${K('zkrať na základní tvar')}.`],
  write:['Piš postupně, každou úpravu za rovnítko nebo na nový řádek začínající „=“. Postup musí jít přečíst krok po kroku.','Záporný zlomek piš s mínusem před zlomkovou čarou: −7/8.','Výsledek nech jako zlomek v základním tvaru, klidně i nepravý (19/6). Na smíšené číslo převádět nemusíš a chyba při převodu by stála bod.'],
@@ -1329,7 +1329,7 @@ desetinna:{title:'Desetinná čísla',
  write:['Mezivýsledky piš, ať je vidět pořadí operací.'],
  full:['Desetinná čísla bývají součástí jiných úloh. Body jsou za přesný výsledek, zaokrouhlovat se nesmí, pokud to zadání neřekne.'],
  minus:[],zero:[],
- traps:['0,3 · 0,3 = 0,09, ne 0,9.','Odčítání většího čísla od menšího dá záporný výsledek.']},
+ traps:['0,3 · 0,3 = 0,09, <b class="hx">ne 0,9</b>.','Odčítání většího čísla od menšího dá záporný výsledek.']},
 mocniny:{title:'Mocniny a odmocniny',
  how:['Mocnina má přednost před násobením: 2 · 3² = 2 · 9 = 18.','(−3)² = 9, mínus je v závorce a umocní se taky. −3² = −9, mínus v závorce není a neumocňuje se.','Lichá mocnina záporného čísla je záporná: (−2)³ = −8.','Zlomek umocníš tak, že umocníš čitatel i jmenovatel. Stejně tak odmocňuješ.','Desetinné číslo na druhou má dvakrát víc desetinných míst: 0,3² = 0,09.'],
  write:['Každý člen spočítej zvlášť a pak sečti.'],
@@ -1347,26 +1347,26 @@ roznasobovani:{title:'Úprava výrazů (úloha 4.3)',
  full:['Správný výsledek bez závorek a správný postup: 2 body. Úlohy 4.1 a 4.2 jsou obvykle jen na výsledek za 1 bod, tam se dílčí body nedávají.'],
  minus:['Právě jeden člen upravený chybně, nejčastěji kvůli mínus před závorkou.','Jedna chyba při roznásobení závorek.','Chyba ve vzorci.','Chybí poslední krok: nejsou sečtené všechny členy s x², s x, nebo čísla.','Při opisování vypadl jeden člen.'],
  zero:['Víc než jedna chyba.'],
- traps:['(x + 3)² = x² + 6x + 9, ne x² + 9.','−(x − 1)² = −x² + 2x − 1. Mínus mění znaménka všech tří členů.','−4 · (x − 1)²: nejdřív umocni, pak násob čtyřmi.']},
+ traps:['(x + 3)² = x² + 6x + 9, <b class="hx">ne x² + 9</b>.','−(x − 1)² = −x² + 2x − 1. Mínus mění znaménka všech tří členů.','−4 · (x − 1)²: nejdřív umocni, pak násob čtyřmi.']},
 umocneni:{title:'Umocňování podle vzorce (úloha 4.1, 4.2)',
  how:['(první + druhý)² = první² + 2 · první · druhý + druhý².','(první − druhý)² = první² − 2 · první · druhý + druhý².','(první + druhý)(první − druhý) = první² − druhý².','Zlomek umocni v čitateli i jmenovateli, desetinné číslo zdvojnásobí počet desetinných míst.','Když jsou v závorce dva členy se stejnou proměnnou, nejdřív je sečti.'],
  write:['Výsledek bez závorek. Koeficienty zlomkem v základním tvaru (4/9 a²), desetinná čísla přesně (0,09x²).'],
  full:['Obvykle jen výsledek za 1 bod. Bod je jen za úplně správný výsledek, dílčí body nejsou.'],minus:[],
  zero:['Chybějící prostřední člen 2 · první · druhý.','Špatně umocněný zlomek nebo desetinné číslo.'],
- traps:['(2/3 a)² = 4/9 a², ne 2/9 a².','Prostřední člen má stejné znaménko jako je v závorce.']},
+ traps:['(2/3 a)² = 4/9 a², <b class="hx">ne 2/9 a²</b>.','Prostřední člen má stejné znaménko jako je v závorce.']},
 rozklad:{title:'Rozklad na součin podle vzorce (úloha 4.2)',
  how:['Když je tam závorka nebo součin, nejdřív výraz uprav a sečti podobné členy.','Dva členy a mínus mezi nimi (49 − 16a²) znamenají vzorec první² − druhý² = (první + druhý)(první − druhý).','Tři členy, kde první a poslední jsou druhé mocniny, znamenají vzorec (první ± druhý)². Prostřední člen musí sedět: 2 · první · druhý.','Najdi „první“ a „druhý“: z čeho jsou ty členy druhou mocninou (tabulka 11 až 20 je v testu).','Zapiš součin a v hlavě ho roznásob pro kontrolu.'],
  write:['Výsledek jako součin: (k + 12)(k − 12) nebo (3a − 11)². Druhou mocninu můžeš zapsat i jako (3a − 11)(3a − 11), obojí se uznává.','Když je první člen číslo, nech ho první: 9 − x² = (3 + x)(3 − x).'],
  full:['Jen výsledek: 1 bod. Když se chce postup (upravit a rozložit): 2 body.'],
  minus:['Výraz je správně upravený, ale není rozložený na součin. To je jen polovina bodů.'],
  zero:['Chyba v úpravě nebo chybí postup, když ho zadání chce.'],
- traps:['(−4a)² = 16a². Mínus v závorce na druhou zmizí.','(3 − x)(3 + x) není totéž co (x − 3)(x + 3). Pořadí v závorce s mínusem je důležité.']},
+ traps:['(−4a)² = 16a². Mínus v závorce na druhou zmizí.','(3 − x)(3 + x) <b class="hx">není totéž co (x − 3)(x + 3)</b>. Pořadí v závorce s mínusem je důležité.']},
 vytykani:{title:'Vytýkání (rozklad na součin)',
  how:['Když je potřeba, nejdřív výraz uprav a sečti podobné členy.','Najdi největší číslo, kterým jdou vydělit všechny koeficienty.','Zjisti, jestli všechny členy obsahují proměnnou. Pokud ano, vytkni ji taky.','Každý člen vyděl tím, co vytýkáš, a výsledky napiš do závorky.','Kontrola: roznásob a musí vyjít původní výraz.'],
  write:['Výsledek jako součin: 3x(2x − 5).'],
  full:['Obvykle jen výsledek za 1 bod.'],minus:[],
  zero:['V závorce jde ještě něco vytknout, rozklad tedy není hotový.','Po roznásobení nevyjde původní výraz.'],
- traps:['Vytknout se musí ze všech členů, ne jen z některých.','Když vytkneš celý člen, zůstane po něm v závorce 1, ne 0.']},
+ traps:['Vytknout se musí ze všech členů, <b class="hx">ne jen z některých</b>.','Když vytkneš celý člen, zůstane po něm v závorce 1, <b class="hx">ne 0</b>.']},
 rovnice:{title:'Rovnice (úloha 5)',
  how:['Roznásob závorky (u druhé mocniny podle vzorce).','Členy s x převeď na jednu stranu, čísla na druhou. Co přejde na druhou stranu, změní znaménko.','Sečti obě strany.','Vyděl obě strany číslem u x.','Když se členy s x úplně odečtou: zbude 0 = 0 (rovnice má nekonečně mnoho řešení), nebo 0 = jiné číslo (rovnice nemá řešení).'],
  write:['Každou úpravu na nový řádek, rovnítka pod sebe.','Úpravu můžeš psát za svislou čáru na konec řádku (| −2x, | : 4). Není to povinné, ale pomáhá ti to neudělat chybu.','Na konci napiš výsledek: x = 20. U zvláštních rovnic závěr slovy: „Rovnice nemá řešení.“ nebo „Rovnice má nekonečně mnoho řešení.“','Zkoušku nezapisuj.'],
