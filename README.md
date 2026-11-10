@@ -4,6 +4,11 @@ Tenký obal (WebView) kolem `app/src/main/assets/index.html`. Vše běží v tel
 internet je potřeba jen pro vysvětlování přes OpenRouter (a pro webové fonty; bez nich se použijí systémové).
 
 ## Jak to vypadá
+Ukázka z telefonu (verze 1.7, zrychleno): správná odpověď a postup, výběr tématu, špatná odpověď s tipem, sešit chyb, přehled a pracovní list.
+Video ve větším rozlišení: [docs/demo.mp4](docs/demo.mp4).
+
+<img src="docs/demo.gif" width="300" alt="Ukázka používání aplikace">
+
 Snímky z telefonu (verze 1.7).
 
 | Trénink | Příklad | Za co jsou body |
