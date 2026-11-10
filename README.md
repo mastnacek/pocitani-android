@@ -33,3 +33,10 @@ Verze AGP/Kotlinu/knihoven jsou z doby psaní; pokud Studio nabídne novější,
 Novou verzi HTML stačí nakopírovat přes `app/src/main/assets/index.html` a znovu sestavit.
 Data (statistiky, sešit chyb) jsou v localStorage WebView a aktualizaci aplikace přežijí
 (odinstalace je smaže).
+
+## Testy
+Sada automatických testů ověřuje JavaScriptovou logiku WebView aplikace, generování příkladů, evaluátor výrazů, slovní úlohy a konzistenci souborů:
+```bash
+node --test tests/
+```
+
