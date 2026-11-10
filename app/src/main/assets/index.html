@@ -136,6 +136,11 @@ table.stats td small{display:block;color:var(--muted);font-size:.8rem;font-weigh
 .hx{font-weight:700;color:var(--red)}
 @media print{.hk{background:none;text-decoration:underline}}
 nav.tabs a .badge[hidden]{display:none}
+/* po správné odpovědi: tlačítko Další příklad zezelená a jemně pulzuje */
+.btn.go{background:var(--green);border-color:var(--green);color:var(--paper);animation:go-pulse 1.8s ease-in-out infinite}
+@keyframes go-pulse{0%,100%{box-shadow:0 0 0 0 color-mix(in srgb,var(--green) 55%,transparent)}50%{box-shadow:0 0 0 9px color-mix(in srgb,var(--green) 0%,transparent)}}
+@media (prefers-reduced-motion:reduce){.btn.go{animation:none}}
+@media print{.btn.go{animation:none}}
 .note{color:var(--muted);font-size:.92rem;max-width:62ch}
 details.guide{margin:-4px 0 14px;background:var(--paper);border:1.5px solid var(--line);border-radius:8px}
 details.guide>summary{cursor:pointer;padding:8px 12px;font-weight:600;color:var(--pen);list-style:none}
@@ -1460,7 +1465,7 @@ function newProblem(fromMistake){
   $('hint').textContent=hints[p.kind];
   $('fb').textContent='';$('fb').className='fb';
   $('steps').hidden=true;$('steps').replaceChildren();
-  $('checkBtn').disabled=false;$('showBtn').disabled=false;
+  $('checkBtn').disabled=false;$('showBtn').disabled=false;$('nextBtn').classList.remove('go');
   setTimeout(()=>first.focus({preventScroll:true}),0);
 }
 function insertAt(inp,txt){const s=inp.selectionStart??inp.value.length,e=inp.selectionEnd??inp.value.length;inp.value=inp.value.slice(0,s)+txt+inp.value.slice(e);inp.focus();inp.selectionStart=inp.selectionEnd=s+txt.length}
@@ -1486,7 +1491,7 @@ function doCheck(){
     fb.className='fb ok';fb.textContent=state.attempts===1&&!state.shown?'Správně.':'Správně, tentokrát napodruhé. Do statistiky se počítá první pokus.';
     if(state.fromMistake&&state.attempts===1&&!state.shown)fb.textContent='Správně. Příklad jsem vyřadil ze sešitu chyb.';
     showSteps('Porovnej se svým postupem');
-    $('checkBtn').disabled=true;$('nextBtn').focus();
+    $('checkBtn').disabled=true;$('nextBtn').classList.add('go');$('nextBtn').focus();
   }else{
     record(false);
     fb.className='fb bad';fb.textContent=r.msg+(r.near?'':' Zkus to znovu, nebo si ukaž postup.');
