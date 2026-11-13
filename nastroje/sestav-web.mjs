@@ -28,7 +28,12 @@ export function sestavWeb(html, readAsset) {
     return n++ === 0 ? marker : '';
   });
   if (n > 0) out = out.replace(marker, `<style>${eol}${css}</style>${eol}`);
-  return out.replace(/<script src="([^"]+)"><\/script>/g, (m, src) => `<script>${eol}${sjednot(readAsset(src))}</script>`);
+  return out.replace(/<script src="([^"]+)"><\/script>/g, (m, src) => {
+    const kod = readAsset(src);
+    // „</script“ uvnitř vloženého kódu by předčasně ukončilo <script> ve webové verzi
+    if (/<\/script/i.test(kod)) throw new Error(`${src} obsahuje „</script“, nejde vložit do stránky`);
+    return `<script>${eol}${sjednot(kod)}</script>`;
+  });
 }
 
 export function sestavWebSoubor() {

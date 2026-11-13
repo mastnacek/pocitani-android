@@ -8,6 +8,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const { spawnSync } = require('node:child_process');
 const {
+  INDEX_HTML_PATH,
   WEB_HTML_PATH,
   scriptBlocks,
   evaluateExpr,
@@ -289,6 +290,23 @@ describe('Počítání na přijímačky – komplexní testovací sada aplikace'
       const a = sestavWebSoubor().replace(/\r/g, '');
       const b = fs.readFileSync(WEB_HTML_PATH, 'utf8').replace(/\r/g, '');
       assert.strictEqual(a, b, 'Webová kopie je zastaralá: spusť node nastroje/sestav-web.mjs');
+    });
+
+    it('webová verze je jeden soubor: všechny skripty a styly z index.html jsou vložené ve stejném pořadí', () => {
+      const { sestavWebSoubor } = require('../nastroje/sestav-web.mjs');
+      const web = sestavWebSoubor();
+      assert.ok(!/<script\b[^>]*\bsrc=/i.test(web), 've webové verzi zůstal <script src>');
+      assert.ok(!/<link\b[^>]*rel="stylesheet"[^>]*href="(?!https?:)/i.test(web), 've webové verzi zůstal lokální <link>');
+      const odkazy = [...fs.readFileSync(INDEX_HTML_PATH, 'utf8').matchAll(/<script src="([^"]+)"><\/script>/g)].map(m => m[1]);
+      assert.ok(odkazy.length > 0);
+      assert.strictEqual((web.match(/<script>/g) || []).length, odkazy.length);
+      let pozice = -1;
+      for (const o of odkazy) {
+        const kod = fs.readFileSync(path.join(path.dirname(INDEX_HTML_PATH), o), 'utf8').replace(/\r?\n/g, '\n').split('\n')[1];
+        const i = web.replace(/\r\n/g, '\n').indexOf(kod, pozice + 1);
+        assert.ok(i > pozice, `${o} chybí nebo je ve špatném pořadí`);
+        pozice = i;
+      }
     });
   });
 
