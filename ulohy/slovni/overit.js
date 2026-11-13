@@ -1,4 +1,4 @@
-// Ověření slovních úloh ze souboru ulohy.json (node slovni-ulohy/overit.js [soubor.json]).
+// Ověření slovních úloh ze souboru ulohy.json (node ulohy/slovni/overit.js [soubor.json]).
 // Úloha projde, jen když:
 //  1. hrubou silou přes celý rozsah neznámých existuje právě jedno řešení podmínek
 //     (u úloh s „cil“ právě jedno nejlepší řešení) a všechny veličiny v „celociselne“ jsou celá čísla,

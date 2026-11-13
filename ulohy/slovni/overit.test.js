@@ -1,5 +1,5 @@
-// slovni-ulohy/overit.test.js
-// Automated tests for slovni-ulohy/overit.js using pure Node.js (node:test and node:assert)
+// ulohy/slovni/overit.test.js
+// Automated tests for ulohy/slovni/overit.js using pure Node.js (node:test and node:assert)
 const { describe, it, before, after } = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');

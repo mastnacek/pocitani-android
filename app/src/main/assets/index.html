@@ -282,15 +282,60 @@ details.guide[open]>summary::before{content:"▾ ";}
   .worksheet{box-shadow:none;padding:0}
   .solutions{break-before:page;border-top:0}
 }
+
+/* ===== předměty: přepínač a části jen pro jeden předmět ===== */
+.subj{display:inline-flex;border:2px solid var(--ink);border-radius:12px;overflow:hidden;margin:0 0 14px}
+.subj button{font:inherit;font-weight:700;font-size:.95rem;padding:7px 16px;border:0;background:transparent;color:var(--ink);cursor:pointer}
+.subj button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+:root[data-subject="cj"] [data-only="mat"],:root:not([data-subject="cj"]) [data-only="cj"]{display:none!important}
+/* ===== čeština: zažloutlý, na okrajích ohořelý papír s linkami ===== */
+:root[data-subject="cj"]{
+  --surface:#E4D6B6; --paper:#F1E1B8; --grid:transparent; --ink:#33240F; --muted:#6A5434;
+  --pen:#8E3B12; --pen-soft:#F2D9B4; --red:#A8321E; --red-soft:#F3D4C2; --green:#3F6B1E; --green-soft:#E1E7BF;
+  --line:#C9B183; --hl:#EDBB48; --rule:rgba(112,78,34,.22); --burn:rgba(104,46,6,.55); --burn-soft:rgba(140,82,24,.28);
+  color-scheme:light}
+@media (prefers-color-scheme:dark){:root[data-subject="cj"]:not([data-theme="light"]){
+  --surface:#15100A; --paper:#2A2014; --ink:#EEDFC1; --muted:#B9A47F; --pen:#F2A65E; --pen-soft:#4A3015;
+  --red:#FF8C6E; --red-soft:#40211A; --green:#A8D27A; --green-soft:#26331A; --line:#4D3C25; --hl:#7A5312;
+  --rule:rgba(238,210,160,.10); --burn:rgba(0,0,0,.70); --burn-soft:rgba(0,0,0,.40); color-scheme:dark}}
+:root[data-subject="cj"][data-theme="dark"]{
+  --surface:#15100A; --paper:#2A2014; --ink:#EEDFC1; --muted:#B9A47F; --pen:#F2A65E; --pen-soft:#4A3015;
+  --red:#FF8C6E; --red-soft:#40211A; --green:#A8D27A; --green-soft:#26331A; --line:#4D3C25; --hl:#7A5312;
+  --rule:rgba(238,210,160,.10); --burn:rgba(0,0,0,.70); --burn-soft:rgba(0,0,0,.40); color-scheme:dark}
+:root[data-subject="cj"] body{background:radial-gradient(120% 80% at 50% 0%,transparent 40%,rgba(80,50,15,.18) 100%),var(--surface)}
+/* --g = výška linky; gridSnap podle ní zarovnává bloky listu */
+:root[data-subject="cj"] .sheet{--g:30px;
+  background-color:var(--paper);
+  background-image:
+    radial-gradient(ellipse 75% 70% at 50% 45%,transparent 58%,var(--burn-soft) 86%,var(--burn) 100%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .27 0 0 0 0 .07 0 0 0 -1.3 .9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)' opacity='.35'/%3E%3C/svg%3E"),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .22 0 0 0 0 .08 0 0 0 .5 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    repeating-linear-gradient(transparent 0 calc(var(--g) - 1px),var(--rule) calc(var(--g) - 1px) var(--g));
+  background-size:auto,600px 600px,220px 220px,auto;background-position:0 0,0 0,0 0,0 0;
+  border-radius:3px 7px 4px 8px / 7px 3px 8px 4px;
+  box-shadow:inset 0 0 0 1px rgba(110,60,15,.25),inset 0 0 22px var(--burn-soft),0 1px 0 var(--line),0 14px 34px -18px rgba(60,30,0,.65)}
+:root[data-subject="cj"] .sheet::before{opacity:.45}
+/* čeština: kroky vysvětlení mají vlastní písmena A) až D), čísla by se zdvojila */
+:root[data-subject="cj"] .stp li:not(.h){padding-left:0}
+:root[data-subject="cj"] .stp li:not(.h)::before{content:none}
+.mitem .p .txt.cj .opts>span{display:block;margin-bottom:2px}
+.prompt .txt.cj{font-family:var(--math);font-size:1.15rem;line-height:1.55}
+.prompt .txt.cj .opts{margin-top:0}
+.prompt .txt.cj .opts>span{padding-left:1.7em;text-indent:-1.7em;margin-bottom:8px}
+.prompt .txt.cj .opts b{font-family:var(--ui);color:var(--pen)}
+:root[data-subject="cj"] .steps{background:color-mix(in srgb,var(--paper) 70%,#fff 30%)}
+:root[data-subject="cj"][data-theme="dark"] .steps{background:color-mix(in srgb,var(--paper) 85%,#000 15%)}
+@media (prefers-color-scheme:dark){:root[data-subject="cj"]:not([data-theme="light"]) .steps{background:color-mix(in srgb,var(--paper) 85%,#000 15%)}}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1>Počítání na přijímačky</h1>
-  <p class="lede">Příklady se vymýšlejí pořád nové. Počítej na papír i s postupem, sem napiš jen výsledek. Pak porovnej svůj postup s tím správným.</p>
+  <div class="subj no-print" id="subjSeg" role="group" aria-label="Předmět"><button type="button" data-subj="mat">Matematika</button><button type="button" data-subj="cj">Čeština</button></div>
+  <h1><span data-only="mat">Počítání na přijímačky</span><span data-only="cj">Čeština na přijímačky</span></h1>
+  <p class="lede"><span data-only="mat">Příklady se vymýšlejí pořád nové. Počítej na papír i s postupem, sem napiš jen výsledek. Pak porovnej svůj postup s tím správným.</span><span data-only="cj">Pravopis a jazyk ve stylu přijímaček. Každou větu si přečti celou, vyber odpověď a pak si projdi vysvětlení.</span></p>
   <nav class="tabs no-print" aria-label="Části">
     <a href="#trenink" data-view="trenink">Trénink</a>
-    <a href="#list" data-view="list">Pracovní list</a>
+    <a href="#list" data-view="list" data-only="mat">Pracovní list</a>
     <a href="#chyby" data-view="chyby">Sešit chyb<span class="badge" id="mbadge" hidden></span></a>
     <a href="#pruvodce" data-view="pruvodce">Průvodce</a>
     <a href="#prehled" data-view="prehled">Přehled</a>
@@ -369,7 +414,7 @@ details.guide[open]>summary::before{content:"▾ ";}
   </section>
 
   <section class="view" id="v-chyby" hidden>
-    <p class="note">Sem se samy ukládají příklady, které napoprvé nevyšly. Když je později spočítáš správně napoprvé, ze sešitu zmizí.</p>
+    <p class="note"><span data-only="mat">Sem se samy ukládají příklady, které napoprvé nevyšly. Když je později spočítáš správně napoprvé, ze sešitu zmizí.</span><span data-only="cj">Sem se samy ukládají úlohy, které napoprvé nevyšly. Když je později vyřešíš správně napoprvé, ze sešitu zmizí.</span></p>
     <div id="mlist" class="mlist"></div>
   </section>
 
@@ -1458,6 +1503,83 @@ const TOPICS=[
 ];
 const GUIDE_DEFAULT={celacisla:'celacisla',nasobeni:'nasobeni',prednost:'prednost',delitelnost:'delitelnost',kraceni:'kraceni',zlomky:'zlomky',slozene:'slozene',desetinna:'desetinna',mocniny:'mocniny',procenta:'procenta',roznasobovani:'roznasobovani',vytykani:'vytykani',vzorce:'umocneni',rovnice:'rovnice',soustavy:'soustavy',slovni:'slovni',promenna:'promenna'};
 const TRAP_DEFAULT={desetinna:'Pořadí: závorka, pak násobení a dělení, nakonec sčítání a odčítání. <b class="hx">Nepočítej zleva doprava.</b>',mocniny:'Mocnina má přednost před násobením. <b class="hx">−3² = −9, ale (−3)² = 9.</b>',procenta:'Vždy si ujasni, <b class="hx">co je 100 %</b>, tedy z čeho procenta počítáš.',soustavy:'<b class="hx">Dopočítej obě neznámé.</b> Když spočítáš jen jednu, je bod dolů.'};
+// ================= ČEŠTINA =================
+// Vlastní věty ve stylu přijímaček (ne oficiální zadání CERMAT). Úloha A–D: najdi větu s chybou,
+// nebo jedinou správně napsanou větu. Chybná varianta vzniká záměnou koncovky, takže správnost je daná slovníkem.
+const CJ_G=TOPIC_GROUPS.length;TOPIC_GROUPS.push('Pravopis');
+const CJ_L=['A','B','C','D'];
+
+// ---- shoda přísudku s podmětem: '_' = koncovka příčestí (honil_ -> honili) ----
+const CJ_ROD={mzi:{n:'rodu mužského životného',e:'i',w:'y'},mzn:{n:'rodu mužského neživotného',e:'y',w:'i'},z:{n:'rodu ženského',e:'y',w:'i'},s:{n:'rodu středního',e:'a',w:'y'}};
+// Věty jsou ve zdroji ulohy/cestina/vety.json; do stránky je vkládá node ulohy/cestina/vlozit.js.
+// SHODA: p = podmět, r = rod, t = věta („_“ = koncovka příčestí), x = past s vlastním vysvětlením.
+// MEMNE: k = mě/mně, d = pád, t = věta („_“ = tvar zájmena), z = věta pro zkoušku tebe/tobě, x = past.
+/*CJ_START*/const SHODA=[{"p":"psi","r":"mzi","t":"Psi se celé odpoledne honil_ po zahradě."},{"p":"kluci","r":"mzi","t":"Kluci z vedlejší třídy vyhrál_ fotbalový turnaj."},{"p":"hasiči","r":"mzi","t":"Hasiči rychle uhasil_ požár stodoly."},{"p":"turisté","r":"mzi","t":"Turisté se po dlouhé cestě zastavil_ u studánky."},{"p":"sousedé","r":"mzi","t":"Sousedé nám přes léto zaléval_ květiny."},{"p":"vojáci","r":"mzi","t":"Vojáci pochodoval_ přes náměstí."},{"p":"holubi","r":"mzi","t":"Holubi se slétl_ na střechu kostela."},{"p":"koně","r":"mzi","t":"Koně se klidně pásl_ na louce."},{"p":"žáci","r":"mzi","t":"Žáci se na výlet těšil_ celý týden."},{"p":"rybáři","r":"mzi","t":"Rybáři chytil_ v rybníku velkého kapra."},{"p":"sportovci","r":"mzi","t":"Sportovci se před závodem pečlivě rozcvičoval_."},{"p":"stromy","r":"mzn","t":"Stromy v parku už opadal_."},{"p":"vlaky","r":"mzn","t":"Vlaky dnes kvůli sněhu jezdil_ se zpožděním."},{"p":"hrady","r":"mzn","t":"Staré hrady se pomalu rozpadal_."},{"p":"mosty","r":"mzn","t":"Mosty přes řeku byl_ po povodni opraven_."},{"p":"kameny","r":"mzn","t":"Kameny se z kopce kutálel_ až k silnici."},{"p":"potoky","r":"mzn","t":"Potoky se po bouřce rozvodnil_."},{"p":"autobusy","r":"mzn","t":"Autobusy dnes vyjížděl_ z jiného nástupiště."},{"p":"obchody","r":"mzn","t":"Obchody v centru zavřel_ už v šest hodin."},{"p":"hřiby","r":"mzn","t":"Hřiby rostl_ hned u cesty."},{"p":"ženy","r":"z","t":"Ženy na trhu prodával_ zeleninu."},{"p":"kočky","r":"z","t":"Kočky se vyhříval_ na slunci."},{"p":"dívky","r":"z","t":"Dívky z vedlejší třídy nacvičoval_ tanec."},{"p":"sovy","r":"z","t":"Sovy v noci tiše lovil_ myši."},{"p":"lavice","r":"z","t":"Lavice ve třídě byl_ nově natřen_."},{"p":"řeky","r":"z","t":"Řeky se na jaře rozlil_ do polí."},{"p":"myši","r":"z","t":"Myši se schoval_ do spíže."},{"p":"babičky","r":"z","t":"Babičky si na lavičce povídal_ o vnoučatech."},{"p":"lodě","r":"z","t":"Lodě pomalu připlul_ do přístavu."},{"p":"auta","r":"s","t":"Auta stál_ v dlouhé koloně."},{"p":"kuřata","r":"s","t":"Kuřata pobíhal_ po dvoře."},{"p":"okna","r":"s","t":"Okna ve třídě byl_ dokořán otevřen_."},{"p":"jablka","r":"s","t":"Jablka na stromech už dozrál_."},{"p":"letadla","r":"s","t":"Letadla kvůli mlze nevzlétl_."},{"p":"kola","r":"s","t":"Kola stál_ opřen_ o plot."},{"p":"telata","r":"s","t":"Telata se pásl_ vedle krav."},{"p":"lidé","r":"mzi","t":"Lidé na nádraží netrpělivě čekal_ na vlak.","x":"Lidé jsou rodu mužského životného (ti lidé), proto -i."},{"p":"rodiče","r":"mzi","t":"Rodiče se včera vrátil_ z dovolené.","x":"Rodič je rodu mužského životného (ti rodiče), proto -i."},{"p":"Petr a Jana","r":"mzi","t":"Petr a Jana spolu šl_ do kina.","x":"Když je v podmětu aspoň jedno podstatné jméno rodu mužského životného (Petr), píše se -i."},{"p":"kočky a psi","r":"mzi","t":"Kočky a psi se spolu skamarádil_.","x":"V podmětu jsou i psi (rod mužský životný), a ti rozhodují: -i."},{"p":"děti","r":"z","t":"Děti si celé odpoledne hrál_ na pískovišti.","x":"Děti jsou v množném čísle rodu ženského (ty děti), proto -y."},{"p":"děvčata","r":"s","t":"Děvčata se smál_ celou cestu domů.","x":"Děvčata jsou rodu středního (ta děvčata), proto -a."},{"p":"koše","r":"mzn","t":"Koše na tříděný odpad byl_ plné.","x":"Koš je neživotný (vzor stroj). Končí na -e jako muži, ale píše se -y."},{"p":"stroje","r":"mzn","t":"Stroje v dílně se náhle zastavil_.","x":"Stroj je rod mužský neživotný (vzor stroj), proto -y."},{"p":"husy","r":"z","t":"Husy se pásl_ u rybníka.","x":"Husa je rodu ženského (ty husy), proto -y."}],MEMNE=[{"k":"mně","d":3,"t":"Babička _ k narozeninám upekla dort."},{"k":"mně","d":3,"t":"Zavolej _ hned, jak dorazíš."},{"k":"mně","d":3,"t":"Ten film se _ vůbec nelíbil."},{"k":"mně","d":3,"t":"Kamarád _ půjčil svoje kolo."},{"k":"mně","d":3,"t":"Poraďte _, prosím, kudy na nádraží."},{"k":"mně","d":3,"t":"Přijď zítra ke _ na návštěvu.","z":"Přijď zítra k tobě na návštěvu."},{"k":"mně","d":3,"t":"Naproti _ seděl neznámý chlapec."},{"k":"mně","d":6,"t":"Celý večer o _ mluvili."},{"k":"mně","d":6,"t":"Při _ stál celou dobu."},{"k":"mě","d":2,"t":"Bez _ to nezvládnete."},{"k":"mě","d":2,"t":"Od _ dostal k svátku knihu."},{"k":"mě","d":2,"t":"U _ doma je pořád veselo."},{"k":"mě","d":2,"t":"Do _ na chodbě omylem vrazil spolužák."},{"k":"mě","d":2,"t":"Místo _ půjde na schůzku sestra."},{"k":"mě","d":4,"t":"Pozvali _ na oslavu."},{"k":"mě","d":4,"t":"Ta kniha _ hodně zaujala."},{"k":"mě","d":4,"t":"Pro _ si přijede tatínek."},{"k":"mě","d":4,"t":"Spolužáci _ zvolili předsedou třídy."},{"k":"mě","d":4,"t":"Počkej na _ před školou.","x":"Na koho počkáš? Na tebe, ne „na tobě“. Je to 4. pád, proto mě."},{"k":"mě","d":4,"t":"Neboj se o _, zvládnu to.","x":"Bát se o koho: o tebe. Je to 4. pád, proto mě, i když o mně (6. pád) se píše s n."},{"k":"mně","d":6,"t":"Na _ teď nezáleží, rozhodněte sami.","x":"Na kom nezáleží? Na tobě. Je to 6. pád, proto mně."},{"k":"mně","d":3,"t":"Kvůli _ zmeškali autobus.","x":"Kvůli komu? Kvůli tobě. Je to 3. pád, proto mně."},{"k":"mně","d":6,"t":"Ve _ se v tu chvíli všechno sevřelo.","z":"V tobě se v tu chvíli všechno sevřelo.","x":"V kom? V tobě. Je to 6. pád, proto mně."}];/*CJ_END*/
+
+const shodaFill=(u,ok)=>u.t.replace(/_/g,ok?CJ_ROD[u.r].e:CJ_ROD[u.r].w);
+const shodaWords=(u,ok)=>(u.t.match(/[\p{L}]+_/gu)||[]).map(w=>w.replace('_',ok?CJ_ROD[u.r].e:CJ_ROD[u.r].w));
+const shodaWhy=u=>u.x||`Podmět ${u.p} je ${CJ_ROD[u.r].n}, proto -${CJ_ROD[u.r].e}.`;
+const memneFill=(u,ok)=>u.t.replace('_',ok?u.k:(u.k==='mně'?'mě':'mně'));
+const memneTest=u=>u.z||u.t.replace('_',u.k==='mně'?'tobě':'tebe');
+const memneWhy=u=>u.x||`Zkouška: „${memneTest(u)}“ Sedí ${u.k==='mně'?'tobě':'tebe'}, to je ${u.d}. pád, proto ${u.k}.`;
+
+// vybere 4 různé věty; na úrovni 2 aspoň jednu past; ok(u) = podmínka pestrosti výběru
+function cjPick(pool,level,ok){
+  const base=pool.filter(u=>!u.x),traps=pool.filter(u=>u.x);
+  for(let t=0;t<200;t++){
+    const n=level===2?ri(1,2):0,sel=[];
+    while(sel.length<4){const u=pick(sel.length<n?traps:base);if(!sel.includes(u))sel.push(u)}
+    for(let i=sel.length-1;i>0;i--){const j=ri(0,i);[sel[i],sel[j]]=[sel[j],sel[i]]}
+    if(!ok||ok(sel))return sel;
+  }
+  throw new Error('Nepodařilo se vybrat věty.');
+}
+
+// společná úloha A–D: mode 'chyba' = právě jedna věta je špatně, 'spravne' = právě jedna je dobře
+function cjMC(sel,cfg){
+  const mode=pick(['chyba','spravne']),odd=ri(0,3);
+  const good=i=>mode==='chyba'?i!==odd:i===odd;
+  const opts={},chyby={},steps=[];
+  sel.forEach((u,i)=>{
+    const k=CJ_L[i],ok=good(i);opts[k]=escT(cfg.fill(u,ok));
+    const fix=cfg.words(u,true).map(K).join(', ');
+    steps.push(S(`<b>${k})</b> ${ok?'Správně.':X('Chyba.')} ${escT(cfg.why(u))}${ok?'':` Správně: ${fix}.`}`));
+    if(i!==odd)chyby[k]={rada:ok?`Věta ${k} je napsaná správně. ${cfg.why(u)}`:`Ve větě ${k} je chyba. ${cfg.why(u)}`};
+  });
+  const u=sel[odd],ans=CJ_L[odd];
+  const p={kind:'mc',subj:'cj',opts,chyby,ans,sol:ans,mode,
+    task:mode==='chyba'?cfg.taskChyba:cfg.taskSpravne,
+    prompt:`<span class="txt cj"><span class="opts">${CJ_L.map(k=>`<span><b>${k})</b> ${opts[k]}</span>`).join('')}</span></span>`,
+    steps:[H(cfg.head),...steps],
+    solH:mode==='chyba'?`${ans}) ${opts[ans]} Správně: ${escT(cfg.fill(u,true))}`:`${ans}) ${opts[ans]}`,
+    hint:'Klepni na písmeno a pak na Zkontrolovat. Každou větu si přečti celou.',
+    trap:cfg.trap,guide:cfg.guide};
+  p.plain=CJ_L.map(k=>`${k}) ${cfg.fill(sel[CJ_L.indexOf(k)],good(CJ_L.indexOf(k)))}`).join(' ');
+  return p;
+}
+function genShoda(level){
+  // aspoň tři různé rody, ať se nedá hádat podle jednoho
+  const sel=cjPick(SHODA,level,s=>new Set(s.map(u=>u.r)).size>=3);
+  return cjMC(sel,{fill:shodaFill,words:shodaWords,why:shodaWhy,guide:'cj-shoda',
+    taskChyba:'Ve které z následujících vět je chyba ve shodě přísudku s podmětem?',
+    taskSpravne:'Která z následujících vět je napsaná pravopisně správně?',
+    head:'Najdi podmět (kdo, co?) a urči jeho rod.',
+    trap:'Nejdřív najdi podmět a urči rod. Pozor na děti (ty děti → -y), lidi (ti lidé → -i) a děvčata (ta děvčata → -a).'});
+}
+function genMeMne(level){
+  // obě podoby ve výběru, jinak by stačilo hádat
+  const sel=cjPick(MEMNE,level,s=>s.some(u=>u.k==='mě')&&s.some(u=>u.k==='mně'));
+  return cjMC(sel,{fill:memneFill,words:u=>[u.k],why:memneWhy,guide:'cj-memne',
+    taskChyba:'Ve které z následujících vět je chyba v zápisu mě / mně?',
+    taskSpravne:'Která z následujících vět je napsaná pravopisně správně?',
+    head:'Dosaď tebe, nebo tobě. Kde jde tobě, píše se mně. Kde jde tebe, píše se mě.',
+    trap:'Dosaď do věty tebe, nebo tobě. Tobě → mně (3. a 6. pád), tebe → mě (2. a 4. pád).'});
+}
+TOPICS.push(
+  {id:'cj-shoda',subj:'cj',g:CJ_G,name:'Shoda přísudku s podmětem',ref:'koncovky -i, -y, -a',gen:genShoda},
+  {id:'cj-memne',subj:'cj',g:CJ_G,name:'Mě, nebo mně',ref:'tebe, nebo tobě?',gen:genMeMne}
+);
+
 function generate(topicId,level){
   const tp=TOPICS.find(t=>t.id===topicId);const p=tp.gen(level);
   p.topic=topicId;p.level=level;p.guide=p.guide||GUIDE_DEFAULT[topicId];p.trap=p.trap||TRAP_DEFAULT[topicId]||'';p.id=Date.now().toString(36)+Math.random().toString(36).slice(2,7);
@@ -1501,7 +1623,22 @@ const GUIDE_GENERAL={title:'Jak přijímačky z matematiky fungují',items:[
  'U rovnic se <b>zkouška nezapisuje</b>. Udělat si ji můžeš na kraji, ale do archu ji nepiš.',
  'Uznávají se i jiné správné zápisy výsledku, třeba jiné pořadí členů (9 + 12x + 4x² je stejně dobře jako 4x² + 12x + 9).'
 ]};
+const GUIDE_GENERAL_CJ={title:'Jak přijímačky z češtiny fungují',items:[
+ 'Test má 30 úloh a dohromady 50 bodů.',
+ 'Test je postavený kolem několika výchozích textů: úryvek z knihy nebo báseň, naučný text a samostatné věty. Ke každému textu patří několik úloh za sebou.',
+ 'Asi 35 bodů z 50 je za <b>uzavřené úlohy</b>: výběr A až D, ANO/NE, přiřazování a seřazení částí textu.',
+ '<b>Pravopis</b> je v každém testu: shoda přísudku s podmětem, i/y, mě/mně, s/z a čárky. Často jako oprava chyb v textu.',
+ 'Odpovědi se píšou do <b>záznamového archu</b>. Za špatnou odpověď se body neodečítají. <b>Uzavřené úlohy nikdy nenechávej prázdné.</b>',
+ 'Než odpovíš, přečti si celou větu. U otázek k textu se vrať do textu a najdi místo, kde je odpověď.']};
 const GUIDES={
+'cj-shoda':{subj:'cj',title:'Shoda přísudku s podmětem',
+ how:[`Najdi ${K('podmět')}: zeptej se kdo, co? (Kdo se honil? Psi.)`,`Urči jeho rod. Řekni si před podmět ${K('ti')}, ${K('ty')}, nebo ${K('ta')}.`,`${K('ti')} (rod mužský životný) → -i: ti psi se honili.`,`${K('ty')} (rod mužský neživotný a ženský) → -y: ty stromy opadaly, ty ženy prodávaly.`,`${K('ta')} (rod střední) → -a: ta auta stála.`,'Když je v podmětu víc jmen a aspoň jedno je rodu mužského životného, píše se -i: Petr a Jana šli do kina.'],
+ why:'Shoda přísudku s podmětem je v testu skoro vždycky: v otázce, která věta je napsaná správně, v ANO/NE úlohách o správnosti zápisu i v opravě chyb v textu.',
+ traps:[`${X('Děti')} jsou v množném čísle rodu ženského: děti si hrály.`,`${X('Lidé')} jsou rodu mužského životného: lidé čekali.`,`${X('Děvčata')} jsou rodu středního: děvčata se smála.`,'Koš, stroj nebo počítač jsou neživotné, i když končí na -e: koše byly plné.','Koncovka platí pro celý přísudek: mosty byly opraveny.']},
+'cj-memne':{subj:'cj',title:'Mě, nebo mně',
+ how:[`Místo mě/mně dosaď ${K('tebe')}, nebo ${K('tobě')}.`,`Sedí ${K('tobě')} → píše se ${K('mně')}. Je to 3. nebo 6. pád: babička mně upekla dort, mluvili o mně.`,`Sedí ${K('tebe')} → píše se ${K('mě')}. Je to 2. nebo 4. pád: bez mě, pozvali mě.`],
+ why:'Mě a mně patří k nejčastějším pravopisným chybám. V testu je najdeš v opravě chyb v textu i v otázce, která věta je napsaná správně.',
+ traps:[`Na koho čekáš? ${X('Na mě')} (na tebe), ne na mně.`,`Bát se o koho: ${X('o mě')} (o tebe). Mluvit o kom: o mně (o tobě).`,`Kvůli komu? ${X('Kvůli mně')} (kvůli tobě).`]},
 promenna:{title:'Slovní úlohy s proměnnou',
  how:[`Zadání samo řekne, co je ${K('neznámá')} (třeba „cenu stolku označíme x“).`,`Každou větu přepiš na výraz: „o 5 více“ je x + 5, „třikrát více“ je 3x, ${K('„o čtvrtinu více“ je x + x/4')}, „o 20 % více“ je 1,2x.`,'Když výraz dál násobíš, dej ho celý do závorky: třikrát dražší než židle je 3 · (x + 400).','V části c) sečti nebo porovnej výrazy podle zadání, polož je rovné danému číslu a vyřeš rovnici.','Na konci zkontroluj, že odpovídáš na otázku, a dosaď výsledek zpět do zadání.'],
  why:'V testech 2023 až 2026 byla tahle úloha v 11 ze 16 testů (úloha 5 až 7). Každý výraz bývá za 1 bod, výpočet za 1 až 2 body. Výraz nemusí být upravený, uzná se každý správný zápis.',
@@ -1639,16 +1776,23 @@ const today=()=>{const d=new Date();return d.getFullYear()+'-'+(d.getMonth()+1)+
 
 const $=id=>document.getElementById(id);
 const SERIES=10;
-const state={topics:new Set((store.topics||['celacisla']).filter(id=>TOPICS.some(t=>t.id===id))),mix:!!store.mix,level:store.level||1,cur:null,attempts:0,counted:false,solved:false,shown:false,fromMistake:false,lastAnswer:'',chat:[],series:{i:0,ok:0}};
+// předmět: matematika, nebo čeština; vybraná témata si každý předmět pamatuje zvlášť
+const subjOf=t=>t.subj||'mat';
+const SUBJ_DEF={mat:{key:'topics',def:'celacisla'},cj:{key:'topicsCj',def:'cj-shoda'}};
+let subject=store.subject==='cj'?'cj':'mat';
+const L=(m,c)=>subject==='cj'?c:m;
+const subjTopics=()=>TOPICS.filter(t=>subjOf(t)===subject);
+function loadTopics(){const d=SUBJ_DEF[subject];const s=new Set((store[d.key]||[d.def]).filter(id=>subjTopics().some(t=>t.id===id)));if(!s.size)s.add(d.def);return s}
+const state={topics:loadTopics(),mix:!!store.mix,level:store.level||1,cur:null,attempts:0,counted:false,solved:false,shown:false,fromMistake:false,lastAnswer:'',chat:[],series:{i:0,ok:0}};
 if(!state.mix&&state.topics.size>1)state.topics=new Set([[...state.topics][0]]);
 const ws={topics:new Set(store.wsTopics||['zlomky','rovnice']),level:store.wsLevel||1};
 
 // ---------- chips ----------
-function renderChips(el,set,onChange,multi){
-  el.replaceChildren();
+function renderChips(el,set,onChange,multi,list){
+  list=list||TOPICS;el.replaceChildren();
   // témata po skupinách a s pořadovým číslem, ať je vidět, co na co navazuje
-  TOPICS.forEach((t,i)=>{
-    if(!i||TOPICS[i-1].g!==t.g){const h=document.createElement('span');h.className='grp';h.textContent=TOPIC_GROUPS[t.g];el.appendChild(h)}
+  list.forEach((t,i)=>{
+    if(!i||list[i-1].g!==t.g){const h=document.createElement('span');h.className='grp';h.textContent=TOPIC_GROUPS[t.g];el.appendChild(h)}
     const b=document.createElement('button');b.className='chip';b.type='button';b.dataset.id=t.id;b.textContent=`${i+1}. ${t.name}`;b.setAttribute('aria-pressed',set.has(t.id));
     if(isMastered(store.stats[t.id])){const m=document.createElement('span');m.className='mast';m.textContent=' ✓';m.title='zvládnuto (aspoň 80 % napoprvé)';b.appendChild(m)}
     b.onclick=()=>{if(multi&&!multi()){if(set.size===1&&set.has(t.id))return;set.clear();set.add(t.id)}else if(set.has(t.id)){if(set.size>1)set.delete(t.id)}else set.add(t.id);el.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',set.has(c.dataset.id)));onChange()};
@@ -1669,7 +1813,7 @@ function newProblem(fromMistake){
   if(fromMistake)$('tSrc').textContent='ze sešitu chyb';else renderDots(false);
   $('tick').hidden=true;$('answer').classList.remove('ok','nudge','rows');
   state.lastAnswer='';state.chat=[];$('ask').hidden=true;$('thread').replaceChildren();$('askIn').value='';
-  $('nextBtn').textContent=(!fromMistake&&state.series.i>=SERIES)?'Ukázat výsledek série':'Další příklad';
+  $('nextBtn').textContent=(!fromMistake&&state.series.i>=SERIES)?'Ukázat výsledek série':L('Další příklad','Další úloha');
   $('task').textContent=p.task;
   setHTML($('prompt'),p.prompt);
   setHTML($('guideBody'),guideHTML(GUIDES[p.guide||p.topic],p.trap));$('guide').open=false;
@@ -1696,7 +1840,7 @@ function newProblem(fromMistake){
     eq:'Napiš jen hodnotu '+p.v+'. Když rovnice nemá řešení nebo jich má nekonečně mnoho, klepni na tlačítko.',sys:'Napiš hodnotu x a hodnotu y.',
     promenna:'Do a) a b) napiš výraz s proměnnou, třeba x + x/4 nebo 3(x + 400). Do c) jen číslo.',
     mc:'Klepni na písmeno a pak na Zkontrolovat. Když si nevíš rady, dosaď možnosti do zadání.'};
-  $('hint').textContent=hints[p.kind];
+  $('hint').textContent=p.hint||hints[p.kind];
   $('fb').textContent='';$('fb').className='fb';
   $('steps').hidden=true;$('steps').replaceChildren();
   $('checkBtn').disabled=false;$('showBtn').disabled=false;$('nextBtn').classList.remove('go');
@@ -1739,12 +1883,12 @@ function doCheck(){
     fb.className='fb ok';fb.textContent=state.attempts===1&&!state.shown?'Správně.':'Správně, tentokrát napodruhé. Do statistiky se počítá první pokus.';
     if(state.fromMistake&&state.attempts===1&&!state.shown)fb.textContent='Správně. Příklad jsem vyřadil ze sešitu chyb.';
     $('answer').classList.add('ok');showTick();
-    showSteps('Porovnej se svým postupem');
+    showSteps(L('Porovnej se svým postupem','Vysvětlení'));
     $('checkBtn').disabled=true;$('nextBtn').classList.add('go');$('nextBtn').focus();
   }else{
     record(false);
     const an=$('answer');an.classList.remove('nudge');void an.offsetWidth;an.classList.add('nudge');
-    fb.className='fb bad';fb.textContent=r.msg+(r.near?'':' Zkus to znovu, nebo si ukaž postup.');
+    fb.className='fb bad';fb.textContent=r.msg+(r.near?'':L(' Zkus to znovu, nebo si ukaž postup.',' Zkus to znovu, nebo si ukaž vysvětlení.'));
     // slovní úloha: podtrhni v zadání frázi, kterou žák s touto chybou nejspíš přehlédl
     if(p.text!==undefined&&r.pod!==undefined)setHTML($('prompt'),slovniPrompt(p,r.pod));
     if(p.trap&&!r.pod){const tip=document.createElement('div');tip.className='fbtip';setHTML(tip,'<b>Tip:</b> '+p.trap);fb.appendChild(tip)}
@@ -1752,7 +1896,7 @@ function doCheck(){
 }
 function showSteps(title){
   const p=state.cur;const box=$('steps');
-  setHTML(box,`<h3>${title}</h3><ol class="stp">${p.steps.map(stepHTML).join('')}</ol><p class="result"><b>Výsledek:</b> ${p.solH}</p>`);
+  setHTML(box,`<h3>${title}</h3><ol class="stp">${p.steps.map(stepHTML).join('')}</ol><p class="result"><b>${L('Výsledek','Odpověď')}:</b> ${p.solH}</p>`);
   box.hidden=false;
   // kroky naskočí postupně, jako by je někdo psal
   box.classList.remove('rev');void box.offsetWidth;box.classList.add('rev');
@@ -1787,6 +1931,7 @@ function problemContext(){
   return `Téma: ${t.name}\nZadání: ${p.task}\n${htmlToText(p.prompt)}\n\nOvěřený správný postup:\n${p.steps.map((s,i)=>'- '+htmlToText(s)).join('\n')}\n\nSprávný výsledek: ${htmlToText(p.solH)}\nOdpověď žákyně: ${state.lastAnswer||'(zatím nic nenapsala)'}${p.trap?'\nTypická past u tohoto příkladu: '+htmlToText(p.trap):''}`;
 }
 const SYS='Jsi trpělivý doučovatel matematiky. Mluvíš s žákyní 9. třídy, která se připravuje na přijímací zkoušky z matematiky (CERMAT) a matematika jí moc nejde. Vysvětluj česky, jednoduše a krátce (nejvýš asi 150 slov), po malých krocích, ke každému kroku řekni proč se dělá. Postup a výsledek, které dostaneš, jsou ověřené a správné: neměň je a nepočítej jinak. Když se ptá, kde udělala chybu, porovnej její odpověď se správným postupem a řekni, ve kterém kroku se chyba nejspíš stala. Nevyčítej, povzbuď. Když něčemu nerozumí, zkus to vysvětlit jinak než v postupu, třeba na jednodušším příkladu s malými čísly. Matematiku piš prostým textem: zlomky jako 3/4, mocniny jako x², násobení jako ·. Nepoužívej LaTeX, tabulky ani nadpisy.';
+const SYS_CJ='Jsi trpělivý doučovatel češtiny. Mluvíš s žákyní 9. třídy, která se připravuje na přijímací zkoušky z češtiny (CERMAT). Vysvětluj česky, jednoduše a krátce (nejvýš asi 150 slov). Vysvětlení a správná odpověď, které dostaneš, jsou ověřené: neměň je a nevymýšlej jiná pravidla. Když se ptá, kde udělala chybu, ukaž, které pravidlo přehlédla, a dej jednu podobnou větu na procvičení. Nevyčítej, povzbuď. Piš prostým textem, bez tabulek a nadpisů.';
 function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
 function fmtAI(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>')}
 // Jediné místo, kudy se do DOMU vkládá HTML (fragment se parsuje stejně jako innerHTML).
@@ -1809,7 +1954,7 @@ async function askAI(text){
   wait.scrollIntoView({block:'nearest'});
   try{
     const r=await fetch(AI.url,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+AI.apiKey,'X-Title':'Pocitani na prijimacky'},
-      body:JSON.stringify({model:AI.model,messages:[{role:'system',content:SYS}].concat(state.chat),max_tokens:4000,temperature:0.3,reasoning:{effort:'high'}})});
+      body:JSON.stringify({model:AI.model,messages:[{role:'system',content:L(SYS,SYS_CJ)}].concat(state.chat),max_tokens:4000,temperature:0.3,reasoning:{effort:'high'}})});
     const data=await r.json();
     if(!r.ok)throw new Error((data&&data.error&&data.error.message)||('HTTP '+r.status));
     const ch=data.choices&&data.choices[0]||{};
@@ -1853,7 +1998,7 @@ $('aiSave').onclick=()=>{
 };
 $('checkBtn').onclick=doCheck;
 $('nextBtn').onclick=()=>newProblem();
-$('showBtn').onclick=()=>{if(!state.solved&&!state.counted){record(false)}state.shown=true;showSteps('Správný postup');$('showBtn').disabled=true};
+$('showBtn').onclick=()=>{if(!state.solved&&!state.counted){record(false)}state.shown=true;showSteps(L('Správný postup','Vysvětlení'));$('showBtn').disabled=true};
 $('mixToggle').checked=state.mix;
 $('mixToggle').onchange=()=>{state.mix=$('mixToggle').checked;store.mix=state.mix;if(!state.mix&&state.topics.size>1){const f=[...state.topics][0];state.topics.clear();state.topics.add(f);renderTopicChips()}store.topics=[...state.topics];save()};
 function updateSession(){const d=store.days[today()];$('session').textContent=d&&d.n?`Dnes: ${d.ok} z ${d.n} správně napoprvé.`:'Dnes zatím žádný příklad.'}
@@ -1873,13 +2018,15 @@ $('wsMake').onclick=makeWorksheet;
 $('wsPrint').onclick=()=>{try{if(window.AndroidCfg&&AndroidCfg.print){AndroidCfg.print();return}}catch(e){}$('wsPrintNote').hidden=false;try{window.print()}catch(e){}};
 
 // ---------- mistakes ----------
-function updateBadge(){const b=$('mbadge');const n=store.mistakes.length;b.hidden=!n;b.textContent=n}
+const myMistakes=()=>store.mistakes.filter(m=>{const t=TOPICS.find(x=>x.id===m.topic);return t&&subjOf(t)===subject});
+function updateBadge(){const b=$('mbadge');const n=myMistakes().length;b.hidden=!n;b.textContent=n}
 function renderMistakes(){
   const el=$('mlist');
-  if(!store.mistakes.length){setHTML(el,'<div class="empty">Sešit chyb je prázdný. Příklady, které napoprvé nevyjdou, se sem uloží samy.</div>');return}
+  const list=myMistakes();
+  if(!list.length){setHTML(el,`<div class="empty">Sešit chyb je prázdný. ${L('Příklady','Úlohy')}, které napoprvé nevyjdou, se sem uloží samy.</div>`);return}
   el.replaceChildren();
-  store.mistakes.slice().reverse().forEach(p=>{const t=TOPICS.find(x=>x.id===p.topic);const d=document.createElement('div');d.className='mitem';
-    setHTML(d,`<div><small>${t.name}</small><div class="p">${p.prompt}</div></div><div class="actions"><button class="btn" type="button">Spočítat znovu</button><button class="btn ghost" type="button">Odebrat</button></div>`);
+  list.slice().reverse().forEach(p=>{const t=TOPICS.find(x=>x.id===p.topic);const d=document.createElement('div');d.className='mitem';
+    setHTML(d,`<div><small>${t.name}</small>${p.subj==='cj'?`<div><b>${escT(p.task)}</b></div>`:''}<div class="p">${p.prompt}</div></div><div class="actions"><button class="btn" type="button">${L('Spočítat znovu','Zkusit znovu')}</button><button class="btn ghost" type="button">Odebrat</button></div>`);
     const [again,del]=d.querySelectorAll('button');
     again.onclick=()=>{location.hash='trenink';setTimeout(()=>newProblem(p),0)};
     del.onclick=()=>{store.mistakes=store.mistakes.filter(m=>m.id!==p.id);save();updateBadge();renderMistakes()};
@@ -1894,20 +2041,21 @@ function isMastered(s){return !!s&&s.n>=10&&recentPc(s)>=80}
 function daysAgo(ts){if(!ts)return null;const a=new Date(),b=new Date(ts);a.setHours(0,0,0,0);b.setHours(0,0,0,0);return Math.round((a-b)/864e5)}
 const agoTxt=n=>n===null?'zatím necvičeno':n<=0?'cvičeno dnes':n===1?'cvičeno včera':`cvičeno před ${n} dny`;
 function renderStats(){
+  const TL=subjTopics();
   const st=id=>store.stats[id]||{ok:0,n:0};
   let rows='';
-  TOPICS.forEach((t,i)=>{const s=st(t.id),pc=recentPc(s);
-    if(!i||TOPICS[i-1].g!==t.g)rows+=`<tr class="grp"><td colspan="4">${TOPIC_GROUPS[t.g]}</td></tr>`;
+  TL.forEach((t,i)=>{const s=st(t.id),pc=recentPc(s);
+    if(!i||TL[i-1].g!==t.g)rows+=`<tr class="grp"><td colspan="4">${TOPIC_GROUPS[t.g]}</td></tr>`;
     rows+=`<tr><td>${i+1}. ${t.name}${isMastered(s)?' <span class="mast" title="zvládnuto">✓</span>':''}<small>${agoTxt(daysAgo(s.last))}</small></td><td>${s.n}</td><td>${s.n?pc+' %':'–'}</td><td><div class="bar" role="img" aria-label="${pc} procent"><span style="width:${pc}%"></span></div></td></tr>`});
   // doporučení bez zamykání: první téma v pořadí, které ještě nejde, a nejdéle necvičené zvládnuté téma
-  const nextI=TOPICS.findIndex(t=>{const s=st(t.id);return s.n<10||recentPc(s)<80});
-  const stale=TOPICS.map((t,i)=>({t,i,d:daysAgo(st(t.id).last)})).filter(x=>st(x.t.id).n>=10&&x.d!==null&&x.d>=7).sort((a,b)=>b.d-a.d)[0];
+  const nextI=TL.findIndex(t=>{const s=st(t.id);return s.n<10||recentPc(s)<80});
+  const stale=TL.map((t,i)=>({t,i,d:daysAgo(st(t.id).last)})).filter(x=>st(x.t.id).n>=10&&x.d!==null&&x.d>=7).sort((a,b)=>b.d-a.d)[0];
   let tip='';
-  if(nextI>=0){const s=st(TOPICS[nextI].id);tip+=`<li><b>Na řadě:</b> ${nextI+1}. ${TOPICS[nextI].name}${s.n?` (teď ${recentPc(s)} % napoprvé, cíl je 80 %)`:''}.</li>`}
+  if(nextI>=0){const s=st(TL[nextI].id);tip+=`<li><b>Na řadě:</b> ${nextI+1}. ${TL[nextI].name}${s.n?` (teď ${recentPc(s)} % napoprvé, cíl je 80 %)`:''}.</li>`}
   else tip+='<li><b>Všechna témata jdou aspoň na 80 %.</b> Míchej je dohromady jako v testu.</li>';
   if(stale)tip+=`<li><b>Zopakuj:</b> ${stale.i+1}. ${stale.t.name}, ${agoTxt(stale.d)}. Co se dlouho necvičí, zapomíná se.</li>`;
   const days=Object.keys(store.days).length;
-  setHTML($('statsOut'),`<div class="gen"><h3>Jak postupovat</h3><ul>${tip}<li>Témata jsou seřazená tak, jak na sebe navazují. Postupuj odshora. Když téma jde napoprvé aspoň na 80 %, přidej další. Ke starším se občas vrať, třeba přes „Míchat víc témat dohromady“.</li></ul></div><table class="stats"><thead><tr><th>Téma</th><th>Příkladů</th><th>Napoprvé</th><th></th></tr></thead><tbody>${rows}</tbody></table><p class="note">Sloupec „Napoprvé“ počítá posledních 20 příkladů z tématu, takže ukazuje, jak to jde teď. Trénovala jsi ${days} ${days===1?'den':(days>=2&&days<=4?'dny':'dní')}. V sešitu chyb ${store.mistakes.length===1?'je':'je'} ${store.mistakes.length} ${store.mistakes.length===1?'příklad':(store.mistakes.length>=2&&store.mistakes.length<=4?'příklady':'příkladů')}.</p>`);
+  setHTML($('statsOut'),`<div class="gen"><h3>Jak postupovat</h3><ul>${tip}<li>Témata jsou seřazená tak, jak na sebe navazují. Postupuj odshora. Když téma jde napoprvé aspoň na 80 %, přidej další. Ke starším se občas vrať, třeba přes „Míchat víc témat dohromady“.</li></ul></div><table class="stats"><thead><tr><th>Téma</th><th>${L('Příkladů','Úloh')}</th><th>Napoprvé</th><th></th></tr></thead><tbody>${rows}</tbody></table><p class="note">Sloupec „Napoprvé“ počítá posledních 20 příkladů z tématu, takže ukazuje, jak to jde teď. Trénovala jsi ${days} ${days===1?'den':(days>=2&&days<=4?'dny':'dní')}. V sešitu chyb ${store.mistakes.length===1?'je':'je'} ${store.mistakes.length} ${store.mistakes.length===1?'příklad':(store.mistakes.length>=2&&store.mistakes.length<=4?'příklady':'příkladů')}.</p>`);
 }
 let resetArmed=false;
 $('resetBtn').onclick=()=>{if(!resetArmed){resetArmed=true;$('resetBtn').textContent='Opravdu smazat? Klikni znovu.';setTimeout(()=>{resetArmed=false;$('resetBtn').textContent='Smazat statistiky a sešit chyb'},4000);return}
@@ -1916,22 +2064,35 @@ $('resetBtn').onclick=()=>{if(!resetArmed){resetArmed=true;$('resetBtn').textCon
 // ---------- routing ----------
 const VIEWS=['trenink','list','chyby','pruvodce','prehled'];
 function renderGuides(){
-  const g=GUIDE_GENERAL;let h=`<div class="gen"><h3>${g.title}</h3><ul>${g.items.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="glist">`;
-  Object.keys(GUIDES).forEach(k=>{h+=`<details><summary>${GUIDES[k].title}</summary><div class="gbody">${guideHTML(GUIDES[k],'')}</div></details>`});
-  setHTML($('pruvodceOut'),`<p class="note">V postupech a tipech: ${K('zvýrazněné')} je pravidlo, ${N('modře')} co je v kroku nové, ${X('červeně')} pozor na chybu.</p>`+h+'</div><p class="note">Bodování vychází z klíčů správných řešení CERMATu z let 2023 až 2025. Body se mohou u konkrétní úlohy lišit, rozhoduje vždy zadání a klíč.</p>');
+  const g=L(GUIDE_GENERAL,GUIDE_GENERAL_CJ);let h=`<div class="gen"><h3>${g.title}</h3><ul>${g.items.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="glist">`;
+  Object.keys(GUIDES).filter(k=>(GUIDES[k].subj||'mat')===subject).forEach(k=>{h+=`<details><summary>${GUIDES[k].title}</summary><div class="gbody">${guideHTML(GUIDES[k],'')}</div></details>`});
+  setHTML($('pruvodceOut'),`<p class="note">V postupech a tipech: ${K('zvýrazněné')} je pravidlo, ${N('modře')} co je v kroku nové, ${X('červeně')} pozor na chybu.</p>`+h+'</div><p class="note">'+L('Bodování vychází z klíčů správných řešení CERMATu z let 2023 až 2025. Body se mohou u konkrétní úlohy lišit, rozhoduje vždy zadání a klíč.','Věty v úlohách jsou vlastní, ve stylu přijímaček. Oficiální testy procvičuj v aplikaci CERMAT TAU.')+'</p>');
 }
 function route(){
-  const h=(location.hash||'').slice(1);const v=VIEWS.includes(h)?h:'trenink';
+  const h=(location.hash||'').slice(1);const v=VIEWS.includes(h)&&!(h==='list'&&subject==='cj')?h:'trenink';
   VIEWS.forEach(x=>{$('v-'+x).hidden=x!==v});
   document.querySelectorAll('nav.tabs a').forEach(a=>{if(a.dataset.view===v)a.setAttribute('aria-current','page');else a.removeAttribute('aria-current')});
   if(v==='chyby')renderMistakes();if(v==='prehled')renderStats();if(v==='pruvodce')renderGuides();
 }
 window.addEventListener('hashchange',route);
 
-function renderTopicChips(){renderChips($('topicChips'),state.topics,()=>{store.topics=[...state.topics];save();resetSeries()},()=>state.mix)}
+function renderTopicChips(){renderChips($('topicChips'),state.topics,()=>{store[SUBJ_DEF[subject].key]=[...state.topics];save();resetSeries()},()=>state.mix,subjTopics())}
+function applySubject(){
+  document.documentElement.dataset.subject=subject;
+  document.querySelectorAll('#subjSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.subj===subject));
+  $('showBtn').textContent=L('Ukázat postup','Ukázat vysvětlení');
+  $('askIn').placeholder=L('Třeba: proč se tady obrací zlomek?','Třeba: proč se tady píše -y?');
+}
+function setSubject(s){
+  if(s===subject)return;subject=s;store.subject=s;save();
+  state.topics=loadTopics();if(!state.mix&&state.topics.size>1)state.topics=new Set([[...state.topics][0]]);
+  applySubject();renderTopicChips();updateBadge();route();resetSeries();
+}
+document.querySelectorAll('#subjSeg button').forEach(b=>b.onclick=()=>setSubject(b.dataset.subj));
+applySubject();
 renderTopicChips();
 renderSeg($('levelSeg'),()=>state.level,l=>{state.level=l;store.level=l;save();resetSeries()});
-renderChips($('wsChips'),ws.topics,()=>{store.wsTopics=[...ws.topics];save()});
+renderChips($('wsChips'),ws.topics,()=>{store.wsTopics=[...ws.topics];save()},null,TOPICS.filter(t=>subjOf(t)==='mat'));
 renderSeg($('wsLevel'),()=>ws.level,l=>{ws.level=l;store.wsLevel=l;save()});
 updateBadge();updateSession();newProblem();route();
 

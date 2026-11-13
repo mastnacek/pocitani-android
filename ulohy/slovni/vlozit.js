@@ -1,13 +1,13 @@
 // Vloží slovní úlohy z ulohy.json do aplikace (app/src/main/assets/index.html, mezi značky SLOVNI_START/SLOVNI_END).
 // Nejdřív spustí overit.js; když některá úloha neprojde, nic nevloží.
 // Do aplikace jdou jen pole potřebná za běhu (bez podmínek a záznamu o ověření).
-// Použití: node slovni-ulohy/vlozit.js
+// Použití: node ulohy/slovni/vlozit.js
 const fs = require('fs');
 const path = require('path');
 const { spawnSync } = require('child_process');
 
 const dir = __dirname;
-const html = path.join(dir, '..', 'app', 'src', 'main', 'assets', 'index.html');
+const html = path.join(dir, '..', '..', 'app', 'src', 'main', 'assets', 'index.html');
 
 const over = spawnSync(process.execPath, [path.join(dir, 'overit.js')], { encoding: 'utf8' });
 if (over.status !== 0) { process.stdout.write(over.stdout); console.error('Ověření neprošlo, nic jsem nevložil.'); process.exit(1); }
@@ -30,4 +30,4 @@ const re = /\/\*SLOVNI_START\*\/[\s\S]*?\/\*SLOVNI_END\*\//;
 if (!re.test(src)) { console.error('V index.html chybí značky SLOVNI_START/SLOVNI_END.'); process.exit(1); }
 src = src.replace(re, () => `/*SLOVNI_START*/const SLOVNI=${json};/*SLOVNI_END*/`);
 fs.writeFileSync(html, src);
-console.log(`Vloženo ${data.length} slovních úloh do ${path.relative(path.join(dir, '..'), html)} (${(json.length / 1024).toFixed(1)} kB).`);
+console.log(`Vloženo ${data.length} slovních úloh do ${path.relative(path.join(dir, '..', '..'), html)} (${(json.length / 1024).toFixed(1)} kB).`);

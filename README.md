@@ -1,6 +1,6 @@
 # Počítání na přijímačky – Android
 
-Tenký obal (WebView) kolem `app/src/main/assets/index.html`. Vše běží v telefonu,
+Tenký obal (WebView) kolem `app/src/main/assets/index.html`: trénink matematiky a češtiny na přijímačky. Vše běží v telefonu,
 internet je potřeba jen pro vysvětlování přes OpenRouter (a pro webové fonty; bez nich se použijí systémové).
 
 ## Jak to vypadá
@@ -34,8 +34,24 @@ Novou verzi HTML stačí nakopírovat přes `app/src/main/assets/index.html` a z
 Data (statistiky, sešit chyb) jsou v localStorage WebView a aktualizaci aplikace přežijí
 (odinstalace je smaže).
 
+## Struktura
+```
+app/src/main/assets/index.html   celá aplikace (matematika i čeština), WebView ji načítá z assets
+pocitani-na-prijimacky.html      stejná stránka pro prohlížeč (po úpravě index.html zkopírovat)
+ulohy/                           zdroje úloh, ze kterých se data vkládají do index.html
+  slovni/                        slovní úlohy z matematiky: ulohy.json, overit.js, vlozit.js
+  cestina/                       věty pro pravopis: vety.json, vlozit.js
+nastroje/cermat-tau/             stažení oficiálních testů CERMAT TAU a lokální prohlížeč s odpověďmi
+cermat-tau/                      stažená data CERMAT, jen lokálně (mimo git, autorská práva)
+docs/                            rozbor úloh CERMAT, snímky a ukázka
+tests/                           automatické testy (node --test tests/)
+```
+Generátory příkladů z matematiky jsou přímo v `index.html`. Data slovních úloh a vět z češtiny se upravují
+ve složce `ulohy/` a do stránky je vloží `node ulohy/slovni/vlozit.js` a `node ulohy/cestina/vlozit.js`.
+Formát popisují `ulohy/slovni/FORMAT.md` a `ulohy/cestina/FORMAT.md`.
+
 ## Testy
-Sada automatických testů ověřuje JavaScriptovou logiku WebView aplikace, generování příkladů, evaluátor výrazů, slovní úlohy a konzistenci souborů:
+Sada automatických testů ověřuje JavaScriptovou logiku WebView aplikace, generování příkladů, evaluátor výrazů, slovní úlohy, češtinu a konzistenci souborů:
 ```bash
 node --test tests/
 ```

@@ -271,14 +271,14 @@ describe('Počítání na přijímačky – komplexní testovací sada aplikace'
   });
 
   describe('(6) Spuštění validačních skriptů slovních úloh', () => {
-    it('node slovni-ulohy/overit.js skončí s kódem 0', () => {
-      const overitScript = path.join(__dirname, '../slovni-ulohy/overit.js');
+    it('node ulohy/slovni/overit.js skončí s kódem 0', () => {
+      const overitScript = path.join(__dirname, '../ulohy/slovni/overit.js');
       const res = spawnSync(process.execPath, [overitScript], { encoding: 'utf8' });
       assert.strictEqual(res.status, 0, `overit.js selhal:\n${res.stdout}\n${res.stderr}`);
     });
 
-    it('node slovni-ulohy/overit.test.js skončí s kódem 0', () => {
-      const overitTestScript = path.join(__dirname, '../slovni-ulohy/overit.test.js');
+    it('node ulohy/slovni/overit.test.js skončí s kódem 0', () => {
+      const overitTestScript = path.join(__dirname, '../ulohy/slovni/overit.test.js');
       const res = spawnSync(process.execPath, ['--test', overitTestScript], { encoding: 'utf8' });
       assert.strictEqual(res.status, 0, `overit.test.js selhal:\n${res.stdout}\n${res.stderr}`);
     });

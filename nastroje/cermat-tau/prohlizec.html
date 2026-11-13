@@ -1,0 +1,212 @@
+<!doctype html>
+<html lang="cs">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CERMAT – úlohy a odpovědi</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --panel: #fff; --text: #1d2330; --muted: #667085; --line: #dde1e8;
+    --accent: #2457c5; --ok: #127a3c; --ok-bg: #e5f5ea; --no: #b42318; --no-bg: #fdecea;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171c; --panel: #1d2128; --text: #e6e8ec; --muted: #9aa3b2; --line: #333a45;
+      --accent: #7fa6ff; --ok: #6ad48f; --ok-bg: #173323; --no: #ff8a80; --no-bg: #3a1d1b;
+    }
+    img.doc { filter: brightness(.92); }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.5 system-ui, sans-serif; background: var(--bg); color: var(--text); }
+  header {
+    position: sticky; top: 0; z-index: 5; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+    padding: 10px 16px; background: var(--panel); border-bottom: 1px solid var(--line);
+  }
+  header h1 { font-size: 16px; margin: 0 12px 0 0; }
+  select, button, label.chk { font: inherit; color: inherit; }
+  select, button { padding: 5px 10px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
+  button { cursor: pointer; }
+  label.chk { display: flex; gap: 6px; align-items: center; cursor: pointer; }
+  #jump { display: flex; flex-wrap: wrap; gap: 4px; padding: 8px 16px; border-bottom: 1px solid var(--line); background: var(--panel); }
+  #jump a { padding: 2px 8px; border: 1px solid var(--line); border-radius: 12px; color: var(--accent); text-decoration: none; font-size: 13px; }
+  main { padding: 16px; max-width: 1700px; margin: 0 auto; }
+  .group {
+    display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 0;
+    background: var(--panel); border: 1px solid var(--line); border-radius: 10px; margin-bottom: 24px; overflow: hidden;
+    scroll-margin-top: 110px;
+  }
+  .group > h2 { grid-column: 1 / -1; margin: 0; padding: 10px 16px; font-size: 17px; border-bottom: 1px solid var(--line); }
+  .q, .a { padding: 14px 16px; min-width: 0; }
+  .a { border-left: 1px solid var(--line); background: color-mix(in srgb, var(--panel) 92%, var(--accent)); }
+  img.doc { display: block; max-width: 100%; height: auto; border: 1px solid var(--line); border-radius: 4px; margin: 8px 0; background: #fff; }
+  .task { margin: 14px 0; padding-top: 10px; border-top: 1px dashed var(--line); }
+  .task:first-of-type { border-top: 0; padding-top: 0; }
+  .num { font-weight: 700; color: var(--accent); margin-right: 6px; }
+  .pts { color: var(--muted); font-size: 13px; }
+  .heading { font-weight: 600; }
+  .note { color: var(--muted); font-style: italic; }
+  .opt { margin: 3px 0; padding: 3px 8px; border-radius: 6px; }
+  .opt.right { background: var(--ok-bg); color: var(--ok); font-weight: 600; }
+  .ans { margin: 8px 0; }
+  .ans .lbl { font-weight: 700; margin-right: 6px; }
+  .yes { color: var(--ok); font-weight: 700; } .no { color: var(--no); font-weight: 700; }
+  .badge { display: inline-block; padding: 1px 9px; border-radius: 10px; font-weight: 700; }
+  .badge.yes { background: var(--ok-bg); } .badge.no { background: var(--no-bg); }
+  .var { color: var(--muted); font-size: 13px; }
+  details { margin-top: 6px; } summary { cursor: pointer; color: var(--accent); }
+  .hidden-answers .a > *:not(.reveal) { display: none; }
+  .reveal { display: none; }
+  .hidden-answers .reveal { display: inline-block; }
+  .hidden-answers .group.show .a > * { display: revert; }
+  .hidden-answers .group.show .a > .reveal { display: none; }
+  .empty { color: var(--muted); padding: 40px; text-align: center; }
+  @media (max-width: 900px) {
+    .group { grid-template-columns: 1fr; }
+    .a { border-left: 0; border-top: 1px solid var(--line); }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1 id="title">CERMAT – úlohy a odpovědi</h1>
+  <select id="test"></select>
+  <label class="chk"><input type="checkbox" id="onlyImg" checked> jen úlohy s obrázkem</label>
+  <label class="chk"><input type="checkbox" id="hide"> skrýt odpovědi</label>
+</header>
+<nav id="jump"></nav>
+<main id="out"></main>
+
+<script src="data.js"></script>
+<script>
+const DATA = window.TAU_DATA || [];
+const TITLE = (window.TAU_TITLE || 'CERMAT') + ' – úlohy a odpovědi';
+document.title = TITLE;
+const $ = (s) => document.querySelector(s);
+$('#title').textContent = TITLE;
+const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const src = (u) => (u && u.startsWith('/uploads/') ? 'obrazky/' + u.slice(9) : u);
+const img = (u, alt) => `<a href="${esc(src(u))}" target="_blank"><img class="doc" loading="lazy" src="${esc(src(u))}" alt="${esc(alt || '')}"></a>`;
+// Matematika i čeština běží z file:// a sdílí localStorage, proto klíč podle cesty.
+const store = 'tau-' + location.pathname + '-';
+const save = (k, v) => { try { localStorage.setItem(store + k, v); } catch {} };
+const load = (k) => { try { return localStorage.getItem(store + k); } catch { return null; } };
+// prefix/suffix bývá null, řetězec, nebo {text, html}
+const rich = (x) => (x == null ? '' : typeof x === 'string' ? esc(x) : x.html || esc(x.text));
+
+function blocks(list) {
+  return (list || []).slice().sort((a, b) => a.order - b.order).map((b) => {
+    const d = b.data || {};
+    if (b.type === 'image') return img(d.url, d.alt);
+    if (b.type === 'task_type') return '';
+    const html = d.html || esc(d.text || '');
+    if (!html) return '';
+    if (b.type === 'heading') return `<div class="heading">${html}</div>`;
+    if (b.type === 'note') return `<div class="note">${html}</div>`;
+    return `<div>${html}</div>`;
+  }).join('');
+}
+
+const hasImg = (list) => (list || []).some((b) => b.type === 'image');
+const optLine = (o, right) =>
+  `<div class="opt${right ? ' right' : ''}"><b>${esc(o.label)})</b> ${o.textHtml || esc(o.text)}${o.imageUrl ? img(o.imageUrl, o.imageAlt) : ''}</div>`;
+
+// Zadání úlohy (levý sloupec): text + nabídka možností bez vyznačení.
+function question(t) {
+  const c = t.content || {};
+  let h = blocks(t.blocks);
+  if (c.options) h += c.options.map((o) => optLine(o, false)).join('');
+  if (c.assignments) h += c.assignments.map((o) => `<div class="opt">${o.textHtml || esc(o.text)}${o.imageUrl ? img(o.imageUrl, o.imageAlt) : ''}</div>`).join('');
+  if (c.alternatives) h += '<hr>' + c.alternatives.map((o) => optLine(o, false)).join('');
+  if (c.items) h += c.items.map((o) => `<div class="opt">${o.textHtml || esc(o.text)}</div>`).join('');
+  if (t.type === 'OSS') h += '<div class="note">(Úloha s postupem řešení – hodnotí se podle bodovacího klíče.)</div>';
+  return h;
+}
+
+// Správná odpověď (pravý sloupec).
+function answer(t) {
+  const c = t.content || {}, a = t.correct || {};
+  const vars = (v) => (v && v.length ? ` <span class="var">(uznává se i: ${v.map(esc).join(', ')})</span>` : '');
+  switch (t.type) {
+    case 'ZMC': {
+      const o = (c.options || []).find((o) => o.label === a.correctOption);
+      return o ? optLine(o, true) : `<b>${esc(a.correctOption)}</b>`;
+    }
+    case 'ZDC':
+      return a.value
+        ? `<span class="badge yes">${esc(c.trueLabel || 'ANO')}</span>`
+        : `<span class="badge no">${esc(c.falseLabel || 'NE')}</span>`;
+    case 'ZPC': {
+      const alt = Object.fromEntries((c.alternatives || []).map((o) => [o.label, o]));
+      const asg = Object.fromEntries((c.assignments || []).map((o) => [o.label, o]));
+      return Object.entries(a.mapping || {}).map(([k, v]) => {
+        // čeština: label "1" a text "7.1) …"; matematika: label "15.1"
+        const left = k.includes('.') ? k : (asg[k]?.text || '').match(/^(\S+?)\)/)?.[1] || k;
+        return `<div class="ans"><span class="lbl">${esc(left)} → ${esc(v)})</span>${alt[v] ? alt[v].textHtml || esc(alt[v].text) : ''}</div>`;
+      }).join('');
+    }
+    case 'ZUS':
+      return `<div class="ans"><span class="lbl">Pořadí:</span> ${(a.correctOrder || []).map(esc).join(' – ')}</div>`;
+    case 'PRA':
+      return (a.corrections || []).map((k, i) => {
+        const p = rich(c.fieldLabels?.[i]?.prefix), s = rich(c.fieldLabels?.[i]?.suffix);
+        return `<div class="ans">${p ? `<span class="lbl">${p}</span>` : '• '}<b class="yes">${esc(k.correctForm)}</b>${s ? ' ' + s : ''}${vars(k.acceptedVariants)}</div>`;
+      }).join('') + (a.orderSensitive === false ? '<div class="var">(na pořadí nezáleží)</div>' : '');
+    case 'OUP': {
+      const p = rich(c.prefix), s = rich(c.suffix);
+      return `<div class="ans">${p ? p + ' ' : ''}<b class="yes">${esc(a.expectedAnswer)}</b>${s ? ' ' + s : ''}${vars(a.acceptedVariants)}</div>`;
+    }
+    case 'OSS': {
+      const levels = (c.rubricLevels || []).slice().sort((x, y) => y.points - x.points);
+      if (!levels.length) return '<div class="var">Bodovací klíč chybí.</div>';
+      return levels.map((l) => `<div class="ans"><span class="lbl">Bodovací klíč – ${esc(l.points)} b:</span></div>${l.imageUrl ? img(l.imageUrl, 'bodovací klíč') : ''}`).join('');
+    }
+    default:
+      return `<pre>${esc(JSON.stringify(a, null, 1))}</pre>`;
+  }
+}
+
+function render() {
+  const test = DATA.find((t) => t.key === $('#test').value) || DATA[0];
+  const onlyImg = $('#onlyImg').checked;
+  document.body.classList.toggle('hidden-answers', $('#hide').checked);
+  const groups = test.groups.filter((g) => !onlyImg || hasImg(g.shared) || g.tasks.some((t) => hasImg(t.blocks)));
+
+  $('#jump').innerHTML = groups.map((g) => `<a href="#g-${esc(g.num)}">${esc(g.num)}</a>`).join('');
+  $('#out').innerHTML = groups.length ? groups.map((g) => {
+    const pts = g.tasks.reduce((s, t) => s + (t.points || 0), 0);
+    const multi = g.tasks.length > 1;
+    const shownKeys = new Set();
+    // Řešení (solutionKeyUrl) patří ke konkrétní podúloze, proto je hned pod její odpovědí.
+    const keyFor = (t) => {
+      if (!t.key || shownKeys.has(t.key)) return '';
+      shownKeys.add(t.key);
+      return `<details${multi ? '' : ' open'}><summary>Řešení a zdůvodnění</summary>${img(t.key, 'řešení ' + t.num)}</details>`;
+    };
+    return `<section class="group" id="g-${esc(g.num)}">
+      <h2>Úloha ${esc(g.num)} <span class="pts">· ${pts} b</span></h2>
+      <div class="q">
+        ${blocks(g.shared)}
+        ${g.tasks.map((t) => `<div class="task">${multi ? `<span class="num">${esc(t.num)}</span>` : ''}${question(t)}</div>`).join('')}
+      </div>
+      <div class="a">
+        <button class="reveal" onclick="this.closest('.group').classList.add('show')">ukázat odpověď</button>
+        ${g.tasks.map((t) => `<div class="task" data-task="${esc(t.id)}">${multi ? `<span class="num">${esc(t.num)}</span>` : ''}${answer(t)}${keyFor(t)}</div>`).join('')}
+      </div>
+    </section>`;
+  }).join('') : '<div class="empty">Žádné úlohy.</div>';
+  save('test', test.key); save('onlyImg', onlyImg ? '1' : '0');
+}
+
+$('#test').innerHTML = DATA.map((t) => `<option value="${esc(t.key)}">${esc(t.name)}</option>`).join('');
+const last = load('test');
+if (last && DATA.some((t) => t.key === last)) $('#test').value = last;
+if (load('onlyImg') === '0') $('#onlyImg').checked = false;
+['#test', '#onlyImg', '#hide'].forEach((s) => $(s).addEventListener('change', render));
+// ?test=2024-RT1&all=1 – přímý odkaz (a pro automatickou kontrolu)
+const qs = new URLSearchParams(location.search);
+if (qs.get('test') && DATA.some((t) => t.key === qs.get('test'))) $('#test').value = qs.get('test');
+if (qs.get('all')) $('#onlyImg').checked = false;
+if (DATA.length) { render(); if (location.hash) document.getElementById(decodeURIComponent(location.hash.slice(1)))?.scrollIntoView(); } else $('#out').innerHTML = '<div class="empty">Chybí data.js – spusť node nastroje/vytvor-data.mjs</div>';
+</script>
+</body>
+</html>

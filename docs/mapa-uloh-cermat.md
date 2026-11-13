@@ -1,7 +1,7 @@
 # Mapa úloh přijímaček z matematiky (9. ročník)
 
 Zdroj: 16 testů z oficiální procvičovací aplikace CERMAT TAU (roky 2023–2026, vždy 1. a 2. řádný
-a 1. a 2. náhradní termín), stažené lokálně do `cermat-tau/` (mimo git). Celkem 459 podúloh,
+a 1. a 2. náhradní termín), stažené lokálně do `cermat-tau/matematika/` (mimo git, postup v `nastroje/cermat-tau/README.md`). Celkem 459 podúloh,
 každý test má 49–50 bodů. Popisy úloh jsou vlastními slovy, texty testů se nekopírují.
 
 ## Formáty odpovědí (součet bodů za 16 testů)

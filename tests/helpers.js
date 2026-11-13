@@ -173,7 +173,10 @@ function loadAppContext(htmlPath = INDEX_HTML_PATH) {
       polySol,
       numSol,
       decStr,
-      frSol
+      frSol,
+      SHODA,
+      MEMNE,
+      CJ_ROD
     };
   `, context);
 

@@ -2,7 +2,7 @@
 
 Cíl: slovní úlohy pro přijímačky (typy z testů CERMAT), u kterých program sám ověří výsledek,
 postup i špatné možnosti, a které jde personalizovat bez rizika, že se změní matematika.
-Ověření: `node slovni-ulohy/overit.js`, testy ověřovače: `node slovni-ulohy/overit.test.js`.
+Ověření: `node ulohy/slovni/overit.js`, testy ověřovače: `node ulohy/slovni/overit.test.js`.
 
 ## Zásady (z čeho vycházejí)
 
