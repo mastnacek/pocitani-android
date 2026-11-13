@@ -2132,11 +2132,18 @@ const cmEsc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':
 const cmDir=()=>CM_BASE+CM_SUBJ[subject]+'/';
 const cmUrl=u=>u&&u.startsWith('/uploads/')?cmDir()+'obrazky/'+u.slice(9):u;
 const cmImg=(u,alt)=>u?`<img class="cm-img" loading="lazy" src="${cmEsc(cmUrl(u))}" alt="${cmEsc(alt||'')}">`:'';
-// HTML ze souborů CERMAT: bez skriptů a obsluh událostí
+// HTML ze souborů CERMAT: bez skriptů a obsluh událostí.
+// Pozor: výstup jde do setHTML() do app stránky. Odstraňujeme i base (přesměruje
+// relativní URL), noscript a SMIL animate/set (href/javascript: umí nastavit
+// až po sanitizaci). Tab/CR/LF prohlížeč z URL maže, tak je smazat i před testem
+// na javascript: (obejití přes jav&#9;ascript:).
 function cmClean(html){
   const t=document.createElement('template');t.innerHTML=String(html||'');
-  t.content.querySelectorAll('script,iframe,object,embed,link,meta,style,form').forEach(e=>e.remove());
-  t.content.querySelectorAll('*').forEach(e=>{for(const a of [...e.attributes])if(/^on/i.test(a.name)||/^\s*javascript:/i.test(a.value))e.removeAttribute(a.name)});
+  t.content.querySelectorAll('script,iframe,object,embed,link,meta,style,form,base,noscript,animate,animateTransform,animateMotion,animateColor,set').forEach(e=>e.remove());
+  t.content.querySelectorAll('*').forEach(e=>{for(const a of [...e.attributes]){
+    const v=String(a.value).replace(/[\t\n\r\f]/g,'');
+    if(/^on/i.test(a.name)||/^\s*(javascript|vbscript):/i.test(v))e.removeAttribute(a.name);
+  }});
   return t.innerHTML;
 }
 const cmRich=x=>x==null?'':typeof x==='string'?cmEsc(x):(x.html?cmClean(x.html):cmEsc(x.text));

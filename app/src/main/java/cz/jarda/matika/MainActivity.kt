@@ -29,8 +29,7 @@ class MainActivity : ComponentActivity() {
     private val cermatRoot by lazy { File(getExternalFilesDir(null) ?: filesDir, "cermat").apply { mkdirs() } }
     private val importing = AtomicBoolean(false)
 
-    private fun cermatProgress(o: JSONObject) =
-        runOnUiThread { web.evaluateJavascript("window.cermatProgress&&cermatProgress(${o})", null) }
+    private fun cermatProgress(o: JSONObject) = runOnUiThread { web.evaluateJavascript("window.cermatProgress&&cermatProgress($o)", null) }
 
     // výběr složky s testy (Download, karta SD…); data se zkopírují do cermatRoot
     private val pickTree =
