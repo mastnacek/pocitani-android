@@ -288,34 +288,35 @@ details.guide[open]>summary::before{content:"▾ ";}
 .subj button{font:inherit;font-weight:700;font-size:.95rem;padding:7px 16px;border:0;background:transparent;color:var(--ink);cursor:pointer}
 .subj button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
 :root[data-subject="cj"] [data-only="mat"],:root:not([data-subject="cj"]) [data-only="cj"]{display:none!important}
-/* ===== čeština: zažloutlý, na okrajích ohořelý papír s linkami ===== */
+/* ===== čeština: zažloutlý papír jako v Leonardových zápisnících =====
+   Sépiový inkoust, zvýraznění barvou rudky (sanguine). Textura papíru (nerovnoměrné zažloutnutí, tmavší okraje,
+   stopy stáří, čáry ručního papíru) se kreslí pro každý list zvlášť do canvasu pod textem (drawPaper), takže se
+   neopakuje. Zrnitost jsou dvě dlaždice s nesoudělnou velikostí (173 a 241 px). Žádné SVG filtry: na telefonu byly pomalé. */
 :root[data-subject="cj"]{
-  --surface:#E4D6B6; --paper:#F1E1B8; --grid:transparent; --ink:#33240F; --muted:#6A5434;
-  --pen:#8E3B12; --pen-soft:#F2D9B4; --red:#A8321E; --red-soft:#F3D4C2; --green:#3F6B1E; --green-soft:#E1E7BF;
-  --line:#C9B183; --hl:#EDBB48; --rule:rgba(112,78,34,.22); --burn:rgba(104,46,6,.55); --burn-soft:rgba(140,82,24,.28);
+  --surface:#E7DDC8; --paper:#EEDFBC; --grid:transparent; --ink:#3B2716; --muted:#6E5739;
+  --pen:#9A3D22; --pen-soft:#F0D8C2; --red:#A3361F; --red-soft:#F2D5C6; --green:#4B6A25; --green-soft:#E3E6C4;
+  --line:#CFBB94; --hl:#E8C468;
+  --tone:rgba(165,115,40,.5); --edge:rgba(170,118,45,.2); --foxing:rgba(150,82,30,.4); --chain:rgba(115,85,45,.07);
   color-scheme:light}
 @media (prefers-color-scheme:dark){:root[data-subject="cj"]:not([data-theme="light"]){
-  --surface:#15100A; --paper:#2A2014; --ink:#EEDFC1; --muted:#B9A47F; --pen:#F2A65E; --pen-soft:#4A3015;
-  --red:#FF8C6E; --red-soft:#40211A; --green:#A8D27A; --green-soft:#26331A; --line:#4D3C25; --hl:#7A5312;
-  --rule:rgba(238,210,160,.10); --burn:rgba(0,0,0,.70); --burn-soft:rgba(0,0,0,.40); color-scheme:dark}}
+  --surface:#17130D; --paper:#2A2318; --ink:#EBDDBF; --muted:#B8A480; --pen:#E59A72; --pen-soft:#4A2E1E;
+  --red:#FF8C6E; --red-soft:#40211A; --green:#A8D27A; --green-soft:#26331A; --line:#4D3E28; --hl:#7A5A18;
+  --tone:rgba(0,0,0,.35); --edge:rgba(0,0,0,.45); --foxing:rgba(0,0,0,.45); --chain:rgba(255,232,190,.025); color-scheme:dark}}
 :root[data-subject="cj"][data-theme="dark"]{
-  --surface:#15100A; --paper:#2A2014; --ink:#EEDFC1; --muted:#B9A47F; --pen:#F2A65E; --pen-soft:#4A3015;
-  --red:#FF8C6E; --red-soft:#40211A; --green:#A8D27A; --green-soft:#26331A; --line:#4D3C25; --hl:#7A5312;
-  --rule:rgba(238,210,160,.10); --burn:rgba(0,0,0,.70); --burn-soft:rgba(0,0,0,.40); color-scheme:dark}
-:root[data-subject="cj"] body{background:radial-gradient(120% 80% at 50% 0%,transparent 40%,rgba(80,50,15,.18) 100%),var(--surface)}
-/* --g = výška linky; gridSnap podle ní zarovnává bloky listu */
-:root[data-subject="cj"] .sheet{--g:30px;
+  --surface:#17130D; --paper:#2A2318; --ink:#EBDDBF; --muted:#B8A480; --pen:#E59A72; --pen-soft:#4A2E1E;
+  --red:#FF8C6E; --red-soft:#40211A; --green:#A8D27A; --green-soft:#26331A; --line:#4D3E28; --hl:#7A5A18;
+  --tone:rgba(0,0,0,.35); --edge:rgba(0,0,0,.45); --foxing:rgba(0,0,0,.45); --chain:rgba(255,232,190,.025); color-scheme:dark}
+:root[data-subject="cj"] body{background:var(--surface)}
+/* --g určuje i řádkování a okraje listu (základní .sheet); bez okrajové linky stačí užší levý okraj */
+:root[data-subject="cj"] .sheet{--g:26px;padding-left:48px;isolation:isolate;
   background-color:var(--paper);
-  background-image:
-    radial-gradient(ellipse 75% 70% at 50% 45%,transparent 58%,var(--burn-soft) 86%,var(--burn) 100%),
-    /* skvrny a zrnitost: bitmapy z canvasu (paperTexture), SVG feTurbulence byl na telefonu pomalý */
-    var(--paper-stains,none),
-    var(--paper-grain,none),
-    repeating-linear-gradient(transparent 0 calc(var(--g) - 1px),var(--rule) calc(var(--g) - 1px) var(--g));
-  background-size:auto,600px 600px,128px 128px,auto;background-position:0 0,0 0,0 0,0 0;
-  border-radius:3px 7px 4px 8px / 7px 3px 8px 4px;
-  box-shadow:inset 0 0 0 1px rgba(110,60,15,.25),inset 0 0 22px var(--burn-soft),0 1px 0 var(--line),0 14px 34px -18px rgba(60,30,0,.65)}
-:root[data-subject="cj"] .sheet::before{opacity:.45}
+  background-image:var(--paper-grain,none),var(--paper-grain2,none);
+  background-size:173px 173px,241px 241px;
+  border-radius:3px;
+  box-shadow:0 1px 0 var(--line),0 12px 30px -18px rgba(70,45,10,.5)}
+:root[data-subject="cj"] .sheet::before{display:none}
+.sheet>canvas.paper{display:none}
+:root[data-subject="cj"] .sheet>canvas.paper{display:block;position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;border-radius:inherit}
 /* čeština: kroky vysvětlení mají vlastní písmena A) až D), čísla by se zdvojila */
 :root[data-subject="cj"] .stp li:not(.h){padding-left:0}
 :root[data-subject="cj"] .stp li:not(.h)::before{content:none}
@@ -1865,7 +1866,7 @@ function newProblem(fromMistake){
   let p;
   if(fromMistake){p=fromMistake;state.fromMistake=true}
   else{const ids=[...state.topics];p=generate(pick(ids),state.level);state.fromMistake=false;state.series.i++}
-  state.cur=p;state.attempts=0;state.counted=false;state.solved=false;state.shown=false;
+  state.cur=p;$('sheet').dataset.seed=p.id||'';state.attempts=0;state.counted=false;state.solved=false;state.shown=false;
   const t=TOPICS.find(x=>x.id===p.topic);
   $('tName').textContent=t.name;$('tRef').textContent=t.ref;
   if(fromMistake)$('tSrc').textContent='ze sešitu chyb';else renderDots(false);
@@ -2355,7 +2356,7 @@ function cmRender(){
     <button class="btn ghost" type="button" id="cmPrev"${cm.i?'':' disabled'}>Předchozí</button>
     <button class="btn ghost${res&&res.checked?' go':''}" type="button" id="cmNext">${cm.i<cm.groups.length-1?'Další úloha':'Výsledek testu'}</button>
     <button class="btn ghost" type="button" id="cmBack">Seznam testů</button></div></div></div>`;
-  setHTML($('cmSheet'),h);
+  $('cmSheet').dataset.seed=cm.key+'-'+g.num;setHTML($('cmSheet'),h);drawPaper($('cmSheet'));
   const sh=$('cmSheet');
   sh.querySelectorAll('.mcbtn[data-t]').forEach(b=>b.onclick=()=>{if(res&&res.checked)return;cm.ans[b.dataset.t]=b.dataset.v;sh.querySelectorAll(`.mcbtn[data-t="${CSS.escape(b.dataset.t)}"]`).forEach(x=>x.setAttribute('aria-pressed',x===b))});
   sh.querySelectorAll('.mcbtn[data-self]').forEach(b=>b.onclick=()=>{cm.ans[b.dataset.self]=b.dataset.v;cmScoreGroup(g);cmSaveRun();cmRender()});
@@ -2454,33 +2455,77 @@ function route(){
 window.addEventListener('hashchange',route);
 
 function renderTopicChips(){renderChips($('topicChips'),state.topics,()=>{store[SUBJ_DEF[subject].key]=[...state.topics];save();resetSeries()},()=>state.mix,subjTopics())}
-// Textura papíru pro češtinu se kreslí jednou do canvasu a dál je to obyčejná bitmapa.
-// Dřív to byl SVG filtr feTurbulence: telefon (DPR 3) ho přepočítával při každém překreslení listu
-// a klepnutí v češtině se vykreslovalo 400–1100 ms místo ~100 ms.
-let paperDone=false;
-function paperTexture(){
-  if(paperDone)return;paperDone=true;
+// Papír pro češtinu (Leonardovy zápisníky). Dvě části:
+// 1) zrnitost: dvě malé dlaždice z canvasu (jednou, jako bitmapa v CSS),
+// 2) drawPaper(list): textura přes celý list do <canvas class="paper"> pod textem, bez opakujících se dlaždic.
+//    Náhoda je odvozená ze souřadnic a data-seed (úloha), takže stejná úloha má vždy stejný papír
+//    a když list povyroste (odhalené řešení), dosavadní část papíru se nezmění.
+// Dřív tu byl SVG filtr feTurbulence: telefon (DPR 3) ho přepočítával při každém překreslení a klepnutí trvalo 400–1100 ms.
+let grainDone=false;
+function paperGrain(){
+  if(grainDone)return;grainDone=true;
   try{
-    const canvas=(w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c};
-    // zrnitost: náhodné hnědé tečky
-    const g=canvas(256,256),gx=g.getContext('2d'),gd=gx.createImageData(256,256);
-    for(let i=0;i<gd.data.length;i+=4){const v=Math.random();gd.data[i]=88;gd.data[i+1]=56;gd.data[i+2]=20;gd.data[i+3]=v<0.45?0:Math.round((v-0.45)*70)}
-    gx.putImageData(gd,0,0);
-    // skvrny: malá náhodná mřížka rozmazaně zvětšená; kreslí se 3×3 vedle sebe a bere se střed, aby dlaždice navazovala
-    const n=10,sm=canvas(n,n),sx=sm.getContext('2d'),sd=sx.createImageData(n,n);
-    for(let i=0;i<sd.data.length;i+=4){sd.data[i]=118;sd.data[i+1]=72;sd.data[i+2]=18;sd.data[i+3]=Math.round(Math.random()*Math.random()*150)}
-    sx.putImageData(sd,0,0);
-    const T=512,big=canvas(T*3,T*3),bx=big.getContext('2d');bx.imageSmoothingEnabled=true;bx.imageSmoothingQuality='high';
-    for(let y=0;y<3;y++)for(let x=0;x<3;x++)bx.drawImage(sm,x*T,y*T,T,T);
-    const st=canvas(T,T);st.getContext('2d').drawImage(big,T,T,T,T,0,0,T,T);
+    const tile=(n,dens,alpha)=>{const c=document.createElement('canvas');c.width=c.height=n;const x=c.getContext('2d'),d=x.createImageData(n,n);
+      for(let i=0;i<d.data.length;i+=4){const v=Math.random();d.data[i]=96;d.data[i+1]=64;d.data[i+2]=26;d.data[i+3]=v<dens?0:Math.round((v-dens)/(1-dens)*alpha)}
+      x.putImageData(d,0,0);return c.toDataURL('image/png')};
     const r=document.documentElement.style;
-    r.setProperty('--paper-grain',`url(${g.toDataURL('image/png')})`);
-    r.setProperty('--paper-stains',`url(${st.toDataURL('image/png')})`);
+    r.setProperty('--paper-grain',`url(${tile(173,.5,34)})`);
+    r.setProperty('--paper-grain2',`url(${tile(241,.82,46)})`);
   }catch(e){}
 }
+// deterministická náhoda 0..1 z čísel (hash)
+function paperHash(...a){let h=2166136261;for(const v of a){const t=String(v);for(let i=0;i<t.length;i++)h=Math.imul(h^t.charCodeAt(i),16777619)}
+  h^=h>>>13;h=Math.imul(h,0x5bd1e995);h^=h>>>15;return (h>>>0)/4294967296}
+function drawPaper(sheet){
+  if(!sheet||subject!=='cj')return;
+  let c=sheet.querySelector(':scope>canvas.paper');
+  if(!c){c=document.createElement('canvas');c.className='paper';c.setAttribute('aria-hidden','true');sheet.prepend(c)}
+  const W=sheet.clientWidth,H=sheet.clientHeight;if(!W||!H)return;
+  const seed=sheet.dataset.seed||sheet.id;
+  const dark=getComputedStyle(document.documentElement).colorScheme==='dark';
+  const key=`${W}x${H}|${seed}|${dark}`;if(c.dataset.key===key)return;c.dataset.key=key;
+  // textura je měkká: stačí nižší rozlišení, nejvýš ~4 Mpx (dlouhý list na tabletu)
+  const k=Math.min(window.devicePixelRatio||1,1.5,Math.sqrt(4e6/(W*H)));
+  c.width=Math.max(1,Math.round(W*k));c.height=Math.max(1,Math.round(H*k));
+  const g=c.getContext('2d');g.setTransform(k,0,0,k,0,0);g.clearRect(0,0,W,H);
+  const cs=getComputedStyle(sheet),col=n=>cs.getPropertyValue(n).trim()||'rgba(0,0,0,0)';
+  const R=(...a)=>paperHash(seed,...a);
+  // 1) nerovnoměrné zažloutnutí: hrubá náhodná mřížka (pevná velikost buňky) rozmazaně zvětšená, dvě měřítka
+  const toning=(cell,alpha,layer)=>{const nx=Math.ceil(W/cell)+2,ny=Math.ceil(H/cell)+2,m=document.createElement('canvas');m.width=nx;m.height=ny;
+    const mx=m.getContext('2d');mx.fillStyle=col('--tone');
+    for(let y=0;y<ny;y++)for(let x=0;x<nx;x++){const v=R(layer,x,y);mx.globalAlpha=v*v*alpha;mx.fillRect(x,y,1,1)}
+    g.imageSmoothingEnabled=true;g.imageSmoothingQuality='high';g.drawImage(m,-cell,-cell,nx*cell,ny*cell)};
+  toning(220,.55,'a');toning(70,.28,'b');
+  // 2) okraje: měkce tmavší po celém obvodu z překrývajících se kruhů (plynule nepravidelná šířka); rohy o něco tmavší
+  const edge=col('--edge');
+  const blob=(x,y,r,a)=>{const gr=g.createRadialGradient(x,y,0,x,y,r);gr.addColorStop(0,edge);gr.addColorStop(1,'rgba(0,0,0,0)');
+    g.globalAlpha=a;g.fillStyle=gr;g.fillRect(x-r,y-r,2*r,2*r)};
+  for(let x=0;x<=W;x+=28){blob(x,0,34+R('t',x)*30,.7+R('ta',x)*.3);blob(x,H,34+R('b',x)*30,.7+R('ba',x)*.3)}
+  for(let y=0;y<=H;y+=28){blob(0,y,34+R('l',y)*30,.7+R('la',y)*.3);blob(W,y,34+R('r',y)*30,.7+R('ra',y)*.3)}
+  g.globalAlpha=1;
+  for(const [cx,cy] of [[0,0],[W,0],[0,H],[W,H]]){const r=140+R('c',cx,cy)*90,gr=g.createRadialGradient(cx,cy,0,cx,cy,r);
+    gr.addColorStop(0,edge);gr.addColorStop(1,'rgba(0,0,0,0)');g.fillStyle=gr;g.fillRect(cx-r,cy-r,2*r,2*r)}
+  // 3) stopy stáří (foxing): drobné hnědé skvrnky, v každém čtverci 300 px náhodně 0–4, občas shluk
+  const fox=col('--foxing'),T=300;
+  for(let ty=0;ty<H;ty+=T)for(let tx=0;tx<W;tx+=T){const n=Math.floor(R('f',tx,ty)*R('f2',tx,ty)*5);
+    for(let i=0;i<n;i++){const x=tx+R('x',tx,ty,i)*T,y=ty+R('y',tx,ty,i)*T,r=.8+R('r',tx,ty,i)*R('r2',tx,ty,i)*2.6;
+      const gr=g.createRadialGradient(x,y,0,x,y,r*2.2);gr.addColorStop(0,fox);gr.addColorStop(.45,fox);gr.addColorStop(1,'rgba(0,0,0,0)');
+      g.globalAlpha=.35+R('a',tx,ty,i)*.65;g.fillStyle=gr;g.fillRect(x-r*2.2,y-r*2.2,r*4.4,r*4.4)}}
+  g.globalAlpha=1;
+  // 4) čáry ručního papíru (chain lines): velmi jemné svislé čáry po ~105 px, mírně zvlněné
+  g.strokeStyle=col('--chain');g.lineWidth=1;
+  for(let x=20+R('cx')*60,i=0;x<W;x+=95+R('cs',i)*25,i++){g.beginPath();g.moveTo(x,0);
+    for(let y=0;y<=H;y+=60)g.lineTo(x+(R('w',i,y)-.5)*1.6,y);g.stroke()}
+}
+// list se zvětší (odhalené řešení, otočení tabletu) → papír se dokreslí na novou velikost
+const paperRO=window.ResizeObserver?new ResizeObserver(es=>{for(const e of es)requestAnimationFrame(()=>drawPaper(e.target))}):null;
+['sheet','cmSheet'].forEach(id=>{const el=$(id);if(el&&paperRO)paperRO.observe(el)});
+// přepnutí světlého/tmavého režimu systému → jiné barvy papíru
+try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{drawPaper($('sheet'));drawPaper($('cmSheet'))})}catch(e){}
 function applySubject(){
-  if(subject==='cj')paperTexture();
+  if(subject==='cj')paperGrain();
   document.documentElement.dataset.subject=subject;
+  if(subject==='cj')requestAnimationFrame(()=>{drawPaper($('sheet'));drawPaper($('cmSheet'))});
   document.querySelectorAll('#subjSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.subj===subject));
   $('showBtn').textContent=L('Ukázat postup','Ukázat vysvětlení');
   $('askIn').placeholder=L('Třeba: proč se tady obrací zlomek?','Třeba: proč se tady píše -y?');
