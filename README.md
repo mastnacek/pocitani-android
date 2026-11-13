@@ -35,14 +35,67 @@ Data (statistiky, sešit chyb) jsou v localStorage WebView a aktualizaci aplikac
 (odinstalace je smaže).
 
 ## Testy CERMAT v telefonu
-Oficiální testy nejsou v APK ani v gitu (autorská práva CERMAT). Do telefonu se nahrají zvlášť:
-1. Na počítači stáhni data podle `nastroje/cermat-tau/README.md` (vznikne `cermat-tau/cestina` a `cermat-tau/matematika`).
-2. Připoj telefon kabelem (Přenos souborů) a přetáhni složku `cestina` (nebo `matematika`, nebo celou `cermat-tau`) třeba do `Download`.
-3. V aplikaci otevři **Testy CERMAT** → **Nahrát testy** a vyber tu složku. Aplikace si data zkopíruje k sobě
-   (`/sdcard/Android/data/cz.jarda.matika/files/cermat/`) s ukazatelem průběhu. Kopii v `Download` pak jde smazat.
+Záložka **Testy CERMAT** ukazuje oficiální testy přijímaček (2023–2026, 16 testů na předmět) se správnými
+odpověďmi a zdůvodněním. Testy **nejsou v APK ani v gitu** (autorská práva CERMAT), do telefonu nebo tabletu
+se nahrají zvlášť. Bez nich záložka ukáže jen návod.
 
-Bez výběru složky to jde i přes adb: `adb push cermat-tau/cestina /sdcard/Android/data/cz.jarda.matika/files/cermat/`.
-Ze složky předmětu se kopíruje jen `prehled-testu.json`, `odpovedi/` a `obrazky/`. Data přežijí aktualizaci aplikace, odinstalace je smaže.
+### Co se nahrává
+Datovou složku vytvoří na počítači nástroje v `nastroje/cermat-tau/` (postup v `nastroje/cermat-tau/README.md`).
+Výsledek je složka `cermat-tau/` v kořeni repozitáře (je v `.gitignore`):
+
+```
+cermat-tau/
+  cestina/                    čeština, asi 270 MB
+    prehled-testu.json        seznam testů (podle něj aplikace pozná, že je předmět nahraný)
+    odpovedi/2026-RT1.json …  zadání, možnosti a správné odpovědi (16 souborů)
+    obrazky/tasks/<id>/…      obrázky zadání, řešení a bodovacích klíčů
+  matematika/                 matematika, asi 30 MB, stejná struktura
+```
+
+Názvy složek `cestina` a `matematika` se nesmí měnit, podle nich aplikace pozná předmět. Ostatní soubory ve složce
+(`testy/`, `data.js`, `prohlizec.html` …) nevadí, aplikace je při nahrávání přeskočí.
+
+### Nahrání přetažením (doporučeno)
+1. Připoj telefon nebo tablet k počítači kabelem a v zařízení zvol **Přenos souborů**.
+2. V průzkumníku Windows přetáhni složku `cermat-tau\cestina` do zařízení, třeba do složky **Download**.
+   Můžeš přetáhnout i celou `cermat-tau` (oba předměty najednou).
+3. V aplikaci přepni předmět (Matematika / Čeština), otevři **Testy CERMAT** → **Nahrát testy**
+   a v systémovém výběru vyber přetaženou složku (`cestina`, nebo `cermat-tau`).
+4. Aplikace si data zkopíruje do své soukromé složky a ukazuje průběh. Čeština trvá zhruba minutu.
+5. Po dokončení se objeví seznam testů. Kopii v **Download** pak můžeš smazat, aplikace ji už nepotřebuje.
+
+### Nahrání přes adb
+Data jdou poslat rovnou do soukromé složky aplikace, bez výběru v aplikaci. Aplikace musí být nainstalovaná
+a aspoň jednou spuštěná:
+
+```bash
+adb push cermat-tau/cestina    /sdcard/Android/data/cz.jarda.matika/files/cermat/
+adb push cermat-tau/matematika /sdcard/Android/data/cz.jarda.matika/files/cermat/
+```
+
+V **Git Bashi** na Windows dej před příkaz `MSYS_NO_PATHCONV=1`, jinak Git Bash přepíše cestu `/sdcard/…`
+na `C:/Program Files/Git/sdcard/…` a nahrávání se zasekne. V PowerShellu nebo cmd to není potřeba.
+Kontrola: `adb shell ls /sdcard/Android/data/cz.jarda.matika/files/cermat/cestina` vypíše
+`obrazky  odpovedi  prehled-testu.json`.
+
+### Kde data v zařízení jsou
+`/sdcard/Android/data/cz.jarda.matika/files/cermat/<předmět>/`. Aplikace je čte bez internetu a bez jakéhokoli
+oprávnění. Aktualizace aplikace je nesmaže, **odinstalace ano** (pak je nahraj znovu). Správci souborů na Androidu 11
+a novějším tuto složku nezobrazují, proto se data nahrávají přes aplikaci nebo adb.
+
+### Aktualizace a odstranění
+- Nová data (třeba testy dalšího roku): stáhni je na počítači znovu a nahraj stejným postupem. Soubory se stejnou
+  velikostí se přeskočí, takže to jde rychle.
+- Smazání jednoho předmětu: `adb shell rm -r /sdcard/Android/data/cz.jarda.matika/files/cermat/cestina`
+  (smaže jen data testů, statistiky a sešit chyb zůstanou).
+
+### Když to nejde
+- **„Ve vybrané složce není složka cestina ani matematika“**: vybral(a) jsi jinou složku. Vyber přímo `cestina`
+  nebo složku, ve které `cestina` je.
+- **„Chybí prehled-testu.json nebo složka odpovedi“**: data na počítači nejsou úplná, spusť stahování znovu.
+- **Seznam testů je prázdný**: zkontroluj, že je zvolený správný předmět (data češtiny se ukážou jen v češtině).
+- **Webová verze** (`pocitani-na-prijimacky.html` v prohlížeči) čte testy ze složky `cermat/<předmět>/` vedle stránky
+  a musí běžet přes webový server, třeba `python -m http.server` (ze souboru `file://` prohlížeč data nenačte).
 
 ## Struktura
 ```
