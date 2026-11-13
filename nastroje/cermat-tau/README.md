@@ -37,6 +37,8 @@ python -X utf8 nastroje/cermat-tau/over-zobrazeni.py  cermat-tau/matematika
 
 Pro češtinu stejně se složkou `cermat-tau/cestina`, předmětem `CJ` a názvem `"Český jazyk"`.
 
+Do aplikace v telefonu se složka předmětu nahraje přetažením a volbou **Testy CERMAT → Nahrát testy** (postup v hlavním `README.md`).
+
 | skript | co dělá |
 |---|---|
 | `stahni-testy.mjs` | katalog, zadání testů a obrázky zadání (`--jen 2026-RT1` stáhne jeden test) |

@@ -34,6 +34,16 @@ Novou verzi HTML stačí nakopírovat přes `app/src/main/assets/index.html` a z
 Data (statistiky, sešit chyb) jsou v localStorage WebView a aktualizaci aplikace přežijí
 (odinstalace je smaže).
 
+## Testy CERMAT v telefonu
+Oficiální testy nejsou v APK ani v gitu (autorská práva CERMAT). Do telefonu se nahrají zvlášť:
+1. Na počítači stáhni data podle `nastroje/cermat-tau/README.md` (vznikne `cermat-tau/cestina` a `cermat-tau/matematika`).
+2. Připoj telefon kabelem (Přenos souborů) a přetáhni složku `cestina` (nebo `matematika`, nebo celou `cermat-tau`) třeba do `Download`.
+3. V aplikaci otevři **Testy CERMAT** → **Nahrát testy** a vyber tu složku. Aplikace si data zkopíruje k sobě
+   (`/sdcard/Android/data/cz.jarda.matika/files/cermat/`) s ukazatelem průběhu. Kopii v `Download` pak jde smazat.
+
+Bez výběru složky to jde i přes adb: `adb push cermat-tau/cestina /sdcard/Android/data/cz.jarda.matika/files/cermat/`.
+Ze složky předmětu se kopíruje jen `prehled-testu.json`, `odpovedi/` a `obrazky/`. Data přežijí aktualizaci aplikace, odinstalace je smaže.
+
 ## Struktura
 ```
 app/src/main/assets/index.html   celá aplikace (matematika i čeština), WebView ji načítá z assets
@@ -42,6 +52,7 @@ ulohy/                           zdroje úloh, ze kterých se data vkládají do
   slovni/                        slovní úlohy z matematiky: ulohy.json, overit.js, vlozit.js
   cestina/                       věty pro pravopis: vety.json, vlozit.js
 nastroje/cermat-tau/             stažení oficiálních testů CERMAT TAU a lokální prohlížeč s odpověďmi
+app/src/main/java/…/CermatData.kt  nahrání testů CERMAT do telefonu a jejich čtení ve WebView (/cermat/…)
 cermat-tau/                      stažená data CERMAT, jen lokálně (mimo git, autorská práva)
 docs/                            rozbor úloh CERMAT, snímky a ukázka
 tests/                           automatické testy (node --test tests/)

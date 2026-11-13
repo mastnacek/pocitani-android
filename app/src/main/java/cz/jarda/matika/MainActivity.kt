@@ -13,12 +13,41 @@ import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.activity.ComponentActivity
 import androidx.activity.OnBackPressedCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.webkit.WebViewAssetLoader
+import org.json.JSONObject
+import java.io.File
+import java.util.concurrent.atomic.AtomicBoolean
+import kotlin.concurrent.thread
 
 class MainActivity : ComponentActivity() {
     private lateinit var web: WebView
+
+    /** Testy CERMAT nahrané do telefonu: …/Android/data/cz.jarda.matika/files/cermat (viz CermatData). */
+    private val cermatRoot by lazy { File(getExternalFilesDir(null) ?: filesDir, "cermat").apply { mkdirs() } }
+    private val importing = AtomicBoolean(false)
+
+    private fun cermatProgress(o: JSONObject) =
+        runOnUiThread { web.evaluateJavascript("window.cermatProgress&&cermatProgress(${o})", null) }
+
+    // výběr složky s testy (Download, karta SD…); data se zkopírují do cermatRoot
+    private val pickTree =
+        registerForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+            if (uri == null) {
+                importing.set(false)
+                cermatProgress(JSONObject().put("phase", "cancel"))
+            } else {
+                thread(name = "cermat-import") {
+                    try {
+                        CermatData.import(contentResolver, uri, cermatRoot, ::cermatProgress)
+                    } finally {
+                        importing.set(false)
+                    }
+                }
+            }
+        }
 
     /** Most do stránky: klíč a model z local.properties (přes BuildConfig) a tisk pracovního listu. */
     inner class Bridge {
@@ -31,6 +60,16 @@ class MainActivity : ComponentActivity() {
                 val pm = getSystemService(PRINT_SERVICE) as PrintManager
                 pm.print("Pracovní list", web.createPrintDocumentAdapter("Pracovni-list"), PrintAttributes.Builder().build())
             }
+
+        /** Otevře výběr složky s testy CERMAT. Průběh chodí do window.cermatProgress. */
+        @JavascriptInterface fun cermatImport(): Boolean {
+            if (!importing.compareAndSet(false, true)) return false
+            runOnUiThread { pickTree.launch(null) }
+            return true
+        }
+
+        /** Cesta pro `adb push` (data jdou nahrát i bez výběru složky). */
+        @JavascriptInterface fun cermatDir(): String = cermatRoot.absolutePath
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -42,6 +81,7 @@ class MainActivity : ComponentActivity() {
             WebViewAssetLoader
                 .Builder()
                 .addPathHandler("/assets/", WebViewAssetLoader.AssetsPathHandler(this))
+                .addPathHandler("/cermat/", CermatData.PathHandler { cermatRoot })
                 .build()
 
         web =
