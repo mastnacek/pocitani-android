@@ -285,10 +285,11 @@ describe('Počítání na přijímačky – komplexní testovací sada aplikace'
   });
 
   describe('(7) Shoda obou kopií HTML stránky', () => {
-    it('app/src/main/assets/index.html a pocitani-na-prijimacky.html jsou po odstranění CR identické', () => {
-      const a = fs.readFileSync(INDEX_HTML_PATH, 'utf8').replace(/\r/g, '');
+    it('pocitani-na-prijimacky.html je po odstranění CR shodná s výstupem nastroje/sestav-web.mjs', () => {
+      const { sestavWebSoubor } = require('../nastroje/sestav-web.mjs');
+      const a = sestavWebSoubor().replace(/\r/g, '');
       const b = fs.readFileSync(WEB_HTML_PATH, 'utf8').replace(/\r/g, '');
-      assert.strictEqual(a, b, 'Obsah obou HTML souborů se musí přesně shodovat');
+      assert.strictEqual(a, b, 'Webová kopie je zastaralá: spusť node nastroje/sestav-web.mjs');
     });
   });
 
