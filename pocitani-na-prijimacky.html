@@ -308,10 +308,11 @@ details.guide[open]>summary::before{content:"▾ ";}
   background-color:var(--paper);
   background-image:
     radial-gradient(ellipse 75% 70% at 50% 45%,transparent 58%,var(--burn-soft) 86%,var(--burn) 100%),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='600' height='600'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.006' numOctaves='3' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 .45 0 0 0 0 .27 0 0 0 0 .07 0 0 0 -1.3 .9'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)' opacity='.35'/%3E%3C/svg%3E"),
-    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .22 0 0 0 0 .08 0 0 0 .5 -.12'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"),
+    /* skvrny a zrnitost: bitmapy z canvasu (paperTexture), SVG feTurbulence byl na telefonu pomalý */
+    var(--paper-stains,none),
+    var(--paper-grain,none),
     repeating-linear-gradient(transparent 0 calc(var(--g) - 1px),var(--rule) calc(var(--g) - 1px) var(--g));
-  background-size:auto,600px 600px,220px 220px,auto;background-position:0 0,0 0,0 0,0 0;
+  background-size:auto,600px 600px,128px 128px,auto;background-position:0 0,0 0,0 0,0 0;
   border-radius:3px 7px 4px 8px / 7px 3px 8px 4px;
   box-shadow:inset 0 0 0 1px rgba(110,60,15,.25),inset 0 0 22px var(--burn-soft),0 1px 0 var(--line),0 14px 34px -18px rgba(60,30,0,.65)}
 :root[data-subject="cj"] .sheet::before{opacity:.45}
@@ -350,6 +351,17 @@ details.guide[open]>summary::before{content:"▾ ";}
 .cm-prog{margin:12px 0;display:grid;gap:6px}.cm-prog progress{width:100%;height:14px;accent-color:var(--pen)}
 .cm-adb pre{white-space:pre-wrap;word-break:break-all;font-size:.85rem;background:var(--paper);padding:8px;border-radius:6px}
 .empty ol{margin:8px 0 0;padding-left:1.3em}
+
+/* ===== zvětšený obrázek přes celou obrazovku ===== */
+.cm-img{cursor:zoom-in}
+body.zoomed{overflow:hidden}
+.zoom{position:fixed;inset:0;z-index:50;background:#111}
+.zoom[hidden]{display:none}
+.zoom-stage{position:absolute;inset:0;overflow:hidden;touch-action:none}
+.zoom-stage img{position:absolute;left:0;top:0;width:100%;height:auto;max-width:none;transform-origin:0 0;background:#fff;user-select:none;-webkit-user-select:none;-webkit-user-drag:none}
+.zoom-x{position:absolute;top:12px;right:12px;z-index:2;width:48px;height:48px;border-radius:50%;border:0;background:rgba(255,255,255,.92);color:#111;font-size:22px;line-height:48px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.4)}
+.zoom-hint{position:absolute;left:0;right:0;bottom:12px;margin:0;padding:0 16px;text-align:center;color:#ddd;font-size:.85rem;pointer-events:none;transition:opacity .4s}
+.zoom.used .zoom-hint{opacity:0}
 </style>
 </head>
 <body>
@@ -2345,6 +2357,52 @@ function cmSummary(){
   $('cmBack2').onclick=()=>cmShowList();
 }
 
+// ---------- zvětšení obrázku přes celou obrazovku ----------
+// Klepnutí na obrázek v testu: celá obrazovka, zvětšení dvěma prsty nebo dvojitým klepnutím, posun prstem.
+// Zavírá se křížkem nebo tlačítkem Zpět (otevření přidá záznam do historie, Zpět ho odebere).
+const zoom={el:null,img:null,st:null,s:1,x:0,y:0,pts:new Map(),pinch:null,moved:0,lastTap:0};
+function zoomClamp(){
+  const W=zoom.st.clientWidth,H=zoom.st.clientHeight,w=zoom.img.offsetWidth*zoom.s,h=zoom.img.offsetHeight*zoom.s;
+  zoom.x=w<=W?(W-w)/2:Math.min(0,Math.max(W-w,zoom.x));
+  zoom.y=h<=H?(H-h)/2:Math.min(0,Math.max(H-h,zoom.y));
+  zoom.img.style.transform=`translate(${zoom.x}px,${zoom.y}px) scale(${zoom.s})`;
+}
+function zoomTo(s,cx,cy){ // nové měřítko, bod (cx,cy) na obrazovce zůstane na místě
+  s=Math.min(4,Math.max(1,s)); // obrázky CERMAT mají šířku kolem 620 px, víc už jen rozmazává
+  const p={x:(cx-zoom.x)/zoom.s,y:(cy-zoom.y)/zoom.s};
+  zoom.s=s;zoom.x=cx-s*p.x;zoom.y=cy-s*p.y;zoomClamp();
+}
+function zoomOpen(src){
+  if(!zoom.el){
+    const el=document.createElement('div');el.className='zoom';el.hidden=true;el.setAttribute('role','dialog');el.setAttribute('aria-label','Zvětšený obrázek');
+    setHTML(el,'<div class="zoom-stage"><img alt="" draggable="false"></div><button type="button" class="zoom-x" aria-label="Zavřít">✕</button><p class="zoom-hint">Roztáhni dvěma prsty nebo dvakrát klepni. Na šířku je text větší.</p>');
+    document.body.appendChild(el);zoom.el=el;zoom.img=el.querySelector('img');zoom.st=el.querySelector('.zoom-stage');
+    el.querySelector('.zoom-x').onclick=()=>history.back();
+    zoom.img.onload=()=>{zoom.s=1;zoom.y=0;zoomClamp()};
+    const st=zoom.st,pos=e=>{const r=st.getBoundingClientRect();return{x:e.clientX-r.left,y:e.clientY-r.top}};
+    st.addEventListener('pointerdown',e=>{st.setPointerCapture(e.pointerId);zoom.pts.set(e.pointerId,pos(e));zoom.moved=0;zoom.el.classList.add('used');
+      if(zoom.pts.size===2){const [a,b]=[...zoom.pts.values()];zoom.pinch={d:Math.hypot(a.x-b.x,a.y-b.y),s:zoom.s}}});
+    st.addEventListener('pointermove',e=>{
+      if(!zoom.pts.has(e.pointerId))return;const prev=zoom.pts.get(e.pointerId),p=pos(e);zoom.pts.set(e.pointerId,p);
+      if(zoom.pts.size>=2&&zoom.pinch){const [a,b]=[...zoom.pts.values()];const d=Math.hypot(a.x-b.x,a.y-b.y);
+        zoomTo(zoom.pinch.s*d/Math.max(1,zoom.pinch.d),(a.x+b.x)/2,(a.y+b.y)/2);zoom.moved=99}
+      else{zoom.x+=p.x-prev.x;zoom.y+=p.y-prev.y;zoom.moved+=Math.abs(p.x-prev.x)+Math.abs(p.y-prev.y);zoomClamp()}
+    });
+    const up=e=>{if(!zoom.pts.has(e.pointerId))return;const p=zoom.pts.get(e.pointerId);zoom.pts.delete(e.pointerId);
+      if(zoom.pts.size<2)zoom.pinch=null;
+      if(e.type==='pointerup'&&zoom.pts.size===0&&zoom.moved<10){const now=Date.now();
+        if(now-zoom.lastTap<320){zoomTo(zoom.s>1.2?1:2.5,p.x,p.y);zoom.lastTap=0}else zoom.lastTap=now}};
+    ['pointerup','pointercancel'].forEach(t=>st.addEventListener(t,up));
+    window.addEventListener('popstate',()=>{if(!zoom.el.hidden){zoom.el.hidden=true;document.body.classList.remove('zoomed');zoom.pts.clear()}});
+    window.addEventListener('resize',()=>{if(!zoom.el.hidden)zoomClamp()});
+  }
+  zoom.el.classList.remove('used');zoom.s=1;zoom.x=0;zoom.y=0;zoom.img.style.transform='';
+  zoom.el.hidden=false;document.body.classList.add('zoomed');
+  if(zoom.img.getAttribute('src')===src&&zoom.img.complete)zoomClamp();else zoom.img.src=src;
+  history.pushState({zoom:1},'');
+}
+$('cmSheet')?.addEventListener('click',e=>{const im=e.target.closest('.cm-img');if(im){e.preventDefault();zoomOpen(im.getAttribute('src'))}});
+
 // ---------- routing ----------
 const VIEWS=['trenink','cermat','list','chyby','pruvodce','prehled'];
 function renderGuides(){
@@ -2361,7 +2419,32 @@ function route(){
 window.addEventListener('hashchange',route);
 
 function renderTopicChips(){renderChips($('topicChips'),state.topics,()=>{store[SUBJ_DEF[subject].key]=[...state.topics];save();resetSeries()},()=>state.mix,subjTopics())}
+// Textura papíru pro češtinu se kreslí jednou do canvasu a dál je to obyčejná bitmapa.
+// Dřív to byl SVG filtr feTurbulence: telefon (DPR 3) ho přepočítával při každém překreslení listu
+// a klepnutí v češtině se vykreslovalo 400–1100 ms místo ~100 ms.
+let paperDone=false;
+function paperTexture(){
+  if(paperDone)return;paperDone=true;
+  try{
+    const canvas=(w,h)=>{const c=document.createElement('canvas');c.width=w;c.height=h;return c};
+    // zrnitost: náhodné hnědé tečky
+    const g=canvas(256,256),gx=g.getContext('2d'),gd=gx.createImageData(256,256);
+    for(let i=0;i<gd.data.length;i+=4){const v=Math.random();gd.data[i]=88;gd.data[i+1]=56;gd.data[i+2]=20;gd.data[i+3]=v<0.45?0:Math.round((v-0.45)*70)}
+    gx.putImageData(gd,0,0);
+    // skvrny: malá náhodná mřížka rozmazaně zvětšená; kreslí se 3×3 vedle sebe a bere se střed, aby dlaždice navazovala
+    const n=10,sm=canvas(n,n),sx=sm.getContext('2d'),sd=sx.createImageData(n,n);
+    for(let i=0;i<sd.data.length;i+=4){sd.data[i]=118;sd.data[i+1]=72;sd.data[i+2]=18;sd.data[i+3]=Math.round(Math.random()*Math.random()*150)}
+    sx.putImageData(sd,0,0);
+    const T=512,big=canvas(T*3,T*3),bx=big.getContext('2d');bx.imageSmoothingEnabled=true;bx.imageSmoothingQuality='high';
+    for(let y=0;y<3;y++)for(let x=0;x<3;x++)bx.drawImage(sm,x*T,y*T,T,T);
+    const st=canvas(T,T);st.getContext('2d').drawImage(big,T,T,T,T,0,0,T,T);
+    const r=document.documentElement.style;
+    r.setProperty('--paper-grain',`url(${g.toDataURL('image/png')})`);
+    r.setProperty('--paper-stains',`url(${st.toDataURL('image/png')})`);
+  }catch(e){}
+}
 function applySubject(){
+  if(subject==='cj')paperTexture();
   document.documentElement.dataset.subject=subject;
   document.querySelectorAll('#subjSeg button').forEach(b=>b.setAttribute('aria-pressed',b.dataset.subj===subject));
   $('showBtn').textContent=L('Ukázat postup','Ukázat vysvětlení');
