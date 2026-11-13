@@ -1,6 +1,6 @@
 # Počítání na přijímačky – Android
 
-Tenký obal (WebView) kolem `app/src/main/assets/index.html`: trénink matematiky a češtiny na přijímačky. Vše běží v telefonu,
+Tenký obal (WebView) kolem stránky `app/src/main/assets/index.html` (kód je v podsložkách `css/` a `js/`): trénink matematiky a češtiny na přijímačky. Vše běží v telefonu,
 internet je potřeba jen pro vysvětlování přes OpenRouter (a pro webové fonty; bez nich se použijí systémové).
 
 ## Jak to vypadá
@@ -30,7 +30,10 @@ Verze AGP/Kotlinu/knihoven jsou z doby psaní; pokud Studio nabídne novější,
 - Na openrouter.ai nastav u klíče **kreditní limit**.
 
 ## Aktualizace stránky
-Novou verzi HTML stačí nakopírovat přes `app/src/main/assets/index.html` a znovu sestavit.
+Stránku tvoří `app/src/main/assets/index.html` (jen markup a odkazy) a soubory ve složkách `css/` a `js/` vedle ní;
+APK je načte z assets bez dalších úprav. Po změně v nich se znovu sestaví APK a webová verze:
+`node nastroje/sestav-web.mjs` vloží styly a skripty do jednoho souboru `pocitani-na-prijimacky.html`
+(`--check` jen ověří, že je soubor aktuální).
 Data (statistiky, sešit chyb) jsou v localStorage WebView a aktualizaci aplikace přežijí
 (odinstalace je smaže).
 
@@ -99,9 +102,17 @@ a novějším tuto složku nezobrazují, proto se data nahrávají přes aplikac
 
 ## Struktura
 ```
-app/src/main/assets/index.html   celá aplikace (matematika i čeština), WebView ji načítá z assets
-pocitani-na-prijimacky.html      stejná stránka pro prohlížeč (po úpravě index.html zkopírovat)
-ulohy/                           zdroje úloh, ze kterých se data vkládají do index.html
+app/src/main/assets/index.html   markup a odkazy na styly a skripty, WebView ji načítá z assets
+  css/                           zaklad.css, cestina.css (téma češtiny), cermat.css
+  js/                            config, jadro (zlomky, výrazy, parser, kontrola), temata
+    matematika/                  generátory příkladů (zaklady, zlomky, vyrazy, rovnice, slovni, promenna)
+    cestina/                     generátory pravopisu
+    data/                        slovni.js a cestina.js (generované z ulohy/), promenna.js
+    ui/                          rozhraní: stav, trénink, AI, list, sešit chyb, přehled, papír, routing, start
+    cermat/                      Testy CERMAT a zvětšení obrázku
+pocitani-na-prijimacky.html      stejná stránka pro prohlížeč, sestavená z index.html (node nastroje/sestav-web.mjs)
+nastroje/sestav-web.mjs          sestaví webovou verzi do jednoho souboru
+ulohy/                           zdroje úloh, ze kterých se generují soubory js/data/slovni.js a cestina.js
   slovni/                        slovní úlohy z matematiky: ulohy.json, overit.js, vlozit.js
   cestina/                       věty pro pravopis: vety.json, vlozit.js
 nastroje/cermat-tau/             stažení oficiálních testů CERMAT TAU a lokální prohlížeč s odpověďmi
@@ -110,8 +121,12 @@ cermat-tau/                      stažená data CERMAT, jen lokálně (mimo git,
 docs/                            rozbor úloh CERMAT, snímky a ukázka
 tests/                           automatické testy (node --test tests/)
 ```
-Generátory příkladů z matematiky jsou přímo v `index.html`. Data slovních úloh a vět z češtiny se upravují
-ve složce `ulohy/` a do stránky je vloží `node ulohy/slovni/vlozit.js` a `node ulohy/cestina/vlozit.js`.
+Pořadí skriptů v `index.html` je pořadí závislostí (config, jádro, data, generátory, témata, rozhraní, start); jsou to
+klasické skripty (ne moduly), takže sdílejí globální jména a webová verze běží i ze souboru. Žádný řádek kódu
+(mimo `js/data/`) nepřesáhne 200 znaků a `index.html` zůstává krátká, hlídá to test.
+Generátory příkladů z matematiky jsou v `js/matematika/`. Data slovních úloh a vět z češtiny se upravují
+ve složce `ulohy/` a soubory `js/data/slovni.js` a `js/data/cestina.js` z nich vytvoří
+`node ulohy/slovni/vlozit.js` a `node ulohy/cestina/vlozit.js` (ručně se neupravují).
 Formát popisují `ulohy/slovni/FORMAT.md` a `ulohy/cestina/FORMAT.md`.
 
 ## Testy

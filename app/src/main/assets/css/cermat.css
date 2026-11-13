@@ -1,6 +1,7 @@
 /* ===== Testy CERMAT (data nahraná do telefonu) ===== */
 .cm-tests{display:grid;gap:10px;margin:14px 0}
-.cm-test{text-align:left;font:inherit;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);cursor:pointer;display:flex;justify-content:space-between;align-items:baseline;gap:4px 12px;flex-wrap:wrap}
+.cm-test{text-align:left;font:inherit;padding:12px 14px;border:1.5px solid var(--line);border-radius:10px;background:var(--paper);color:var(--ink);cursor:pointer;display:flex;
+  justify-content:space-between;align-items:baseline;gap:4px 12px;flex-wrap:wrap}
 .cm-test small{color:var(--muted)}
 .cm-img{display:block;max-width:100%;height:auto;margin:8px 0;border-radius:4px;background:#fff}
 .cm-h{font-weight:700;margin:8px 0 4px}.cm-n{color:var(--muted);font-style:italic;margin:4px 0}.cm-t{margin:6px 0}
@@ -29,7 +30,8 @@ body.zoomed{overflow:hidden}
 .zoom[hidden]{display:none}
 .zoom-stage{position:absolute;inset:0;overflow:hidden;touch-action:none}
 .zoom-stage img{position:absolute;left:0;top:0;height:auto;max-width:none;transform-origin:0 0;background:#fff;user-select:none;-webkit-user-select:none;-webkit-user-drag:none}
-.zoom-x{position:absolute;top:12px;right:12px;z-index:2;width:48px;height:48px;border-radius:50%;border:0;background:rgba(255,255,255,.92);color:#111;font-size:22px;line-height:48px;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.4)}
+.zoom-x{position:absolute;top:12px;right:12px;z-index:2;width:48px;height:48px;border-radius:50%;border:0;background:rgba(255,255,255,.92);color:#111;font-size:22px;line-height:48px;cursor:pointer;
+  box-shadow:0 2px 10px rgba(0,0,0,.4)}
 .zoom-hint{position:absolute;left:0;right:0;bottom:12px;margin:0;padding:0 16px;text-align:center;color:#ddd;font-size:.85rem;pointer-events:none;transition:opacity .4s}
 .zoom.used .zoom-hint{opacity:0}
 

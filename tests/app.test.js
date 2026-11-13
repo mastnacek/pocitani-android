@@ -24,7 +24,7 @@ const app = loadAppContext();
 describe('Počítání na přijímačky – komplexní testovací sada aplikace', () => {
 
   describe('(1) Syntaktická platnost všech <script> bloků', () => {
-    it('všechny <script> bloky v index.html mají bezchybnou JavaScript syntaxi', () => {
+    it('všechny skripty z index.html (včetně souborů v js/) mají bezchybnou JavaScript syntaxi', () => {
       assert.ok(scriptBlocks.length >= 2, 'index.html musí obsahovat alespoň 2 skripty');
       for (let i = 0; i < scriptBlocks.length; i++) {
         assert.doesNotThrow(() => {
