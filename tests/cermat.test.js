@@ -1,6 +1,6 @@
 // tests/cermat.test.js
 // Testy CERMAT v aplikaci: porovnání odpovědí a bodování podle klíče TAU.
-// Modul se vyřízne z index.html (mezi „Testy CERMAT“ a „routing“) a spustí bez prohlížeče.
+// Moduly js/cermat/testy.js a js/cermat/zoom.js se načtou do izolovaného kontextu a spustí bez prohlížeče.
 // Kontrola proti skutečným testům běží jen tam, kde jsou stažená data (cermat-tau/ není v gitu).
 const { describe, it } = require('node:test');
 const assert = require('node:assert');
@@ -9,10 +9,9 @@ const path = require('node:path');
 const vm = require('node:vm');
 const { INDEX_HTML_PATH } = require('./helpers');
 
-const html = fs.readFileSync(INDEX_HTML_PATH, 'utf8');
-const start = html.indexOf('// ---------- Testy CERMAT ----------');
-const end = html.indexOf('// ---------- routing ----------');
-const code = html.slice(start, end);
+const cermatDir = path.join(path.dirname(INDEX_HTML_PATH), 'js', 'cermat');
+const soubory = ['testy.js', 'zoom.js'];
+const kody = soubory.map(f => fs.readFileSync(path.join(cermatDir, f), 'utf8'));
 
 function load() {
   const ctx = {
@@ -20,7 +19,8 @@ function load() {
     document: { createElement: () => ({ content: { querySelectorAll: () => [] }, set innerHTML(v) { this.h = v; }, get innerHTML() { return this.h; } }) }
   };
   vm.createContext(ctx);
-  vm.runInContext(code + ';globalThis.__={cm,cmEval,cmScoreGroup,cmMax,cmMatch,cmTable,cmNumKey};', ctx);
+  kody.forEach((kod, i) => vm.runInContext(kod, ctx, { filename: soubory[i] }));
+  vm.runInContext('globalThis.__={cm,cmEval,cmScoreGroup,cmMax,cmMatch,cmTable,cmNumKey};', ctx);
   return ctx.__;
 }
 const m = load();
@@ -28,8 +28,9 @@ const group = (tasks) => ({ num: 'x', shared: [], tasks });
 const score = (g, ans) => { m.cm.ans = ans; m.cm.res = {}; m.cmScoreGroup(g); return m.cm.res[g.num]; };
 
 describe('Testy CERMAT: porovnání a bodování', () => {
-  it('modul je v index.html', () => {
-    assert.ok(start > 0 && end > start);
+  it('moduly jsou načtené z index.html', () => {
+    const html = fs.readFileSync(INDEX_HTML_PATH, 'utf8');
+    for (const f of soubory) assert.ok(html.includes(`<script src="js/cermat/${f}"></script>`), f);
   });
   it('textová odpověď: mezery, velikost písmen, čísla a varianty', () => {
     const r = { trimWhitespace: true, caseSensitive: false };

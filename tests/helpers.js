@@ -154,9 +154,9 @@ function loadAppContext(transform = (name, code) => code) {
 
   const context = vm.createContext(sandbox);
 
-  // Skripty v pořadí z index.html; rozhraní (IIFE na konci) se v testech nespouští
+  // Skripty v pořadí z index.html; rozhraní (js/ui a js/cermat) se v testech nespouští
   for (const s of pageScriptList) {
-    if (/^\s*\(function\s*\(\)\s*\{/.test(s.code)) continue;
+    if (/^js\/(ui|cermat)\//.test(s.name)) continue;
     vm.runInContext(transform(s.name, s.code), context, { filename: s.name });
   }
 

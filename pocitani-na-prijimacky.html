@@ -1870,12 +1870,14 @@ function stepHTML(s){
 }
 </script>
 <script>
-(function(){
 'use strict';
+// Texty průvodce (obecné rady a postupy k jednotlivým tématům) a jejich vykreslení do HTML.
+
 const GUIDE_GENERAL={title:'Jak přijímačky z matematiky fungují',items:[
  'Test má 16 úloh a dohromady 50 bodů. Čas na řešení je napsaný na záznamovém archu.',
  'Povolené jsou jen psací a rýsovací potřeby. <b>Kalkulačka ne</b>, všechno se počítá ručně.',
- 'V testovém sešitu jsou vytištěné <b>druhé mocniny čísel 11 až 20</b>, <b>vzorce pro rozklad na součin</b> (a² + 2ab + b², a² − 2ab + b², a² − b²), obvod a obsah kruhu a přibližné hodnoty π (3,14 a 22/7). Nemusíš je umět nazpaměť, ale musíš je umět použít.',
+ 'V testovém sešitu jsou vytištěné <b>druhé mocniny čísel 11 až 20</b>, <b>vzorce pro rozklad na součin</b> (a² + 2ab + b², a² − 2ab + b², a² − b²), obvod a obsah kruhu a přibližné hodnoty π (3,14 a\
+ 22/7). Nemusíš je umět nazpaměť, ale musíš je umět použít.',
  'Odpovědi se píšou do <b>záznamového archu</b> modře nebo černě píšící propiskou. Konstrukce rýsuj tužkou a pak obtáhni propiskou.',
  'U každé úlohy je napsáno, jestli chtějí <b>celý postup</b>, nebo <b>jen výsledek</b>. Když chtějí postup a napíšeš jen výsledek, dostaneš <b>0 bodů</b>, i když je výsledek správně.',
  'Zadání do archu opisovat nemusíš. Ale správný výsledek napsaný hned za opsané zadání se za postup <b>nepočítá</b>.',
@@ -1893,28 +1895,43 @@ const GUIDE_GENERAL_CJ={title:'Jak přijímačky z češtiny fungují',items:[
  'Než odpovíš, přečti si celou větu. U otázek k textu se vrať do textu a najdi místo, kde je odpověď.']};
 const GUIDES={
 'cj-shoda':{subj:'cj',title:'Shoda přísudku s podmětem',
- how:[`Najdi ${K('podmět')}: zeptej se kdo, co? (Kdo se honil? Psi.)`,`Urči jeho rod. Řekni si před podmět ${K('ti')}, ${K('ty')}, nebo ${K('ta')}.`,`${K('ti')} (rod mužský životný) → -i: ti psi se honili.`,`${K('ty')} (rod mužský neživotný a ženský) → -y: ty stromy opadaly, ty ženy prodávaly.`,`${K('ta')} (rod střední) → -a: ta auta stála.`,'Když je v podmětu víc jmen a aspoň jedno je rodu mužského životného, píše se -i: Petr a Jana šli do kina.'],
+ how:[`Najdi ${K('podmět')}: zeptej se kdo, co? (Kdo se honil? Psi.)`,`Urči jeho rod. Řekni si před podmět ${K('ti')}, ${K('ty')}, nebo ${K('ta')}.`,
+   `${K('ti')} (rod mužský životný) → -i: ti psi se honili.`,`${K('ty')} (rod mužský neživotný a ženský) → -y: ty stromy opadaly, ty ženy prodávaly.`,`${K('ta')} (rod střední) → -a: ta auta stála.`,
+     'Když je v podmětu víc jmen a aspoň jedno je rodu mužského životného, píše se -i: Petr a Jana šli do kina.'],
  why:'Shoda přísudku s podmětem je v testu skoro vždycky: v otázce, která věta je napsaná správně, v ANO/NE úlohách o správnosti zápisu i v opravě chyb v textu.',
- traps:[`${X('Děti')} jsou v množném čísle rodu ženského: děti si hrály.`,`${X('Lidé')} jsou rodu mužského životného: lidé čekali.`,`${X('Děvčata')} jsou rodu středního: děvčata se smála.`,'Koš, stroj nebo počítač jsou neživotné, i když končí na -e: koše byly plné.','Koncovka platí pro celý přísudek: mosty byly opraveny.']},
+ traps:[`${X('Děti')} jsou v množném čísle rodu ženského: děti si hrály.`,`${X('Lidé')} jsou rodu mužského životného: lidé čekali.`,`${X('Děvčata')} jsou rodu středního: děvčata se smála.`,
+   'Koš, stroj nebo počítač jsou neživotné, i když končí na -e: koše byly plné.','Koncovka platí pro celý přísudek: mosty byly opraveny.']},
 'cj-memne':{subj:'cj',title:'Mě, nebo mně',
- how:[`Místo mě/mně dosaď ${K('tebe')}, nebo ${K('tobě')}.`,`Sedí ${K('tobě')} → píše se ${K('mně')}. Je to 3. nebo 6. pád: babička mně upekla dort, mluvili o mně.`,`Sedí ${K('tebe')} → píše se ${K('mě')}. Je to 2. nebo 4. pád: bez mě, pozvali mě.`],
+ how:[`Místo mě/mně dosaď ${K('tebe')}, nebo ${K('tobě')}.`,`Sedí ${K('tobě')} → píše se ${K('mně')}. Je to 3. nebo 6. pád: babička mně upekla dort, mluvili o mně.`,
+   `Sedí ${K('tebe')} → píše se ${K('mě')}. Je to 2. nebo 4. pád: bez mě, pozvali mě.`],
  why:'Mě a mně patří k nejčastějším pravopisným chybám. V testu je najdeš v opravě chyb v textu i v otázce, která věta je napsaná správně.',
  traps:[`Na koho čekáš? ${X('Na mě')} (na tebe), ne na mně.`,`Bát se o koho: ${X('o mě')} (o tebe). Mluvit o kom: o mně (o tobě).`,`Kvůli komu? ${X('Kvůli mně')} (kvůli tobě).`]},
 promenna:{title:'Slovní úlohy s proměnnou',
- how:[`Zadání samo řekne, co je ${K('neznámá')} (třeba „cenu stolku označíme x“).`,`Každou větu přepiš na výraz: „o 5 více“ je x + 5, „třikrát více“ je 3x, ${K('„o čtvrtinu více“ je x + x/4')}, „o 20 % více“ je 1,2x.`,'Když výraz dál násobíš, dej ho celý do závorky: třikrát dražší než židle je 3 · (x + 400).','V části c) sečti nebo porovnej výrazy podle zadání, polož je rovné danému číslu a vyřeš rovnici.','Na konci zkontroluj, že odpovídáš na otázku, a dosaď výsledek zpět do zadání.'],
+ how:[`Zadání samo řekne, co je ${K('neznámá')} (třeba „cenu stolku označíme x“).`,
+   `Každou větu přepiš na výraz: „o 5 více“ je x + 5, „třikrát více“ je 3x, ${K('„o čtvrtinu více“ je x + x/4')}, „o 20 % více“ je 1,2x.`,
+     'Když výraz dál násobíš, dej ho celý do závorky: třikrát dražší než židle je 3 · (x + 400).','V části c) sečti nebo porovnej výrazy podle zadání, polož je rovné danému číslu a vyřeš rovnici.',
+       'Na konci zkontroluj, že odpovídáš na otázku, a dosaď výsledek zpět do zadání.'],
  why:'V testech 2023 až 2026 byla tahle úloha v 11 ze 16 testů (úloha 5 až 7). Každý výraz bývá za 1 bod, výpočet za 1 až 2 body. Výraz nemusí být upravený, uzná se každý správný zápis.',
- traps:[`„O třetinu více“ ${X('není x/3')}, je to x + x/3.`,`Bez závorky ${X('násobíš jen část výrazu')}: 3 · x + 400 není totéž co 3 · (x + 400).`,`„O 5 méně než v úterý“ se odečítá ${X('od úterního výrazu')}, ne od x.`]},
+ traps:[`„O třetinu více“ ${X('není x/3')}, je to x + x/3.`,`Bez závorky ${X('násobíš jen část výrazu')}: 3 · x + 400 není totéž co 3 · (x + 400).`,
+   `„O 5 méně než v úterý“ se odečítá ${X('od úterního výrazu')}, ne od x.`]},
 slovni:{title:'Slovní úlohy',
- how:[`Přečti zadání celé, a pak ještě jednou. Na papíře si ${K('podtrhni, na co se ptají')}.`,'Zapiš si, co znáš, a označ neznámou (třeba x = cena kola).','U procent si ujasni, co je 100 %: číslo za slovem „než“, původní cena, loňský počet.',`U uzavřené úlohy (A až E) můžeš ${K('dosadit nabízené možnosti do zadání')} a zkontrolovat, která sedí.`,'Na konci odhadni, jestli výsledek dává smysl (cena kola nemůže být 20 Kč).'],
- why:'Slovní úlohy jsou v testu na mnoha místech: úlohy 1 a 2, uzavřené úlohy 11 až 16 a často i úloha 6 až 8. Uzavřené úlohy (A až E, ano/ne) dávají body i slabšímu počtáři, když dosadí možnosti. Za špatnou odpověď se body neodečítají, takže uzavřenou úlohu nikdy nenechávej prázdnou.',
- traps:[`Odpověz přesně na otázku. Když se ptají na Javorník, ${X('není odpovědí počet obyvatel Lipové')}.`,`Dvě slevy po sobě ${X('se nesčítají')}, druhá se počítá z nové ceny.`,`„O 25 % více“ je rozdíl, ${X('ne 125 %')}.`,`Společně pracují rychleji než každý sám, ${X('čas se nesčítá ani neprůměruje')}.`]},
+ how:[`Přečti zadání celé, a pak ještě jednou. Na papíře si ${K('podtrhni, na co se ptají')}.`,'Zapiš si, co znáš, a označ neznámou (třeba x = cena kola).',
+   'U procent si ujasni, co je 100 %: číslo za slovem „než“, původní cena, loňský počet.',`U uzavřené úlohy (A až E) můžeš ${K('dosadit nabízené možnosti do zadání')} a zkontrolovat, která sedí.`,
+     'Na konci odhadni, jestli výsledek dává smysl (cena kola nemůže být 20 Kč).'],
+ why:'Slovní úlohy jsou v testu na mnoha místech: úlohy 1 a 2, uzavřené úlohy 11 až 16 a často i úloha 6 až 8. Uzavřené úlohy (A až E, ano/ne) dávají body i slabšímu počtáři, když dosadí možnosti. Za\
+ špatnou odpověď se body neodečítají, takže uzavřenou úlohu nikdy nenechávej prázdnou.',
+ traps:[`Odpověz přesně na otázku. Když se ptají na Javorník, ${X('není odpovědí počet obyvatel Lipové')}.`,`Dvě slevy po sobě ${X('se nesčítají')}, druhá se počítá z nové ceny.`,
+   `„O 25 % více“ je rozdíl, ${X('ne 125 %')}.`,`Společně pracují rychleji než každý sám, ${X('čas se nesčítá ani neprůměruje')}.`]},
 celacisla:{title:'Celá čísla: sčítání a odčítání',
- how:['Představ si číselnou osu. Přičítání je posun doprava, odčítání posun doleva.','Dvě znaménka vedle sebe nahraď jedním: + (−5) je − 5, a − (−5) je + 5.','Když je čísel víc, sečti zvlášť kladná a zvlášť záporná. Pak menší součet odečti od většího a výsledek dostane znaménko většího.'],
+ how:['Představ si číselnou osu. Přičítání je posun doprava, odčítání posun doleva.','Dvě znaménka vedle sebe nahraď jedním: + (−5) je − 5, a − (−5) je + 5.',
+   'Když je čísel víc, sečti zvlášť kladná a zvlášť záporná. Pak menší součet odečti od většího a výsledek dostane znaménko většího.'],
  write:['Záporné číslo za znaménkem piš do závorky: 7 + (−3).'],
  why:'Samostatná úloha to v testu není, ale znaménka jsou v každém příkladu. Ztracené mínus stojí body u zlomků, výrazů i rovnic.',
  traps:['−3 − 5 = −8, <b class="hx">ne −2</b>. Obě čísla táhnou doleva.','−(−4) = 4.','5 − 8 = −3. Když odčítáš větší číslo od menšího, výsledek je záporný.']},
 nasobeni:{title:'Násobení a dělení',
- how:['Násobilku do 10 · 10 musíš umět zpaměti, v testu není kalkulačka.','Když si nejsi jistá, rozděl si příklad: 7 · 8 = 7 · 5 + 7 · 3 = 35 + 21 = 56.','Větší čísla rozlož na desítky a jednotky: 37 · 6 = 30 · 6 + 7 · 6 = 180 + 42 = 222.','Dělení je opak násobení: 56 : 7 = 8, protože 7 · 8 = 56.','Znaménko: plus krát plus i mínus krát mínus je plus, plus krát mínus je mínus. U dělení stejně.'],
+ how:['Násobilku do 10 · 10 musíš umět zpaměti, v testu není kalkulačka.','Když si nejsi jistá, rozděl si příklad: 7 · 8 = 7 · 5 + 7 · 3 = 35 + 21 = 56.',
+   'Větší čísla rozlož na desítky a jednotky: 37 · 6 = 30 · 6 + 7 · 6 = 180 + 42 = 222.','Dělení je opak násobení: 56 : 7 = 8, protože 7 · 8 = 56.',
+     'Znaménko: plus krát plus i mínus krát mínus je plus, plus krát mínus je mínus. U dělení stejně.'],
  write:['Čísla násob bez znamének a znaménko urči zvlášť.'],
  why:'Bez jisté násobilky se zasekneš u krácení, společného jmenovatele, procent i rovnic.',
  traps:['(−2) · (−3) · (−4) = −24. Tři mínusy dají mínus.','Nulou dělit nejde. 0 : 5 = 0, ale 5 : 0 nemá smysl.']},
@@ -1924,88 +1941,126 @@ prednost:{title:'Přednost operací',
  why:'Pořadí operací rozhoduje v každé úloze s postupem. Výraz spočítaný ve špatném pořadí je chybný postup, a ten je za 0 bodů.',
  traps:['2 + 3 · 4 = 14, <b class="hx">ne 20</b>.','12 : 3 · 2 = 8, <b class="hx">ne 2</b>. Násobení a dělení jdou zleva doprava.','10 − (3 − 5) = 10 − (−2) = 12.']},
 delitelnost:{title:'Dělitelnost: NSD a NSN',
- how:['Dělitel je číslo, kterým jde dané číslo vydělit beze zbytku. Dělitelé 12: 1, 2, 3, 4, 6, 12.','Největší společný dělitel: vypiš dělitele obou čísel a vezmi největší, který je v obou seznamech. Použiješ ho ke krácení zlomků.','Nejmenší společný násobek: vypisuj násobky většího čísla, dokud nenarazíš na číslo, které jde vydělit i menším. To je společný jmenovatel.','Rychlá pravidla: číslem 2 jdou vydělit sudá čísla, 5 čísla končící 0 nebo 5, 10 čísla končící 0, 3 čísla s ciferným součtem dělitelným 3.'],
+ how:['Dělitel je číslo, kterým jde dané číslo vydělit beze zbytku. Dělitelé 12: 1, 2, 3, 4, 6, 12.',
+   'Největší společný dělitel: vypiš dělitele obou čísel a vezmi největší, který je v obou seznamech. Použiješ ho ke krácení zlomků.',
+     'Nejmenší společný násobek: vypisuj násobky většího čísla, dokud nenarazíš na číslo, které jde vydělit i menším. To je společný jmenovatel.',
+       'Rychlá pravidla: číslem 2 jdou vydělit sudá čísla, 5 čísla končící 0 nebo 5, 10 čísla končící 0, 3 čísla s ciferným součtem dělitelným 3.'],
  write:['Zápis D(12; 18) = 6 je největší společný dělitel, n(4; 6) = 12 nejmenší společný násobek.'],
  why:'Samostatná úloha to v testu obvykle není, ale bez toho nezkrátíš zlomek ani nenajdeš společný jmenovatel.',
  traps:['Největší společný dělitel nemůže být větší než menší z obou čísel.','Součin obou čísel je společný násobek, ale často ne nejmenší: 4 · 6 = 24, ale n(4; 6) = 12.']},
 kraceni:{title:'Krácení a převody',
- how:['Krátit znamená vydělit čitatel i jmenovatel stejným číslem. Hodnota zlomku se nezmění.','Nejrychleji krátíš největším společným dělitelem. Když ho nevidíš, krať postupně (2, 3, 5…), dokud to jde.','Desetinné číslo na zlomek: 1 desetinné místo = jmenovatel 10, 2 místa = 100, 3 místa = 1000. Pak zkrať.','Zlomek na desetinné číslo: rozšiř ho na jmenovatel 10, 100 nebo 1000, nebo vyděl čitatel jmenovatelem.'],
+ how:['Krátit znamená vydělit čitatel i jmenovatel stejným číslem. Hodnota zlomku se nezmění.',
+   'Nejrychleji krátíš největším společným dělitelem. Když ho nevidíš, krať postupně (2, 3, 5…), dokud to jde.',
+     'Desetinné číslo na zlomek: 1 desetinné místo = jmenovatel 10, 2 místa = 100, 3 místa = 1000. Pak zkrať.',
+       'Zlomek na desetinné číslo: rozšiř ho na jmenovatel 10, 100 nebo 1000, nebo vyděl čitatel jmenovatelem.'],
  write:['Výsledek vždy v základním tvaru: 18/24 = 3/4.'],
  why:'V úloze 3 musí být výsledek zlomek v základním tvaru. Nezkrácený výsledek nebo výsledek jen jako desetinné číslo stojí bod.',
  traps:['0,5 = 5/10 = 1/2, <b class="hx">ne 1/5</b>.','0,05 = 5/100 = 1/20.','Krátit jde jen součin, <b class="hx">ne součet</b>: v (2 + 4)/4 nekrať dvojku s čtyřkou.']},
 zlomky:{title:'Zlomky (úloha 3)',
- how:[`Desetinná čísla ${K('převeď na zlomky')} (0,3 = 3/10). Se zlomky a desetinnými čísly naráz se nepočítá.`,'Dodrž pořadí: závorky, mocniny, pak násobení a dělení, nakonec sčítání a odčítání.',`Sčítání a odčítání: najdi společný jmenovatel, zlomky rozšiř a ${K('sečti jen čitatele')}.`,`Násobení: ${K('čitatel krát čitatel, jmenovatel krát jmenovatel')}. Celé číslo násobí jen čitatel. Krátit můžeš i do kříže před násobením.`,`Dělení: první zlomek nech a ${K('vynásob ho převráceným druhým')} (čitatel a jmenovatel prohodíš).`,`Výsledek ${K('zkrať na základní tvar')}.`],
- write:['Piš postupně, každou úpravu za rovnítko nebo na nový řádek začínající „=“. Postup musí jít přečíst krok po kroku.','Záporný zlomek piš s mínusem před zlomkovou čarou: −7/8.','Výsledek nech jako zlomek v základním tvaru, klidně i nepravý (19/6). Na smíšené číslo převádět nemusíš a chyba při převodu by stála bod.'],
+ how:[`Desetinná čísla ${K('převeď na zlomky')} (0,3 = 3/10). Se zlomky a desetinnými čísly naráz se nepočítá.`,'Dodrž pořadí: závorky, mocniny, pak násobení a dělení, nakonec sčítání a odčítání.',
+   `Sčítání a odčítání: najdi společný jmenovatel, zlomky rozšiř a ${K('sečti jen čitatele')}.`,
+     `Násobení: ${K('čitatel krát čitatel, jmenovatel krát jmenovatel')}. Celé číslo násobí jen čitatel. Krátit můžeš i do kříže před násobením.`,
+       `Dělení: první zlomek nech a ${K('vynásob ho převráceným druhým')} (čitatel a jmenovatel prohodíš).`,`Výsledek ${K('zkrať na základní tvar')}.`],
+ write:['Piš postupně, každou úpravu za rovnítko nebo na nový řádek začínající „=“. Postup musí jít přečíst krok po kroku.','Záporný zlomek piš s mínusem před zlomkovou čarou: −7/8.',
+   'Výsledek nech jako zlomek v základním tvaru, klidně i nepravý (19/6). Na smíšené číslo převádět nemusíš a chyba při převodu by stála bod.'],
  full:['Správný výsledek v základním tvaru a správný postup: 2 body (u úlohy jen na výsledek 1 bod).'],
- minus:['Výsledek není zkrácený na základní tvar.','Výsledek je jen jako desetinné číslo, zlomkem není uvedený nikde.','Jedna početní chyba, třeba 7 · 8 = 54.','Ztracené znaménko mínus.','Správný výsledek, ale po něm ještě chybná úprava (třeba při převodu na smíšené číslo).'],
- zero:['Chybný postup počítání se zlomky, třeba sečtené jmenovatele nebo dělení bez převrácení.','Číselný výraz vynásobený společným jmenovatelem. To se smí jen u rovnice, u výrazu nikdy.','Víc než jedna chyba.','Chybí postup, když ho zadání chce.'],
- traps:[`1/2 + 1/3 ${X('není 2/5')}. Jmenovatele se nikdy nesčítají.`,`Při dělení se obrací ${X('jen druhý zlomek')}.`,`2 · 3/4 = 6/4, ${X('ne 6/8')}. Celé číslo násobí jen čitatel.`,`Násobení má přednost před sčítáním, ${X('nepočítej zleva doprava')}.`]},
+ minus:['Výsledek není zkrácený na základní tvar.','Výsledek je jen jako desetinné číslo, zlomkem není uvedený nikde.','Jedna početní chyba, třeba 7 · 8 = 54.','Ztracené znaménko mínus.',
+   'Správný výsledek, ale po něm ještě chybná úprava (třeba při převodu na smíšené číslo).'],
+ zero:['Chybný postup počítání se zlomky, třeba sečtené jmenovatele nebo dělení bez převrácení.','Číselný výraz vynásobený společným jmenovatelem. To se smí jen u rovnice, u výrazu nikdy.',
+   'Víc než jedna chyba.','Chybí postup, když ho zadání chce.'],
+ traps:[`1/2 + 1/3 ${X('není 2/5')}. Jmenovatele se nikdy nesčítají.`,`Při dělení se obrací ${X('jen druhý zlomek')}.`,`2 · 3/4 = 6/4, ${X('ne 6/8')}. Celé číslo násobí jen čitatel.`,
+   `Násobení má přednost před sčítáním, ${X('nepočítej zleva doprava')}.`]},
 slozene:{title:'Složené zlomky (úloha 3)',
- how:['Najdi hlavní zlomkovou čáru: je nejdelší a je na úrovni rovnítka.',`Spočítej ${K('zvlášť')} všechno nad ní (čitatel) až na jeden zlomek.`,`Spočítej ${K('zvlášť')} všechno pod ní (jmenovatel) až na jeden zlomek.`,`${K('Hlavní čára znamená dělení')}: čitatel vynásob převráceným jmenovatelem.`,'Výsledek zkrať.'],
- write:['Můžeš přepisovat celý složený zlomek a postupně zjednodušovat nahoře i dole, nebo spočítat čitatel a jmenovatel zvlášť a pak napsat jejich podíl. Obojí je správně, hlavně ať jde postup sledovat.','Výsledek: zlomek v základním tvaru, záporný s mínusem před zlomkem.'],
+ how:['Najdi hlavní zlomkovou čáru: je nejdelší a je na úrovni rovnítka.',`Spočítej ${K('zvlášť')} všechno nad ní (čitatel) až na jeden zlomek.`,
+   `Spočítej ${K('zvlášť')} všechno pod ní (jmenovatel) až na jeden zlomek.`,`${K('Hlavní čára znamená dělení')}: čitatel vynásob převráceným jmenovatelem.`,'Výsledek zkrať.'],
+ write:['Můžeš přepisovat celý složený zlomek a postupně zjednodušovat nahoře i dole, nebo spočítat čitatel a jmenovatel zvlášť a pak napsat jejich podíl. Obojí je správně, hlavně ať jde postup\
+ sledovat.','Výsledek: zlomek v základním tvaru, záporný s mínusem před zlomkem.'],
  full:['Správný výsledek v základním tvaru a správný postup: 2 body.'],
  minus:['Výsledek není zkrácený.','Jedna početní chyba.','Chybná úprava až po správném výsledku.'],
  zero:['Celý výraz vynásobený společným jmenovatelem, aby „zmizely zlomky“. U výrazu se to nesmí, to je 0 bodů.','Chybný postup se zlomky.','Víc než jedna chyba.'],
- traps:[`Neplete se ti ${X('hlavní čára')} s menšími zlomkovými čarami?`,`Desetinné číslo ve jmenovateli (0,3) převeď na zlomek 3/10 a pak ho převrať: ${X('dělit 3/10 je násobit 10/3')}.`,`Dělení záporným číslem dá ${X('záporný výsledek')}, pokud je čitatel kladný.`]},
+ traps:[`Neplete se ti ${X('hlavní čára')} s menšími zlomkovými čarami?`,`Desetinné číslo ve jmenovateli (0,3) převeď na zlomek 3/10 a pak ho převrať: ${X('dělit 3/10 je násobit 10/3')}.`,
+   `Dělení záporným číslem dá ${X('záporný výsledek')}, pokud je čitatel kladný.`]},
 desetinna:{title:'Desetinná čísla',
- how:['Pořadí: závorky, pak násobení a dělení, nakonec sčítání a odčítání.','Násobení: násob jako celá čísla a ve výsledku odděl tolik desetinných míst, kolik jich mají obě čísla dohromady (0,4 · 0,3 = 0,12).','Dělení desetinným číslem: posuň desetinnou čárku u obou čísel o stejný počet míst doprava, až je dělitel celé číslo (1,2 : 0,3 = 12 : 3 = 4).','Sčítání a odčítání: čísla pod sebe, čárka pod čárkou.'],
+ how:['Pořadí: závorky, pak násobení a dělení, nakonec sčítání a odčítání.',
+   'Násobení: násob jako celá čísla a ve výsledku odděl tolik desetinných míst, kolik jich mají obě čísla dohromady (0,4 · 0,3 = 0,12).',
+     'Dělení desetinným číslem: posuň desetinnou čárku u obou čísel o stejný počet míst doprava, až je dělitel celé číslo (1,2 : 0,3 = 12 : 3 = 4).',
+       'Sčítání a odčítání: čísla pod sebe, čárka pod čárkou.'],
  write:['Mezivýsledky piš, ať je vidět pořadí operací.'],
  full:['Desetinná čísla bývají součástí jiných úloh. Body jsou za přesný výsledek, zaokrouhlovat se nesmí, pokud to zadání neřekne.'],
  minus:[],zero:[],
  traps:['0,3 · 0,3 = 0,09, <b class="hx">ne 0,9</b>.','Odčítání většího čísla od menšího dá záporný výsledek.']},
 mocniny:{title:'Mocniny a odmocniny',
- how:['Mocnina má přednost před násobením: 2 · 3² = 2 · 9 = 18.','(−3)² = 9, mínus je v závorce a umocní se taky. −3² = −9, mínus v závorce není a neumocňuje se.','Lichá mocnina záporného čísla je záporná: (−2)³ = −8.','Zlomek umocníš tak, že umocníš čitatel i jmenovatel. Stejně tak odmocňuješ.','Desetinné číslo na druhou má dvakrát víc desetinných míst: 0,3² = 0,09.'],
+ how:['Mocnina má přednost před násobením: 2 · 3² = 2 · 9 = 18.','(−3)² = 9, mínus je v závorce a umocní se taky. −3² = −9, mínus v závorce není a neumocňuje se.',
+   'Lichá mocnina záporného čísla je záporná: (−2)³ = −8.','Zlomek umocníš tak, že umocníš čitatel i jmenovatel. Stejně tak odmocňuješ.',
+     'Desetinné číslo na druhou má dvakrát víc desetinných míst: 0,3² = 0,09.'],
  write:['Každý člen spočítej zvlášť a pak sečti.'],
  full:['Mocniny bývají součástí jiných úloh. Tabulka druhých mocnin 11 až 20 je v testu.'],minus:[],zero:[],
  traps:['−3² a (−3)² nejsou totéž.','√(16 + 9) = 5, ale √16 + √9 = 7. Odmocnina součtu se nerozděluje.']},
 procenta:{title:'Procenta',
- how:['Nejdřív urči, co je 100 % (celek, původní hodnota, číslo za slovem „než“).','1 % = celek : 100. Část = 1 % · počet procent.','„O p % víc“ znamená (100 + p) % původní hodnoty, „o p % méně“ znamená (100 − p) %.','Když znáš hodnotu po změně a hledáš původní, dělíš: po slevě 20 % platíš 80 %, takže 1 % = cena : 80.','„O kolik procent je A větší než B“: rozdíl A − B vyděl číslem B.'],
+ how:['Nejdřív urči, co je 100 % (celek, původní hodnota, číslo za slovem „než“).','1 % = celek : 100. Část = 1 % · počet procent.',
+   '„O p % víc“ znamená (100 + p) % původní hodnoty, „o p % méně“ znamená (100 − p) %.','Když znáš hodnotu po změně a hledáš původní, dělíš: po slevě 20 % platíš 80 %, takže 1 % = cena : 80.',
+     '„O kolik procent je A větší než B“: rozdíl A − B vyděl číslem B.'],
  write:['Odpověz přesně na otázku a s jednotkou (Kč, žáků, %). Když se ptají „o kolik procent“, odpověď musí být rozdíl v procentech, ne celá hodnota.'],
  full:['Slovní úlohy na procenta jsou obvykle jen na výsledek, 1 až 2 body za správnou odpověď.'],
  minus:['Odpověď neodpovídá na položenou otázku (třeba napíšeš 140 % místo „o 40 %“).'],zero:['Procenta spočítaná ze špatného základu.'],
  traps:['Dvě slevy po sobě se nesčítají, druhá se počítá z nové ceny.','Procenta z ceny po slevě nejsou totéž co procenta z původní ceny.']},
 roznasobovani:{title:'Úprava výrazů (úloha 4.3)',
- how:['Nejdřív zjednoduš obsah závorek, kde to jde (2x − x = x, −3 + 1 = −2).','Druhé mocniny závorek spočítej podle vzorce a výsledek nech v závorce.','Roznásob: číslo před závorkou násobí každý člen, dvě závorky násobíš každý člen s každým.','Mínus před závorkou změní znaménka všech členů uvnitř.','Sečti členy se stejnou mocninou: zvlášť x², zvlášť x, zvlášť čísla.'],
- write:['Piš na řádky pod sebe. Když je před závorkou s druhou mocninou mínus nebo číslo, napiš nejdřív −(x² − 2x + 1) nebo −4 · (x² − 2x + 1) a teprve v dalším kroku závorku odstraň.','Výsledek bez závorek, ideálně seřazený: x², pak x, pak číslo.'],
+ how:['Nejdřív zjednoduš obsah závorek, kde to jde (2x − x = x, −3 + 1 = −2).','Druhé mocniny závorek spočítej podle vzorce a výsledek nech v závorce.',
+   'Roznásob: číslo před závorkou násobí každý člen, dvě závorky násobíš každý člen s každým.','Mínus před závorkou změní znaménka všech členů uvnitř.',
+     'Sečti členy se stejnou mocninou: zvlášť x², zvlášť x, zvlášť čísla.'],
+ write:['Piš na řádky pod sebe. Když je před závorkou s druhou mocninou mínus nebo číslo, napiš nejdřív −(x² − 2x + 1) nebo −4 · (x² − 2x + 1) a teprve v dalším kroku závorku odstraň.',
+   'Výsledek bez závorek, ideálně seřazený: x², pak x, pak číslo.'],
  full:['Správný výsledek bez závorek a správný postup: 2 body. Úlohy 4.1 a 4.2 jsou obvykle jen na výsledek za 1 bod, tam se dílčí body nedávají.'],
- minus:['Právě jeden člen upravený chybně, nejčastěji kvůli mínus před závorkou.','Jedna chyba při roznásobení závorek.','Chyba ve vzorci.','Chybí poslední krok: nejsou sečtené všechny členy s x², s x, nebo čísla.','Při opisování vypadl jeden člen.'],
+ minus:['Právě jeden člen upravený chybně, nejčastěji kvůli mínus před závorkou.','Jedna chyba při roznásobení závorek.','Chyba ve vzorci.',
+   'Chybí poslední krok: nejsou sečtené všechny členy s x², s x, nebo čísla.','Při opisování vypadl jeden člen.'],
  zero:['Víc než jedna chyba.'],
  traps:['(x + 3)² = x² + 6x + 9, <b class="hx">ne x² + 9</b>.','−(x − 1)² = −x² + 2x − 1. Mínus mění znaménka všech tří členů.','−4 · (x − 1)²: nejdřív umocni, pak násob čtyřmi.']},
 umocneni:{title:'Umocňování podle vzorce (úloha 4.1, 4.2)',
- how:['(první + druhý)² = první² + 2 · první · druhý + druhý².','(první − druhý)² = první² − 2 · první · druhý + druhý².','(první + druhý)(první − druhý) = první² − druhý².','Zlomek umocni v čitateli i jmenovateli, desetinné číslo zdvojnásobí počet desetinných míst.','Když jsou v závorce dva členy se stejnou proměnnou, nejdřív je sečti.'],
+ how:['(první + druhý)² = první² + 2 · první · druhý + druhý².','(první − druhý)² = první² − 2 · první · druhý + druhý².','(první + druhý)(první − druhý) = první² − druhý².',
+   'Zlomek umocni v čitateli i jmenovateli, desetinné číslo zdvojnásobí počet desetinných míst.','Když jsou v závorce dva členy se stejnou proměnnou, nejdřív je sečti.'],
  write:['Výsledek bez závorek. Koeficienty zlomkem v základním tvaru (4/9 a²), desetinná čísla přesně (0,09x²).'],
  full:['Obvykle jen výsledek za 1 bod. Bod je jen za úplně správný výsledek, dílčí body nejsou.'],minus:[],
  zero:['Chybějící prostřední člen 2 · první · druhý.','Špatně umocněný zlomek nebo desetinné číslo.'],
  traps:['(2/3 a)² = 4/9 a², <b class="hx">ne 2/9 a²</b>.','Prostřední člen má stejné znaménko jako je v závorce.']},
 rozklad:{title:'Rozklad na součin podle vzorce (úloha 4.2)',
- how:['Když je tam závorka nebo součin, nejdřív výraz uprav a sečti podobné členy.','Dva členy a mínus mezi nimi (49 − 16a²) znamenají vzorec první² − druhý² = (první + druhý)(první − druhý).','Tři členy, kde první a poslední jsou druhé mocniny, znamenají vzorec (první ± druhý)². Prostřední člen musí sedět: 2 · první · druhý.','Najdi „první“ a „druhý“: z čeho jsou ty členy druhou mocninou (tabulka 11 až 20 je v testu).','Zapiš součin a v hlavě ho roznásob pro kontrolu.'],
- write:['Výsledek jako součin: (k + 12)(k − 12) nebo (3a − 11)². Druhou mocninu můžeš zapsat i jako (3a − 11)(3a − 11), obojí se uznává.','Když je první člen číslo, nech ho první: 9 − x² = (3 + x)(3 − x).'],
+ how:['Když je tam závorka nebo součin, nejdřív výraz uprav a sečti podobné členy.','Dva členy a mínus mezi nimi (49 − 16a²) znamenají vzorec první² − druhý² = (první + druhý)(první − druhý).',
+   'Tři členy, kde první a poslední jsou druhé mocniny, znamenají vzorec (první ± druhý)². Prostřední člen musí sedět: 2 · první · druhý.',
+     'Najdi „první“ a „druhý“: z čeho jsou ty členy druhou mocninou (tabulka 11 až 20 je v testu).','Zapiš součin a v hlavě ho roznásob pro kontrolu.'],
+ write:['Výsledek jako součin: (k + 12)(k − 12) nebo (3a − 11)². Druhou mocninu můžeš zapsat i jako (3a − 11)(3a − 11), obojí se uznává.',
+   'Když je první člen číslo, nech ho první: 9 − x² = (3 + x)(3 − x).'],
  full:['Jen výsledek: 1 bod. Když se chce postup (upravit a rozložit): 2 body.'],
  minus:['Výraz je správně upravený, ale není rozložený na součin. To je jen polovina bodů.'],
  zero:['Chyba v úpravě nebo chybí postup, když ho zadání chce.'],
  traps:['(−4a)² = 16a². Mínus v závorce na druhou zmizí.','(3 − x)(3 + x) <b class="hx">není totéž co (x − 3)(x + 3)</b>. Pořadí v závorce s mínusem je důležité.']},
 vytykani:{title:'Vytýkání (rozklad na součin)',
- how:['Když je potřeba, nejdřív výraz uprav a sečti podobné členy.','Najdi největší číslo, kterým jdou vydělit všechny koeficienty.','Zjisti, jestli všechny členy obsahují proměnnou. Pokud ano, vytkni ji taky.','Každý člen vyděl tím, co vytýkáš, a výsledky napiš do závorky.','Kontrola: roznásob a musí vyjít původní výraz.'],
+ how:['Když je potřeba, nejdřív výraz uprav a sečti podobné členy.','Najdi největší číslo, kterým jdou vydělit všechny koeficienty.',
+   'Zjisti, jestli všechny členy obsahují proměnnou. Pokud ano, vytkni ji taky.','Každý člen vyděl tím, co vytýkáš, a výsledky napiš do závorky.','Kontrola: roznásob a musí vyjít původní výraz.'],
  write:['Výsledek jako součin: 3x(2x − 5).'],
  full:['Obvykle jen výsledek za 1 bod.'],minus:[],
  zero:['V závorce jde ještě něco vytknout, rozklad tedy není hotový.','Po roznásobení nevyjde původní výraz.'],
  traps:['Vytknout se musí ze všech členů, <b class="hx">ne jen z některých</b>.','Když vytkneš celý člen, zůstane po něm v závorce 1, <b class="hx">ne 0</b>.']},
 rovnice:{title:'Rovnice (úloha 5)',
- how:['Roznásob závorky (u druhé mocniny podle vzorce).','Členy s x převeď na jednu stranu, čísla na druhou. Co přejde na druhou stranu, změní znaménko.','Sečti obě strany.','Vyděl obě strany číslem u x.','Když se členy s x úplně odečtou: zbude 0 = 0 (rovnice má nekonečně mnoho řešení), nebo 0 = jiné číslo (rovnice nemá řešení).'],
- write:['Každou úpravu na nový řádek, rovnítka pod sebe.','Úpravu můžeš psát za svislou čáru na konec řádku (| −2x, | : 4). Není to povinné, ale pomáhá ti to neudělat chybu.','Na konci napiš výsledek: x = 20. U zvláštních rovnic závěr slovy: „Rovnice nemá řešení.“ nebo „Rovnice má nekonečně mnoho řešení.“','Zkoušku nezapisuj.'],
+ how:['Roznásob závorky (u druhé mocniny podle vzorce).','Členy s x převeď na jednu stranu, čísla na druhou. Co přejde na druhou stranu, změní znaménko.','Sečti obě strany.',
+   'Vyděl obě strany číslem u x.','Když se členy s x úplně odečtou: zbude 0 = 0 (rovnice má nekonečně mnoho řešení), nebo 0 = jiné číslo (rovnice nemá řešení).'],
+ write:['Každou úpravu na nový řádek, rovnítka pod sebe.','Úpravu můžeš psát za svislou čáru na konec řádku (| −2x, | : 4). Není to povinné, ale pomáhá ti to neudělat chybu.',
+   'Na konci napiš výsledek: x = 20. U zvláštních rovnic závěr slovy: „Rovnice nemá řešení.“ nebo „Rovnice má nekonečně mnoho řešení.“','Zkoušku nezapisuj.'],
  full:['Správný výsledek a správný postup: 2 body.'],
- minus:['Právě jeden člen upravený chybně, třeba zapomenuté znaménko při převodu.','Chybí poslední krok: zůstane třeba 4x = 12 bez vydělení.','Jedna početní chyba.','U rovnice bez řešení chybí závěr, nebo je špatný.','Po správném výsledku je napsaný chybný závěr (třeba „rovnice nemá řešení“).'],
+ minus:['Právě jeden člen upravený chybně, třeba zapomenuté znaménko při převodu.','Chybí poslední krok: zůstane třeba 4x = 12 bez vydělení.','Jedna početní chyba.',
+   'U rovnice bez řešení chybí závěr, nebo je špatný.','Po správném výsledku je napsaný chybný závěr (třeba „rovnice nemá řešení“).'],
  zero:['Chybná úprava rovnice, třeba vynásobíš jen některé členy nebo vydělíš jen jednu stranu.','Víc než jedna chyba.'],
- traps:['Při převodu na druhou stranu se znaménko mění, při roznásobení závorky ne (kromě mínus před závorkou).','Když se x² na obou stranách odečte, nevadí to. Zbude obyčejná rovnice.','Když se odečte i x, nehledej chybu a napiš závěr.']},
+ traps:['Při převodu na druhou stranu se znaménko mění, při roznásobení závorky ne (kromě mínus před závorkou).','Když se x² na obou stranách odečte, nevadí to. Zbude obyčejná rovnice.',
+   'Když se odečte i x, nehledej chybu a napiš závěr.']},
 'rovnice-zlomky':{title:'Rovnice se zlomky (úloha 5)',
- how:['Najdi společný jmenovatel všech zlomků v rovnici.','Celou rovnici jím vynásob: každý člen na levé i pravé straně, i ty bez zlomku.','Zlomky se zkrátí. Čitatel, který měl víc členů, dej do závorky.','Dál jako obyčejná rovnice: roznásob, převeď, sečti, vyděl.','Desetinná čísla se dají odstranit vynásobením 10 nebo 100.'],
+ how:['Najdi společný jmenovatel všech zlomků v rovnici.','Celou rovnici jím vynásob: každý člen na levé i pravé straně, i ty bez zlomku.',
+   'Zlomky se zkrátí. Čitatel, který měl víc členů, dej do závorky.','Dál jako obyčejná rovnice: roznásob, převeď, sečti, vyděl.','Desetinná čísla se dají odstranit vynásobením 10 nebo 100.'],
  write:['Po vynásobení napiš rovnici bez zlomků a se závorkami: 3 · (x − 6) − x = (x − 16).','Na konci x = číslo. Zkoušku nezapisuj.'],
  full:['Správný výsledek a správný postup: 2 body.'],
  minus:['Právě jeden člen upravený chybně.','Chybí poslední krok (zůstane třeba 6x = 72).'],
  zero:['Jmenovatelem vynásobená jen část členů (typicky zapomenuté číslo bez zlomku).','Víc než jedna chyba.'],
  traps:['Mínus před zlomkem platí pro celý čitatel: −(x − 4)/3 · 6 = −2(x − 4) = −2x + 8.','Násobit jmenovatelem se smí jen rovnici, nikdy výraz.']},
 soustavy:{title:'Soustavy rovnic (úloha 5)',
- how:['Dosazovací metoda: z jedné rovnice vyjádři y (nebo x) a dosaď do druhé.','Sčítací metoda: rovnice vynásob tak, aby u jedné neznámé byla opačná čísla, a sečti je.','Vyřeš rovnici s jednou neznámou.','Dosaď výsledek zpátky a dopočítej druhou neznámou.'],
+ how:['Dosazovací metoda: z jedné rovnice vyjádři y (nebo x) a dosaď do druhé.','Sčítací metoda: rovnice vynásob tak, aby u jedné neznámé byla opačná čísla, a sečti je.',
+   'Vyřeš rovnici s jednou neznámou.','Dosaď výsledek zpátky a dopočítej druhou neznámou.'],
  write:['Rovnice si můžeš očíslovat (I, II) a psát, co s nimi děláš.','Na konci napiš obě hodnoty: x = 2, y = −5. Zkoušku nezapisuj.'],
  full:['Obě neznámé správně a správný postup: 2 body.'],
  minus:['Právě jeden člen upravený chybně a pak už bez chyby.','Jedna neznámá je správně a druhá chybí nebo je špatně.','Hodnoty x a y jsou prohozené.'],
@@ -2028,6 +2083,10 @@ function guideHTML(g,trap,open){
   if(g.traps&&g.traps.length)h+=`<h4>Časté chyby</h4><ul>${li(g.traps)}</ul>`;
   return h;
 }
+</script>
+<script>
+'use strict';
+// Stav aplikace: uložiště (localStorage), aktuální předmět, téma a série příkladů.
 
 const KEY='barunka-matika-v1';
 let store={stats:{},mistakes:[],days:{}};
@@ -2047,6 +2106,10 @@ function loadTopics(){const d=SUBJ_DEF[subject];const s=new Set((store[d.key]||[
 const state={topics:loadTopics(),mix:!!store.mix,level:store.level||1,cur:null,attempts:0,counted:false,solved:false,shown:false,fromMistake:false,lastAnswer:'',chat:[],series:{i:0,ok:0}};
 if(!state.mix&&state.topics.size>1)state.topics=new Set([[...state.topics][0]]);
 const ws={topics:new Set(store.wsTopics||['zlomky','rovnice']),level:store.wsLevel||1};
+</script>
+<script>
+'use strict';
+// Trénink: výběr témat a obtížnosti, zadání příkladu, kontrola odpovědi, postup a souhrn série.
 
 // ---------- chips ----------
 function renderChips(el,set,onChange,multi,list){
@@ -2056,10 +2119,12 @@ function renderChips(el,set,onChange,multi,list){
     if(!i||list[i-1].g!==t.g){const h=document.createElement('span');h.className='grp';h.textContent=TOPIC_GROUPS[t.g];el.appendChild(h)}
     const b=document.createElement('button');b.className='chip';b.type='button';b.dataset.id=t.id;b.textContent=`${i+1}. ${t.name}`;b.setAttribute('aria-pressed',set.has(t.id));
     if(isMastered(store.stats[t.id])){const m=document.createElement('span');m.className='mast';m.textContent=' ✓';m.title='zvládnuto (aspoň 80 % napoprvé)';b.appendChild(m)}
-    b.onclick=()=>{if(multi&&!multi()){if(set.size===1&&set.has(t.id))return;set.clear();set.add(t.id)}else if(set.has(t.id)){if(set.size>1)set.delete(t.id)}else set.add(t.id);el.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',set.has(c.dataset.id)));onChange()};
+    b.onclick=()=>{if(multi&&!multi()){if(set.size===1&&set.has(t.id))return;set.clear();set.add(t.id)}else if(set.has(t.id)){if(set.size>1)set.delete(t.id)}else set.add(t.id);
+      el.querySelectorAll('.chip').forEach(c=>c.setAttribute('aria-pressed',set.has(c.dataset.id)));onChange()};
     el.appendChild(b)});
 }
-function renderSeg(el,get,set){[...el.querySelectorAll('button')].forEach(b=>{b.setAttribute('aria-pressed',+b.dataset.level===get());b.onclick=()=>{set(+b.dataset.level);[...el.querySelectorAll('button')].forEach(x=>x.setAttribute('aria-pressed',+x.dataset.level===get()))}})}
+function renderSeg(el,get,set){[...el.querySelectorAll('button')].forEach(b=>{b.setAttribute('aria-pressed',+b.dataset.level===get());b.onclick=()=>{set(+b.dataset.level);
+  [...el.querySelectorAll('button')].forEach(x=>x.setAttribute('aria-pressed',+x.dataset.level===get()))}})}
 
 // ---------- trainer ----------
 function newProblem(fromMistake){
@@ -2079,11 +2144,15 @@ function newProblem(fromMistake){
   setHTML($('prompt'),p.prompt);
   setHTML($('guideBody'),guideHTML(GUIDES[p.guide||p.topic],p.trap));$('guide').open=false;
   const a=$('answer');a.replaceChildren();
-  const mk=(lab,id,cls)=>{const l=document.createElement('label');l.htmlFor=id;setHTML(l,lab);const i=document.createElement('input');i.id=id;i.type='text';i.autocomplete='off';i.spellcheck=false;i.setAttribute('autocapitalize','off');if(cls)i.className=cls;i.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(state.solved)newProblem();else doCheck()}});a.appendChild(l);a.appendChild(i);return i};
+  const mk=(lab,id,cls)=>{const l=document.createElement('label');l.htmlFor=id;setHTML(l,lab);const i=document.createElement('input');i.id=id;i.type='text';i.autocomplete='off';i.spellcheck=false;
+    i.setAttribute('autocapitalize','off');if(cls)i.className=cls;i.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();if(state.solved)newProblem();else doCheck()}});
+      a.appendChild(l);a.appendChild(i);return i};
   let first;
   if(p.kind==='sys'){first=mk('<i>x</i> =','in0','short');mk('<i>y</i> =','in1','short')}
   else if(p.kind==='promenna'){first=mk('a)','in0');mk('b)','in1');mk(`c) (${escT(p.unitTxt)})`,'in2','short');a.classList.add('rows')}
-  else if(p.kind==='eq'){first=mk('<i>'+p.v+'</i> =','in0','short');const box=document.createElement('span');box.className='ins';[['nemá řešení','nemá řešení'],['nekonečně mnoho','nekonečně mnoho řešení']].forEach(([lab,txt])=>{const b=document.createElement('button');b.type='button';b.textContent=lab;b.style.fontFamily='var(--ui)';b.style.fontSize='.85rem';b.onclick=()=>{first.value=txt;first.focus()};box.appendChild(b)});a.appendChild(box)}
+  else if(p.kind==='eq'){first=mk('<i>'+p.v+'</i> =','in0','short');const box=document.createElement('span');box.className='ins';[['nemá řešení','nemá řešení'],['nekonečně mnoho',
+    'nekonečně mnoho řešení']].forEach(([lab,txt])=>{const b=document.createElement('button');b.type='button';b.textContent=lab;b.style.fontFamily='var(--ui)';b.style.fontSize='.85rem';b.onclick=()=>{
+      first.value=txt;first.focus()};box.appendChild(b)});a.appendChild(box)}
   else if(p.kind==='mc'){
     // výběr A–E jako v záznamovém archu; volba se drží ve skrytém poli in0
     const hid=document.createElement('input');hid.type='hidden';hid.id='in0';a.appendChild(hid);
@@ -2094,8 +2163,10 @@ function newProblem(fromMistake){
     a.appendChild(box);first=box.querySelector('.mcbtn');
   }
   else{first=mk(p.unitTxt?`Výsledek (${escT(p.unitTxt)}):`:'Výsledek:','in0')}
-  if(p.kind==='poly'||p.kind==='factor'){const box=document.createElement('span');box.className='ins';[['²','²'],['(','('],[')',')']].forEach(([lab,txt])=>{const b=document.createElement('button');b.type='button';b.textContent=lab;b.setAttribute('aria-label','Vložit '+lab);b.onclick=()=>insertAt(first,txt);box.appendChild(b)});a.appendChild(box)}
-  const hints={num:p.fraction?'Zlomek piš s lomítkem, třeba −7/8. Celé číslo napiš normálně.':p.decimal?'Napiš desetinné číslo, třeba 0,375.':(p.unit?'Napiš jen číslo, jednotku nepiš.':'Napiš číslo. Desetinná čárka i tečka fungují, zlomek s lomítkem.'),
+  if(p.kind==='poly'||p.kind==='factor'){const box=document.createElement('span');box.className='ins';[['²','²'],['(','('],[')',')']].forEach(([lab,txt])=>{const b=document.createElement('button');
+    b.type='button';b.textContent=lab;b.setAttribute('aria-label','Vložit '+lab);b.onclick=()=>insertAt(first,txt);box.appendChild(b)});a.appendChild(box)}
+  const hints={num:p.fraction?'Zlomek piš s lomítkem, třeba −7/8. Celé číslo napiš normálně.':p.decimal?'Napiš desetinné číslo, třeba 0,375.':(p.unit?'Napiš jen číslo, jednotku nepiš.':'Napiš číslo.\
+ Desetinná čárka i tečka fungují, zlomek s lomítkem.'),
     poly:'Mocninu napiš jako ^2 nebo tlačítkem ². Třeba 3'+p.v+'^2 − 5'+p.v+' + 1.',
     factor:p.mode==='common'?'Napiš jako součin, třeba 3'+p.v+'(2'+p.v+' − 5).':'Napiš jako součin závorek, třeba ('+p.v+' + 3)('+p.v+' − 3) nebo ('+p.v+' − 2)².',
     eq:'Napiš jen hodnotu '+p.v+'. Když rovnice nemá řešení nebo jich má nekonečně mnoho, klepni na tlačítko.',sys:'Napiš hodnotu x a hodnotu y.',
@@ -2120,7 +2191,8 @@ function showTick(){
   t.style.top=Math.round(a.offsetTop+a.offsetHeight/2-t.offsetHeight/2)+'px';
   t.classList.remove('draw');void t.offsetWidth;t.classList.add('draw');
 }
-function insertAt(inp,txt){const s=inp.selectionStart??inp.value.length,e=inp.selectionEnd??inp.value.length;inp.value=inp.value.slice(0,s)+txt+inp.value.slice(e);inp.focus();inp.selectionStart=inp.selectionEnd=s+txt.length}
+function insertAt(inp,txt){const s=inp.selectionStart??inp.value.length,e=inp.selectionEnd??inp.value.length;inp.value=inp.value.slice(0,s)+txt+inp.value.slice(e);inp.focus();
+  inp.selectionStart=inp.selectionEnd=s+txt.length}
 function record(ok){
   if(state.counted)return;state.counted=true;
   const p=state.cur;const s=store.stats[p.topic]||(store.stats[p.topic]={ok:0,n:0});const wasM=isMastered(s);s.n++;if(ok)s.ok++;
@@ -2169,10 +2241,22 @@ function showSummary(){
   const s=state.series;$('sheet').hidden=true;const el=$('summary');el.hidden=false;
   const msg=s.ok===SERIES?'Celá série bez chyby.':(s.ok>=SERIES*0.7?'Dobrá série. Chyby najdeš v sešitu chyb.':'Tohle téma chce ještě trénink. Projdi si sešit chyb a zkus další sérii.');
   const st=s.ok===SERIES?['s1','Výborně']:(s.ok>=SERIES*0.7?['s2','Dobrá práce']:['s3','Pokračuj']);
-  setHTML(el,`<h2>Série hotová</h2><p class="big">${s.ok} z ${SERIES}<span class="stamp ${st[0]}" aria-hidden="true">${st[1]}</span></p><p>správně napoprvé. ${msg}</p><div class="actions"><button class="btn" id="againBtn" type="button">Další série</button><a class="btn ghost" href="#chyby" style="text-decoration:none">Sešit chyb</a></div>`);
+  setHTML(el,`<h2>Série hotová</h2><p class="big">${s.ok} z ${SERIES}<span class="stamp ${st[0]}" aria-hidden="true">${st[1]}</span></p><p>správně napoprvé. ${msg}</p><div class="actions"><button\
+ class="btn" id="againBtn" type="button">Další série</button><a class="btn ghost" href="#chyby" style="text-decoration:none">Sešit chyb</a></div>`);
   $('againBtn').onclick=()=>{state.series={i:0,ok:0};newProblem()};$('againBtn').focus();
 }
 function resetSeries(){state.series={i:0,ok:0};newProblem()}
+$('checkBtn').onclick=doCheck;
+$('nextBtn').onclick=()=>newProblem();
+$('showBtn').onclick=()=>{if(!state.solved&&!state.counted){record(false)}state.shown=true;showSteps(L('Správný postup','Vysvětlení'));$('showBtn').disabled=true};
+$('mixToggle').checked=state.mix;
+$('mixToggle').onchange=()=>{state.mix=$('mixToggle').checked;store.mix=state.mix;if(!state.mix&&state.topics.size>1){const f=[...state.topics][0];state.topics.clear();state.topics.add(f);
+  renderTopicChips()}store.topics=[...state.topics];save()};
+function updateSession(){const d=store.days[today()];$('session').textContent=d&&d.n?`Dnes: ${d.ok} z ${d.n} správně napoprvé.`:'Dnes zatím žádný příklad.'}
+</script>
+<script>
+'use strict';
+// Vysvětlování přes AI (OpenRouter) a nastavení klíče a modelu.
 
 // ---------- AI vysvětlování ----------
 const AI=window.AI_CONFIG||{};
@@ -2180,7 +2264,8 @@ const aiOn=()=>!!(AI.apiKey&&AI.model);
 function htmlToText(h){
   if(h.startsWith('#H#'))return '\n'+htmlToText(h.slice(3))+':';
   const d=document.createElement('div');setHTML(d,h.replace(/<br\s*\/?>/g,'\n'));
-  Array.from(d.querySelectorAll('.fr')).reverse().forEach(f=>{const t=f.children[0].textContent,b=f.children[1].textContent;const w=x=>/^[−-]?[\d,]+$/.test(x.trim())?x.trim():'('+x.trim()+')';f.replaceWith(w(t)+'/'+w(b))});
+  Array.from(d.querySelectorAll('.fr')).reverse().forEach(f=>{const t=f.children[0].textContent,b=f.children[1].textContent;const w=x=>/^[−-]?[\d,]+$/.test(x.trim())?x.trim():'('+x.trim()+')';
+    f.replaceWith(w(t)+'/'+w(b))});
   d.querySelectorAll('.ov').forEach(o=>o.replaceWith('('+o.textContent+')'));
   d.querySelectorAll('sup').forEach(o=>o.replaceWith('^'+o.textContent));
   d.querySelectorAll('.say').forEach(o=>o.append(' '));
@@ -2189,10 +2274,17 @@ function htmlToText(h){
 }
 function problemContext(){
   const p=state.cur;const t=TOPICS.find(x=>x.id===p.topic);
-  return `Téma: ${t.name}\nZadání: ${p.task}\n${htmlToText(p.prompt)}\n\nOvěřený správný postup:\n${p.steps.map((s,i)=>'- '+htmlToText(s)).join('\n')}\n\nSprávný výsledek: ${htmlToText(p.solH)}\nOdpověď žákyně: ${state.lastAnswer||'(zatím nic nenapsala)'}${p.trap?'\nTypická past u tohoto příkladu: '+htmlToText(p.trap):''}`;
+  return `Téma: ${t.name}\nZadání: ${p.task}\n${htmlToText(p.prompt)}\n\nOvěřený správný postup:\n${p.steps.map((s,
+    i)=>'- '+htmlToText(s)).join('\n')}\n\nSprávný výsledek: ${htmlToText(p.solH)}\nOdpověď žákyně: ${state.lastAnswer||'(zatím nic nenapsala)'}${p.trap?'\nTypická past u tohoto příkladu:\
+ '+htmlToText(p.trap):''}`;
 }
-const SYS='Jsi trpělivý doučovatel matematiky. Mluvíš s žákyní 9. třídy, která se připravuje na přijímací zkoušky z matematiky (CERMAT) a matematika jí moc nejde. Vysvětluj česky, jednoduše a krátce (nejvýš asi 150 slov), po malých krocích, ke každému kroku řekni proč se dělá. Postup a výsledek, které dostaneš, jsou ověřené a správné: neměň je a nepočítej jinak. Když se ptá, kde udělala chybu, porovnej její odpověď se správným postupem a řekni, ve kterém kroku se chyba nejspíš stala. Nevyčítej, povzbuď. Když něčemu nerozumí, zkus to vysvětlit jinak než v postupu, třeba na jednodušším příkladu s malými čísly. Matematiku piš prostým textem: zlomky jako 3/4, mocniny jako x², násobení jako ·. Nepoužívej LaTeX, tabulky ani nadpisy.';
-const SYS_CJ='Jsi trpělivý doučovatel češtiny. Mluvíš s žákyní 9. třídy, která se připravuje na přijímací zkoušky z češtiny (CERMAT). Vysvětluj česky, jednoduše a krátce (nejvýš asi 150 slov). Vysvětlení a správná odpověď, které dostaneš, jsou ověřené: neměň je a nevymýšlej jiná pravidla. Když se ptá, kde udělala chybu, ukaž, které pravidlo přehlédla, a dej jednu podobnou větu na procvičení. Nevyčítej, povzbuď. Piš prostým textem, bez tabulek a nadpisů.';
+const SYS='Jsi trpělivý doučovatel matematiky. Mluvíš s žákyní 9. třídy, která se připravuje na přijímací zkoušky z matematiky (CERMAT) a matematika jí moc nejde. Vysvětluj česky, jednoduše a krátce\
+ (nejvýš asi 150 slov), po malých krocích, ke každému kroku řekni proč se dělá. Postup a výsledek, které dostaneš, jsou ověřené a správné: neměň je a nepočítej jinak. Když se ptá, kde udělala chybu,\
+ porovnej její odpověď se správným postupem a řekni, ve kterém kroku se chyba nejspíš stala. Nevyčítej, povzbuď. Když něčemu nerozumí, zkus to vysvětlit jinak než v postupu, třeba na jednodušším\
+ příkladu s malými čísly. Matematiku piš prostým textem: zlomky jako 3/4, mocniny jako x², násobení jako ·. Nepoužívej LaTeX, tabulky ani nadpisy.';
+const SYS_CJ='Jsi trpělivý doučovatel češtiny. Mluvíš s žákyní 9. třídy, která se připravuje na přijímací zkoušky z češtiny (CERMAT). Vysvětluj česky, jednoduše a krátce (nejvýš asi 150 slov).\
+ Vysvětlení a správná odpověď, které dostaneš, jsou ověřené: neměň je a nevymýšlej jiná pravidla. Když se ptá, kde udělala chybu, ukaž, které pravidlo přehlédla, a dej jednu podobnou větu na\
+ procvičení. Nevyčítej, povzbuď. Piš prostým textem, bez tabulek a nadpisů.';
 function esc(s){return s.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]))}
 function fmtAI(s){return esc(s).replace(/\*\*(.+?)\*\*/g,'<b>$1</b>').replace(/\n/g,'<br>')}
 // Jediné místo, kudy se do DOMU vkládá HTML (fragment se parsuje stejně jako innerHTML).
@@ -2223,7 +2315,8 @@ async function askAI(text){
     if(!ans)throw new Error('Model nevrátil žádnou odpověď.');
     state.chat.push({role:'assistant',content:ans});
     setHTML(wait,fmtAI(ans));
-    if(ch.finish_reason==='length'){const pn=document.createElement('p');pn.className='note';pn.style.margin='8px 0 0';pn.textContent='(Odpověď se ořízla – dosáhla limitu tokenů. Napiš „pokračuj“ nebo se zeptej konkrétněji.)';wait.appendChild(pn)};
+    if(ch.finish_reason==='length'){const pn=document.createElement('p');pn.className='note';pn.style.margin='8px 0 0';
+      pn.textContent='(Odpověď se ořízla – dosáhla limitu tokenů. Napiš „pokračuj“ nebo se zeptej konkrétněji.)';wait.appendChild(pn)};
     wait.scrollIntoView({block:'nearest'});
   }catch(e){
     state.chat.pop();wait.className='msg err';wait.textContent='Vysvětlení se nepodařilo načíst: '+e.message+'. Zkontroluj připojení k internetu.';
@@ -2247,7 +2340,8 @@ const AIKEY='barunka-matika-ai';
 try{const raw=localStorage.getItem(AIKEY);if(raw){const s=JSON.parse(raw);if(s.key)AI.apiKey=s.key;if(s.model)AI.model=s.model}}catch(e){}
 const aiDlg=$('aiDialog');
 function syncAsk(){if(!aiOn()){$('ask').hidden=true}else if(!$('steps').hidden)showAsk()}
-$('settingsBtn').onclick=()=>{$('aiKey').value=AI.apiKey||'';$('aiModel').value=AI.model||'';$('settingsBtn').setAttribute('aria-expanded','true');aiDlg.showModal();setTimeout(()=>$('aiKey').focus(),50)};
+$('settingsBtn').onclick=()=>{$('aiKey').value=AI.apiKey||'';$('aiModel').value=AI.model||'';$('settingsBtn').setAttribute('aria-expanded','true');aiDlg.showModal();setTimeout(()=>$('aiKey').focus(),
+  50)};
 $('aiCancel').onclick=()=>aiDlg.close();
 aiDlg.addEventListener('click',e=>{if(e.target!==aiDlg)return;const r=aiDlg.getBoundingClientRect();if(e.clientX<r.left||e.clientX>r.right||e.clientY<r.top||e.clientY>r.bottom)aiDlg.close()});
 aiDlg.addEventListener('close',()=>$('settingsBtn').setAttribute('aria-expanded','false'));
@@ -2257,12 +2351,10 @@ $('aiSave').onclick=()=>{
   try{localStorage.setItem(AIKEY,JSON.stringify({key:k,model:m}))}catch(e){}
   aiDlg.close();syncAsk();
 };
-$('checkBtn').onclick=doCheck;
-$('nextBtn').onclick=()=>newProblem();
-$('showBtn').onclick=()=>{if(!state.solved&&!state.counted){record(false)}state.shown=true;showSteps(L('Správný postup','Vysvětlení'));$('showBtn').disabled=true};
-$('mixToggle').checked=state.mix;
-$('mixToggle').onchange=()=>{state.mix=$('mixToggle').checked;store.mix=state.mix;if(!state.mix&&state.topics.size>1){const f=[...state.topics][0];state.topics.clear();state.topics.add(f);renderTopicChips()}store.topics=[...state.topics];save()};
-function updateSession(){const d=store.days[today()];$('session').textContent=d&&d.n?`Dnes: ${d.ok} z ${d.n} správně napoprvé.`:'Dnes zatím žádný příklad.'}
+</script>
+<script>
+'use strict';
+// Pracovní list (jen matematika): tiskový list s příklady a řešením.
 
 // ---------- worksheet ----------
 function makeWorksheet(){
@@ -2270,13 +2362,20 @@ function makeWorksheet(){
   for(let i=0;i<n;i++)list.push(generate(ids[i%ids.length],ws.level));
   const d=new Date();const date=`${d.getDate()}. ${d.getMonth()+1}. ${d.getFullYear()}`;
   const names=ids.map(id=>TOPICS.find(t=>t.id===id).name.toLowerCase()).join(', ');
-  const item=(p,i)=>`<div class="ws-item"><div class="q"><span class="n">${i+1}.</span><div><div class="t">${p.task}</div><div class="p">${p.prompt}</div></div></div><div class="ws-space"></div></div>`;
-  const sol=(p,i)=>`<div class="ws-item"><div class="q"><span class="n">${i+1}.</span><div class="p">${p.prompt}</div></div>${p.trap?`<p class="ws-trap"><b>Pozor:</b> ${p.trap}</p>`:''}<ol class="stp">${p.steps.map(stepHTML).join('')}</ol><p style="margin:4px 0 0 2.2em"><b>Výsledek:</b> <span style="font-family:var(--math)">${p.solH}</span></p></div>`;
-  setHTML($('wsOut'),`<div class="worksheet"><h2>Pracovní list</h2><p class="meta">${date}, ${names}, ${ws.level===1?'základ':'úroveň přijímaček'}</p>${list.map(item).join('')}<div class="solutions"><h2>Řešení</h2>${list.map(sol).join('')}</div></div>`);
+  const item=(p,i)=>`<div class="ws-item"><div class="q"><span class="n">${i+1}.</span><div><div class="t">${p.task}</div><div class="p">${p.prompt}</div></div></div><div\
+ class="ws-space"></div></div>`;
+  const sol=(p,i)=>`<div class="ws-item"><div class="q"><span class="n">${i+1}.</span><div class="p">${p.prompt}</div></div>${p.trap?`<p class="ws-trap"><b>Pozor:</b> ${p.trap}</p>`:''}<ol\
+ class="stp">${p.steps.map(stepHTML).join('')}</ol><p style="margin:4px 0 0 2.2em"><b>Výsledek:</b> <span style="font-family:var(--math)">${p.solH}</span></p></div>`;
+  setHTML($('wsOut'),`<div class="worksheet"><h2>Pracovní list</h2><p class="meta">${date}, ${names}, ${ws.level===1?'základ':'úroveň přijímaček'}</p>${list.map(item).join('')}<div\
+ class="solutions"><h2>Řešení</h2>${list.map(sol).join('')}</div></div>`);
   $('wsPrint').disabled=false;
 }
 $('wsMake').onclick=makeWorksheet;
 $('wsPrint').onclick=()=>{try{if(window.AndroidCfg&&AndroidCfg.print){AndroidCfg.print();return}}catch(e){}$('wsPrintNote').hidden=false;try{window.print()}catch(e){}};
+</script>
+<script>
+'use strict';
+// Sešit chyb: příklady, které napoprvé nevyšly.
 
 // ---------- mistakes ----------
 const myMistakes=()=>store.mistakes.filter(m=>{const t=TOPICS.find(x=>x.id===m.topic);return t&&subjOf(t)===subject});
@@ -2287,12 +2386,17 @@ function renderMistakes(){
   if(!list.length){setHTML(el,`<div class="empty">Sešit chyb je prázdný. ${L('Příklady','Úlohy')}, které napoprvé nevyjdou, se sem uloží samy.</div>`);return}
   el.replaceChildren();
   list.slice().reverse().forEach(p=>{const t=TOPICS.find(x=>x.id===p.topic);const d=document.createElement('div');d.className='mitem';
-    setHTML(d,`<div><small>${t.name}</small>${p.subj==='cj'?`<div><b>${escT(p.task)}</b></div>`:''}<div class="p">${p.prompt}</div></div><div class="actions"><button class="btn" type="button">${L('Spočítat znovu','Zkusit znovu')}</button><button class="btn ghost" type="button">Odebrat</button></div>`);
+    setHTML(d,`<div><small>${t.name}</small>${p.subj==='cj'?`<div><b>${escT(p.task)}</b></div>`:''}<div class="p">${p.prompt}</div></div><div class="actions"><button class="btn"\
+ type="button">${L('Spočítat znovu','Zkusit znovu')}</button><button class="btn ghost" type="button">Odebrat</button></div>`);
     const [again,del]=d.querySelectorAll('button');
     again.onclick=()=>{location.hash='trenink';setTimeout(()=>newProblem(p),0)};
     del.onclick=()=>{store.mistakes=store.mistakes.filter(m=>m.id!==p.id);save();updateBadge();renderMistakes()};
     el.appendChild(d)});
 }
+</script>
+<script>
+'use strict';
+// Přehled: úspěšnost podle témat a mazání statistik.
 
 // ---------- stats ----------
 // úspěšnost posledních (až) 20 prvních pokusů; starší data bez historie berou celkový poměr
@@ -2307,7 +2411,8 @@ function renderStats(){
   let rows='';
   TL.forEach((t,i)=>{const s=st(t.id),pc=recentPc(s);
     if(!i||TL[i-1].g!==t.g)rows+=`<tr class="grp"><td colspan="4">${TOPIC_GROUPS[t.g]}</td></tr>`;
-    rows+=`<tr><td>${i+1}. ${t.name}${isMastered(s)?' <span class="mast" title="zvládnuto">✓</span>':''}<small>${agoTxt(daysAgo(s.last))}</small></td><td>${s.n}</td><td>${s.n?pc+' %':'–'}</td><td><div class="bar" role="img" aria-label="${pc} procent"><span style="width:${pc}%"></span></div></td></tr>`});
+    rows+=`<tr><td>${i+1}. ${t.name}${isMastered(s)?' <span class="mast" title="zvládnuto">✓</span>':''}<small>${agoTxt(daysAgo(s.last))}</small></td><td>${s.n}</td><td>${s.n?pc+'\
+ %':'–'}</td><td><div class="bar" role="img" aria-label="${pc} procent"><span style="width:${pc}%"></span></div></td></tr>`});
   // doporučení bez zamykání: první téma v pořadí, které ještě nejde, a nejdéle necvičené zvládnuté téma
   const nextI=TL.findIndex(t=>{const s=st(t.id);return s.n<10||recentPc(s)<80});
   const stale=TL.map((t,i)=>({t,i,d:daysAgo(st(t.id).last)})).filter(x=>st(x.t.id).n>=10&&x.d!==null&&x.d>=7).sort((a,b)=>b.d-a.d)[0];
@@ -2316,11 +2421,21 @@ function renderStats(){
   else tip+='<li><b>Všechna témata jdou aspoň na 80 %.</b> Míchej je dohromady jako v testu.</li>';
   if(stale)tip+=`<li><b>Zopakuj:</b> ${stale.i+1}. ${stale.t.name}, ${agoTxt(stale.d)}. Co se dlouho necvičí, zapomíná se.</li>`;
   const days=Object.keys(store.days).length;
-  setHTML($('statsOut'),`<div class="gen"><h3>Jak postupovat</h3><ul>${tip}<li>Témata jsou seřazená tak, jak na sebe navazují. Postupuj odshora. Když téma jde napoprvé aspoň na 80 %, přidej další. Ke starším se občas vrať, třeba přes „Míchat víc témat dohromady“.</li></ul></div><table class="stats"><thead><tr><th>Téma</th><th>${L('Příkladů','Úloh')}</th><th>Napoprvé</th><th></th></tr></thead><tbody>${rows}</tbody></table><p class="note">Sloupec „Napoprvé“ počítá posledních 20 příkladů z tématu, takže ukazuje, jak to jde teď. Trénovala jsi ${days} ${days===1?'den':(days>=2&&days<=4?'dny':'dní')}. V sešitu chyb ${store.mistakes.length===1?'je':'je'} ${store.mistakes.length} ${store.mistakes.length===1?'příklad':(store.mistakes.length>=2&&store.mistakes.length<=4?'příklady':'příkladů')}.</p>`);
+  setHTML($('statsOut'),
+    `<div class="gen"><h3>Jak postupovat</h3><ul>${tip}<li>Témata jsou seřazená tak, jak na sebe navazují. Postupuj odshora. Když téma jde napoprvé aspoň na 80 %, přidej další. Ke starším se občas\
+ vrať, třeba přes „Míchat víc témat dohromady“.</li></ul></div><table class="stats"><thead><tr><th>Téma</th><th>${L('Příkladů',
+   'Úloh')}</th><th>Napoprvé</th><th></th></tr></thead><tbody>${rows}</tbody></table><p class="note">Sloupec „Napoprvé“ počítá posledních 20 příkladů z tématu, takže ukazuje, jak to jde teď.\
+ Trénovala jsi ${days} ${days===1?'den':(days>=2&&days<=4?'dny':'dní')}. V sešitu\
+ chyb ${store.mistakes.length===1?'je':'je'} ${store.mistakes.length} ${store.mistakes.length===1?'příklad':(store.mistakes.length>=2&&store.mistakes.length<=4?'příklady':'příkladů')}.</p>`);
 }
 let resetArmed=false;
-$('resetBtn').onclick=()=>{if(!resetArmed){resetArmed=true;$('resetBtn').textContent='Opravdu smazat? Klikni znovu.';setTimeout(()=>{resetArmed=false;$('resetBtn').textContent='Smazat statistiky a sešit chyb'},4000);return}
+$('resetBtn').onclick=()=>{if(!resetArmed){resetArmed=true;$('resetBtn').textContent='Opravdu smazat? Klikni znovu.';setTimeout(()=>{resetArmed=false;
+  $('resetBtn').textContent='Smazat statistiky a sešit chyb'},4000);return}
   store.stats={};store.mistakes=[];store.days={};save();resetArmed=false;$('resetBtn').textContent='Smazat statistiky a sešit chyb';updateBadge();renderStats();updateSession()};
+</script>
+<script>
+'use strict';
+// Testy CERMAT: seznam, nahrávání, průchod testem a bodování.
 
 // ---------- Testy CERMAT ----------
 // Oficiální testy nejsou součástí aplikace (autorská práva CERMAT). Uživatel je do telefonu nahraje sám:
@@ -2377,20 +2492,23 @@ async function cmShowList(){
     for(const t of cm.list){
       const key=`${t.rok}-${t.termin}`,run=(store.cm||{})[subject+':'+key];
       const sc=run?cmScore(run.res):null;
-      h+=`<button class="cm-test" type="button" data-key="${cmEsc(key)}"><b>${cmEsc(cmKeyName(key))}</b><small>${sc&&sc.max?`${fmtPts(sc.pts)} z ${fmtPts(sc.max)} b`:run?'rozpracováno':'nezačato'}</small></button>`;
+      h+=`<button class="cm-test" type="button"\
+ data-key="${cmEsc(key)}"><b>${cmEsc(cmKeyName(key))}</b><small>${sc&&sc.max?`${fmtPts(sc.pts)} z ${fmtPts(sc.max)} b`:run?'rozpracováno':'nezačato'}</small></button>`;
     }
     h+='</div>';
   }else{
     h+=`<div class="empty"><b>Testy z ${subjName} zatím nejsou v telefonu.</b> Do aplikace se nevkládají, nahraješ si je sama:<ol>
       <li>Připoj telefon k počítači kabelem a v telefonu zvol <b>Přenos souborů</b>.</li>
       <li>V počítači otevři složku <code>cermat-tau</code> a přetáhni složku <code>${folder}</code> do telefonu, třeba do složky <b>Download</b>.</li>
-      <li>Tady klepni na <b>Nahrát testy</b> a vyber ve složce Download složku <code>${folder}</code>. Aplikace si testy zkopíruje k sobě, pak fungují i bez kabelu a bez internetu. Kopii v Download pak můžeš smazat.</li></ol></div>`;
+      <li>Tady klepni na <b>Nahrát testy</b> a vyber ve složce Download složku <code>${folder}</code>. Aplikace si testy zkopíruje k sobě, pak fungují i bez kabelu a bez internetu. Kopii v Download\
+ pak můžeš smazat.</li></ol></div>`;
   }
   if(window.AndroidCfg&&AndroidCfg.cermatImport){
     h+=`<div class="actions"><button class="btn${cm.list?' ghost':''}" id="cmImport" type="button">${cm.list?'Nahrát znovu nebo aktualizovat':'Nahrát testy'}</button></div>
       <div class="cm-prog" id="cmProg" hidden><progress id="cmBar" max="1" value="0"></progress><span id="cmProgTxt"></span></div>`;
     let dir='';try{dir=AndroidCfg.cermatDir()}catch(e){}
-    if(dir)h+=`<details class="cm-adb"><summary>Nahrání přes adb</summary><p class="note">Složka jde do telefonu poslat i příkazem:</p><pre>adb push cermat-tau/${folder} ${cmEsc(dir)}/</pre></details>`;
+    if(dir)h+=`<details class="cm-adb"><summary>Nahrání přes adb</summary><p class="note">Složka jde do telefonu poslat i příkazem:</p><pre>adb push\
+ cermat-tau/${folder} ${cmEsc(dir)}/</pre></details>`;
   }else if(!cm.list){
     h+=`<p class="note">Ve webové verzi dej vedle stránky složku <code>cermat/${folder}</code> (kopii <code>cermat-tau/${folder}</code>) a otevři stránku přes webový server.</p>`;
   }
@@ -2450,17 +2568,22 @@ function cmControl(t){
     case 'ZPC':{
       const alts=(c.alternatives||[]).map(o=>o.label);
       return (c.assignments||[]).map(s=>{const lab=(s.text||'').match(/^(\S+?)\)/)?.[1]||s.label;
-        return `<label class="cm-row">${cmEsc(lab)} → <select data-t="${id}" data-k="${cmEsc(s.label)}"><option value=""></option>${alts.map(x=>`<option${(a||{})[s.label]===x?' selected':''}>${cmEsc(x)}</option>`).join('')}</select></label>`}).join('');
+        return `<label class="cm-row">${cmEsc(lab)} → <select data-t="${id}" data-k="${cmEsc(s.label)}"><option value=""></option>${alts.map(x=>`<option${(a||{
+          })[s.label]===x?' selected':''}>${cmEsc(x)}</option>`).join('')}</select></label>`}).join('');
     }
     case 'ZUS':{
       const labs=(c.items||[]).map(o=>o.label);
-      return `<div class="cm-order">${labs.map((_,i)=>`<label>${i+1}. <select data-t="${id}" data-k="${i}"><option value=""></option>${labs.map(x=>`<option${(a||[])[i]===x?' selected':''}>${cmEsc(x)}</option>`).join('')}</select></label>`).join('')}</div>`;
+      return `<div class="cm-order">${labs.map((_,
+        i)=>`<label>${i+1}. <select data-t="${id}" data-k="${i}"><option value=""></option>${labs.map(x=>`<option${(a||[])[i]===x?'\
+ selected':''}>${cmEsc(x)}</option>`).join('')}</select></label>`).join('')}</div>`;
     }
-    case 'OUP':return `<label class="cm-row">${cmRich(c.prefix)} <input type="text" data-t="${id}" value="${cmEsc(a||'')}" autocomplete="off" spellcheck="false" autocapitalize="off"> ${cmRich(c.suffix)}</label>`;
+    case 'OUP':return `<label class="cm-row">${cmRich(c.prefix)} <input type="text" data-t="${id}" value="${cmEsc(a||'')}" autocomplete="off" spellcheck="false"\
+ autocapitalize="off"> ${cmRich(c.suffix)}</label>`;
     case 'PRA':{
       const n=(t.correctAnswer.corrections||[]).length||c.numberOfCorrections||1;
       return Array.from({length:n},(_,i)=>{const f=(c.fieldLabels||[])[i]||{};
-        return `<label class="cm-row">${cmRich(f.prefix)} <input type="text" data-t="${id}" data-k="${i}" value="${cmEsc((a||[])[i]||'')}" autocomplete="off" spellcheck="false" autocapitalize="off"> ${cmRich(f.suffix)}</label>`}).join('');
+        return `<label class="cm-row">${cmRich(f.prefix)} <input type="text" data-t="${id}" data-k="${i}" value="${cmEsc((a||[])[i]||'')}" autocomplete="off" spellcheck="false"\
+ autocapitalize="off"> ${cmRich(f.suffix)}</label>`}).join('');
     }
     case 'OSS':return '<p class="note">Úlohu vyřeš na papír i s postupem. Po kontrole ji ohodnoť podle bodovacího klíče.</p>';
     default:return '';
@@ -2488,7 +2611,8 @@ function cmMatch(input,expected,variants,r){
     const v=num(ins);if(v!==null&&/^-?[\d\s]+([.,]\d+)?$/.test(ins.trim()))return all.some(e=>{const ev=num(e);return ev!==null&&Math.abs(ev-v)<=(r.numericPrecision||1e-9)})}
   return all.some(e=>cmNorm(e,r)===ins);
 }
-const cmTable=(tab,score)=>{const e=(Array.isArray(tab)?tab:tab&&tab.entries)||[];if(!e.length)return null;const m=Math.max(...e.map(x=>x.score));const s=Math.min(score,m);const hit=e.find(x=>x.score===s);return hit?hit.points:0};
+const cmTable=(tab,score)=>{const e=(Array.isArray(tab)?tab:tab&&tab.entries)||[];if(!e.length)return null;const m=Math.max(...e.map(x=>x.score));const s=Math.min(score,m);
+  const hit=e.find(x=>x.score===s);return hit?hit.points:0};
 // vyhodnotí podúlohu: ok (true/false/null), raw = body nebo počet do tabulky skupiny, pts = body bez tabulky
 function cmEval(t){
   const a=cm.ans[t.taskId],ca=t.correctAnswer||{},max=t.maxPoints||0;
@@ -2523,7 +2647,8 @@ function cmCorrect(t){
       return Object.entries(a.mapping||{}).map(([k,v])=>`${cmEsc((asg[k]?.text||'').match(/^(\S+?)\)/)?.[1]||k)} → <b>${cmEsc(v)}</b>`).join(', ')}
     case 'ZUS':return `<b>${(a.correctOrder||[]).map(cmEsc).join(' – ')}</b>`;
     case 'OUP':return `${cmRich(c.prefix)} <b>${cmEsc(a.expectedAnswer)}</b> ${cmRich(c.suffix)}${vars(a.acceptedVariants)}`;
-    case 'PRA':return (a.corrections||[]).map((k,i)=>`${cmRich(((c.fieldLabels||[])[i]||{}).prefix)} <b>${cmEsc(k.correctForm)}</b>${vars(k.acceptedVariants)}`).join(', ')+(a.orderSensitive===false?' <span class="var">(na pořadí nezáleží)</span>':'');
+    case 'PRA':return (a.corrections||[]).map((k,i)=>`${cmRich(((c.fieldLabels||[])[i]||{
+      }).prefix)} <b>${cmEsc(k.correctForm)}</b>${vars(k.acceptedVariants)}`).join(', ')+(a.orderSensitive===false?' <span class="var">(na pořadí nezáleží)</span>':'');
     case 'OSS':return 'podle bodovacího klíče';
     default:return '';
   }
@@ -2531,7 +2656,8 @@ function cmCorrect(t){
 function cmRender(){
   const g=cm.groups[cm.i],res=cm.res[g.num],multi=g.tasks.length>1,sc=cmScore(cm.res);
   const doneN=Object.values(cm.res).filter(r=>r&&r.checked).length;
-  let h=`<div class="sheet-head"><span><b>${cmEsc(cmKeyName(cm.key))}</b> úloha ${cmEsc(g.num)} (${cm.i+1} z ${cm.groups.length})</span><span>${doneN?`${fmtPts(sc.pts)} z ${fmtPts(sc.max)} b`:''}</span></div>`;
+  let h=`<div class="sheet-head"><span><b>${cmEsc(cmKeyName(cm.key))}</b>\
+ úloha ${cmEsc(g.num)} (${cm.i+1} z ${cm.groups.length})</span><span>${doneN?`${fmtPts(sc.pts)} z ${fmtPts(sc.max)} b`:''}</span></div>`;
   // Výchozí text (obrázek zadání) jde do vlastního sloupce: na tabletu na šířku zůstává vlevo, úlohy jsou vpravo.
   const byOrder=l=>(l||[]).slice().sort((a,b)=>a.order-b.order);
   let srcImgs=byOrder(g.shared).filter(b=>b.type==='image');
@@ -2542,25 +2668,29 @@ function cmRender(){
   h+=`<div class="cm-q${split?' cm-split':''}">${split?`<div class="cm-src">${cmBlocks(srcImgs)}</div>`:''}<div class="cm-tasks">${cmBlocks(g.shared,skip)}`;
   for(const t of g.tasks){
     const r=res&&res.checked?res.per[t.taskId]:null;
-    h+=`<div class="cm-task${r?(r.ok===true?' ok':r.ok===false?' bad':''):''}">${multi?`<span class="cm-num">${cmEsc(t.taskNumber)}</span>`:''}${cmQuestion(t,skip)}<div class="cm-ans">${cmControl(t)}</div>`;
+    h+=`<div class="cm-task${r?(r.ok===true?' ok':r.ok===false?' bad':''):''}">${multi?`<span class="cm-num">${cmEsc(t.taskNumber)}</span>`:''}${cmQuestion(t,
+      skip)}<div class="cm-ans">${cmControl(t)}</div>`;
     if(r){
       if(t.taskTypeCode==='OSS'){
         const lv=((t.content||{}).rubricLevels||[]).slice().sort((x,y)=>y.points-x.points);
         h+=`<div class="cm-sol">${lv.map(l=>`<div class="cm-lv"><b>Bodovací klíč – ${l.points} b</b>${cmImg(l.imageUrl,'bodovací klíč')}</div>`).join('')}
-          <div class="cm-self"><span>Kolik bodů ti dáš?</span> ${((t.correctAnswer||{}).validPoints||[0,1]).map(v=>`<button type="button" class="mcbtn" data-self="${cmEsc(t.taskId)}" data-v="${v}" aria-pressed="${String(cm.ans[t.taskId])===String(v)}">${v}</button>`).join('')}</div></div>`;
+          <div class="cm-self"><span>Kolik bodů ti dáš?</span> ${((t.correctAnswer||{}).validPoints||[0,
+            1]).map(v=>`<button type="button" class="mcbtn" data-self="${cmEsc(t.taskId)}" data-v="${v}" aria-pressed="${String(cm.ans[t.taskId])===String(v)}">${v}</button>`).join('')}</div></div>`;
       }else h+=`<div class="cm-sol"><span class="${r.ok?'yes':'no'}">${r.ok?'Správně.':'Správně je:'}</span> ${r.ok?'':cmCorrect(t)}</div>`;
     }
     if(r&&t.solutionKeyUrl)h+=`<details class="cm-why"${multi?'':' open'}><summary>Řešení a zdůvodnění</summary>${cmImg(t.solutionKeyUrl,'řešení')}</details>`;
     h+='</div>';
   }
-  if(res&&res.checked)h+=`<p class="fb ${res.pts===res.max?'ok':'neutral'}">Za úlohu ${fmtPts(res.pts)} z ${fmtPts(res.max)} b.${g.tasks.some(t=>t.taskTypeCode==='OSS')?' Body za postup si přiděl podle klíče.':''}</p>`;
+  if(res&&res.checked)h+=`<p class="fb ${res.pts===res.max?'ok':'neutral'}">Za úlohu ${fmtPts(res.pts)} z ${fmtPts(res.max)} b.${g.tasks.some(t=>t.taskTypeCode==='OSS')?' Body za postup si přiděl\
+ podle klíče.':''}</p>`;
   h+=`<div class="actions">${res&&res.checked?'':'<button class="btn" type="button" id="cmCheck">Zkontrolovat</button>'}
     <button class="btn ghost" type="button" id="cmPrev"${cm.i?'':' disabled'}>Předchozí</button>
     <button class="btn ghost${res&&res.checked?' go':''}" type="button" id="cmNext">${cm.i<cm.groups.length-1?'Další úloha':'Výsledek testu'}</button>
     <button class="btn ghost" type="button" id="cmBack">Seznam testů</button></div></div></div>`;
   $('cmSheet').dataset.seed=cm.key+'-'+g.num;setHTML($('cmSheet'),h);drawPaper($('cmSheet'));
   const sh=$('cmSheet');
-  sh.querySelectorAll('.mcbtn[data-t]').forEach(b=>b.onclick=()=>{if(res&&res.checked)return;cm.ans[b.dataset.t]=b.dataset.v;sh.querySelectorAll(`.mcbtn[data-t="${CSS.escape(b.dataset.t)}"]`).forEach(x=>x.setAttribute('aria-pressed',x===b))});
+  sh.querySelectorAll('.mcbtn[data-t]').forEach(b=>b.onclick=()=>{if(res&&res.checked)return;cm.ans[b.dataset.t]=b.dataset.v;
+    sh.querySelectorAll(`.mcbtn[data-t="${CSS.escape(b.dataset.t)}"]`).forEach(x=>x.setAttribute('aria-pressed',x===b))});
   sh.querySelectorAll('.mcbtn[data-self]').forEach(b=>b.onclick=()=>{cm.ans[b.dataset.self]=b.dataset.v;cmScoreGroup(g);cmSaveRun();cmRender()});
   sh.querySelectorAll('select[data-t],input[data-t]').forEach(el=>{
     if(res&&res.checked)el.disabled=true;
@@ -2588,6 +2718,10 @@ function cmSummary(){
   $('cmAgain').onclick=()=>{cm.i=0;cm.ans={};cm.res={};cmSaveRun();cmRender()};
   $('cmBack2').onclick=()=>cmShowList();
 }
+</script>
+<script>
+'use strict';
+// Zvětšení obrázku v testu CERMAT přes celou obrazovku.
 
 // ---------- zvětšení obrázku přes celou obrazovku ----------
 // Klepnutí na obrázek v testu: celá obrazovka, zvětšení dvěma prsty nebo dvojitým klepnutím, posun prstem.
@@ -2613,7 +2747,8 @@ function zoomTo(s,cx,cy){ // nové měřítko, bod (cx,cy) na obrazovce zůstane
 function zoomOpen(src){
   if(!zoom.el){
     const el=document.createElement('div');el.className='zoom';el.hidden=true;el.setAttribute('role','dialog');el.setAttribute('aria-label','Zvětšený obrázek');
-    setHTML(el,'<div class="zoom-stage"><img alt="" draggable="false"></div><button type="button" class="zoom-x" aria-label="Zavřít">✕</button><p class="zoom-hint">Roztáhni dvěma prsty nebo dvakrát klepni. Na šířku je text větší.</p>');
+    setHTML(el,'<div class="zoom-stage"><img alt="" draggable="false"></div><button type="button" class="zoom-x" aria-label="Zavřít">✕</button><p class="zoom-hint">Roztáhni dvěma prsty nebo dvakrát\
+ klepni. Na šířku je text větší.</p>');
     document.body.appendChild(el);zoom.el=el;zoom.img=el.querySelector('img');zoom.st=el.querySelector('.zoom-stage');
     el.querySelector('.zoom-x').onclick=()=>history.back();
     zoom.img.onload=zoomFit;
@@ -2640,13 +2775,20 @@ function zoomOpen(src){
   history.pushState({zoom:1},'');
 }
 $('cmSheet')?.addEventListener('click',e=>{const im=e.target.closest('.cm-img');if(im){e.preventDefault();zoomOpen(im.getAttribute('src'))}});
+</script>
+<script>
+'use strict';
+// Záložky (hash v adrese) a překreslení témat.
 
 // ---------- routing ----------
 const VIEWS=['trenink','cermat','list','chyby','pruvodce','prehled'];
 function renderGuides(){
   const g=L(GUIDE_GENERAL,GUIDE_GENERAL_CJ);let h=`<div class="gen"><h3>${g.title}</h3><ul>${g.items.map(x=>`<li>${x}</li>`).join('')}</ul></div><div class="glist">`;
   Object.keys(GUIDES).filter(k=>(GUIDES[k].subj||'mat')===subject).forEach(k=>{h+=`<details><summary>${GUIDES[k].title}</summary><div class="gbody">${guideHTML(GUIDES[k],'')}</div></details>`});
-  setHTML($('pruvodceOut'),`<p class="note">V postupech a tipech: ${K('zvýrazněné')} je pravidlo, ${N('modře')} co je v kroku nové, ${X('červeně')} pozor na chybu.</p>`+h+'</div><p class="note">'+L('Bodování vychází z klíčů správných řešení CERMATu z let 2023 až 2025. Body se mohou u konkrétní úlohy lišit, rozhoduje vždy zadání a klíč.','Věty v úlohách jsou vlastní, ve stylu přijímaček. Oficiální testy procvičuj v aplikaci CERMAT TAU.')+'</p>');
+  setHTML($('pruvodceOut'),
+    `<p class="note">V postupech a tipech: ${K('zvýrazněné')} je pravidlo, ${N('modře')} co je v kroku nové, ${X('červeně')} pozor na chybu.</p>`+h+'</div><p class="note">'+L('Bodování vychází z\
+ klíčů správných řešení CERMATu z let 2023 až 2025. Body se mohou u konkrétní úlohy lišit, rozhoduje vždy zadání a klíč.',
+   'Věty v úlohách jsou vlastní, ve stylu přijímaček. Oficiální testy procvičuj v aplikaci CERMAT TAU.')+'</p>');
 }
 function route(){
   const h=(location.hash||'').slice(1);const v=VIEWS.includes(h)&&!(h==='list'&&subject==='cj')?h:'trenink';
@@ -2657,6 +2799,11 @@ function route(){
 window.addEventListener('hashchange',route);
 
 function renderTopicChips(){renderChips($('topicChips'),state.topics,()=>{store[SUBJ_DEF[subject].key]=[...state.topics];save();resetSeries()},()=>state.mix,subjTopics())}
+</script>
+<script>
+'use strict';
+// Papír češtiny (zrnitost a textura listu).
+
 // Papír pro češtinu (Leonardovy zápisníky). Dvě části:
 // 1) zrnitost: dvě malé dlaždice z canvasu (jednou, jako bitmapa v CSS),
 // 2) drawPaper(list): textura přes celý list do <canvas class="paper"> pod textem, bez opakujících se dlaždic.
@@ -2724,6 +2871,11 @@ const paperRO=window.ResizeObserver?new ResizeObserver(es=>{for(const e of es)re
 ['sheet','cmSheet'].forEach(id=>{const el=$(id);if(el&&paperRO)paperRO.observe(el)});
 // přepnutí světlého/tmavého režimu systému → jiné barvy papíru
 try{matchMedia('(prefers-color-scheme: dark)').addEventListener('change',()=>{drawPaper($('sheet'));drawPaper($('cmSheet'))})}catch(e){}
+</script>
+<script>
+'use strict';
+// Přepínání předmětů (matematika / čeština).
+
 function applySubject(){
   if(subject==='cj')paperGrain();
   document.documentElement.dataset.subject=subject;
@@ -2738,12 +2890,10 @@ function setSubject(s){
   applySubject();renderTopicChips();updateBadge();route();resetSeries();
 }
 document.querySelectorAll('#subjSeg button').forEach(b=>b.onclick=()=>setSubject(b.dataset.subj));
-applySubject();
-renderTopicChips();
-renderSeg($('levelSeg'),()=>state.level,l=>{state.level=l;store.level=l;save();resetSeries()});
-renderChips($('wsChips'),ws.topics,()=>{store.wsTopics=[...ws.topics];save()},null,TOPICS.filter(t=>subjOf(t)==='mat'));
-renderSeg($('wsLevel'),()=>ws.level,l=>{ws.level=l;store.wsLevel=l;save()});
-updateBadge();updateSession();newProblem();route();
+</script>
+<script>
+'use strict';
+// Zarovnání obsahu listu na čtverečky (funkce; napojení na události je v start.js).
 
 // Zarovnání na čtverečky: každý blok v listu musí začínat na čáře mřížky.
 // Zlomky, tlačítka a zalomené řádky mají libovolnou výšku, proto se mezera pod blokem dorovná na násobek čtverečku.
@@ -2762,6 +2912,18 @@ function gridSnap(){
   });
 }
 let snapRaf=0;const snapSoon=()=>{cancelAnimationFrame(snapRaf);snapRaf=requestAnimationFrame(gridSnap)};
+</script>
+<script>
+'use strict';
+// Start aplikace: první vykreslení a napojení zarovnání na čtverečky. Načítá se jako poslední.
+
+applySubject();
+renderTopicChips();
+renderSeg($('levelSeg'),()=>state.level,l=>{state.level=l;store.level=l;save();resetSeries()});
+renderChips($('wsChips'),ws.topics,()=>{store.wsTopics=[...ws.topics];save()},null,TOPICS.filter(t=>subjOf(t)==='mat'));
+renderSeg($('wsLevel'),()=>ws.level,l=>{ws.level=l;store.wsLevel=l;save()});
+updateBadge();updateSession();newProblem();route();
+
 if(window.ResizeObserver){
   // Sledují se jen bloky uvnitř listu (ne list sám): změna okrajů jejich velikost nemění, takže nevznikne smyčka.
   const ro=new ResizeObserver(gridSnap);
@@ -2773,7 +2935,6 @@ if(window.ResizeObserver){
 window.addEventListener('hashchange',snapSoon);
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(snapSoon);
 snapSoon();
-})();
 </script>
 </body>
 </html>
