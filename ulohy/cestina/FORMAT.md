@@ -7,8 +7,8 @@ koncovky nebo tvaru, takže správnost je daná tímto souborem.
 
 - Zdroj: `vety.json`
 - Kontrola formátu: `node ulohy/cestina/vlozit.js --check`
-- Vložení do aplikace: `node ulohy/cestina/vlozit.js` (přepíše blok mezi `/*CJ_START*/` a `/*CJ_END*/`
-  v `app/src/main/assets/index.html`). Pak zkopíruj `index.html` do `pocitani-na-prijimacky.html`.
+- Vložení do aplikace: `node ulohy/cestina/vlozit.js` (přepíše celý soubor `app/src/main/assets/js/data/cestina.js`).
+  Pak sestav webovou verzi: `node nastroje/sestav-web.mjs`.
 - Testy: `node --test tests/`
 
 ## `shoda`: shoda přísudku s podmětem
@@ -35,4 +35,4 @@ koncovky nebo tvaru, takže správnost je daná tímto souborem.
 1. Přidej ji do `vety.json`.
 2. Přidej její správný tvar i do nezávislé tabulky v `tests/cestina.test.js` (`SHODA_OK` nebo `MEMNE_OK`).
    Tabulku piš sám, ne kopií z `vety.json`: test porovnává dva nezávislé zápisy.
-3. `node ulohy/cestina/vlozit.js`, zkopíruj `index.html` do webové verze a spusť `node --test tests/`.
+3. `node ulohy/cestina/vlozit.js`, `node nastroje/sestav-web.mjs` a `node --test tests/`.

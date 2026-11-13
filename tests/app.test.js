@@ -8,7 +8,6 @@ const path = require('node:path');
 const vm = require('node:vm');
 const { spawnSync } = require('node:child_process');
 const {
-  INDEX_HTML_PATH,
   WEB_HTML_PATH,
   scriptBlocks,
   evaluateExpr,
@@ -255,8 +254,8 @@ describe('Počítání na přijímačky – komplexní testovací sada aplikace'
       }
     });
 
-    it('mutační test: změna e2=LP(m,d) v dočasné kopii index.html selže v nezávislém testu', () => {
-      verifyPromennaMutation(loadAppContext, evaluateExpr, INDEX_HTML_PATH);
+    it('mutační test: změna e2=LP(m,d) v načteném kódu selže v nezávislém testu', () => {
+      verifyPromennaMutation(loadAppContext, evaluateExpr);
     });
 
     it('výsledné řešení ans je kladné celé číslo', () => {

@@ -4,9 +4,6 @@
 // and calculates expected expressions a), b) and result c) WITHOUT using p.e, p.ans or L.
 
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const os = require('node:os');
-const path = require('node:path');
 
 const ZLOMKY_MAP = {
   polovinu: 2,
@@ -167,31 +164,27 @@ function verifyPromennaIndependent(templateIdx, p, evaluateExpr) {
   );
 }
 
-function verifyPromennaMutation(loadAppContext, evaluateExpr, htmlPath) {
-  const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'promenna-mutation-'));
-  try {
-    const origHtml = fs.readFileSync(htmlPath, 'utf8');
-    const mutatedHtml = origHtml.replace('e2=LP(m,m*d)', 'e2=LP(m,d)');
-    const tmpHtmlPath = path.join(tmpDir, 'index.html');
-    fs.writeFileSync(tmpHtmlPath, mutatedHtml);
+function verifyPromennaMutation(loadAppContext, evaluateExpr) {
+  let zmeneno = 0;
+  const mutatedApp = loadAppContext((name, code) => {
+    const nove = code.replace('e2=LP(m,m*d)', 'e2=LP(m,d)');
+    if (nove !== code) zmeneno++;
+    return nove;
+  });
+  assert.ok(zmeneno > 0, 'Mutace se nikde neuplatnila: v kódu chybí e2=LP(m,m*d)');
+  const raw = mutatedApp.PROMENNA[0].f();
+  const mutatedP = {
+    v: raw.v,
+    text: raw.text,
+    q: raw.q,
+    sol: [mutatedApp.polySol(raw.e[0], raw.v), mutatedApp.polySol(raw.e[1], raw.v), mutatedApp.numSol(raw.x)]
+  };
 
-    const mutatedApp = loadAppContext(tmpHtmlPath);
-    const raw = mutatedApp.PROMENNA[0].f();
-    const mutatedP = {
-      v: raw.v,
-      text: raw.text,
-      q: raw.q,
-      sol: [mutatedApp.polySol(raw.e[0], raw.v), mutatedApp.polySol(raw.e[1], raw.v), mutatedApp.numSol(raw.x)]
-    };
-
-    assert.throws(
-      () => verifyPromennaIndependent(0, mutatedP, evaluateExpr),
-      /AssertionError/,
-      'Nezávislý ověřovač musí odhalit chybu v e2 (nábytek)'
-    );
-  } finally {
-    fs.rmSync(tmpDir, { recursive: true, force: true });
-  }
+  assert.throws(
+    () => verifyPromennaIndependent(0, mutatedP, evaluateExpr),
+    /AssertionError/,
+    'Nezávislý ověřovač musí odhalit chybu v e2 (nábytek)'
+  );
 }
 
 module.exports = {

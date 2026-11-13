@@ -1,4 +1,4 @@
-// Vloží věty pro češtinu z vety.json do aplikace (app/src/main/assets/index.html, mezi značky CJ_START/CJ_END).
+// Zapíše věty pro češtinu z vety.json do aplikace: celý soubor app/src/main/assets/js/data/cestina.js.
 // Nejdřív zkontroluje formát vět; když některá neprojde, nic nevloží.
 // Správnost tvarů ověřují testy (tests/cestina.test.js) proti nezávisle zapsaným tabulkám.
 // Použití: node ulohy/cestina/vlozit.js [--check]   (--check jen zkontroluje, nic nezapíše)
@@ -6,7 +6,7 @@ const fs = require('fs');
 const path = require('path');
 
 const dir = __dirname;
-const html = path.join(dir, '..', '..', 'app', 'src', 'main', 'assets', 'index.html');
+const cil = path.join(dir, '..', '..', 'app', 'src', 'main', 'assets', 'js', 'data', 'cestina.js');
 const { shoda, memne } = JSON.parse(fs.readFileSync(path.join(dir, 'vety.json'), 'utf8'));
 
 const chyby = [];
@@ -46,13 +46,18 @@ if (chyby.length) { console.error(chyby.join('\n')); console.error('Kontrola nep
 console.log(`Věty v pořádku: shoda ${shoda.length}, mě/mně ${memne.length}.`);
 if (process.argv.includes('--check')) process.exit(0);
 
-// JSON uvnitř <script>: rozbít „</“, aby se nedal ukončit tag
+// JSON se při sestavení webové verze vkládá do <script>: rozbít „</“, aby se nedal ukončit tag
 const BS = String.fromCharCode(92);
 const js = o => JSON.stringify(o).split('</').join('<' + BS + '/')
   .split(String.fromCharCode(0x2028)).join(BS + 'u2028').split(String.fromCharCode(0x2029)).join(BS + 'u2029');
-let src = fs.readFileSync(html, 'utf8');
-const re = /\/\*CJ_START\*\/[\s\S]*?\/\*CJ_END\*\//;
-if (!re.test(src)) { console.error('V index.html chybí značky CJ_START/CJ_END.'); process.exit(1); }
-src = src.replace(re, () => `/*CJ_START*/const SHODA=${js(shoda)},MEMNE=${js(memne)};/*CJ_END*/`);
-fs.writeFileSync(html, src);
-console.log(`Vloženo do ${path.relative(path.join(dir, '..', '..'), html)}.`);
+const src = [
+  "'use strict';",
+  '// Věty jsou ve zdroji ulohy/cestina/vety.json; tento soubor z něj generuje node ulohy/cestina/vlozit.js, ručně se needituje.',
+  '// SHODA: p = podmět, r = rod, t = věta („_“ = koncovka příčestí), x = past s vlastním vysvětlením.',
+  '// MEMNE: k = mě/mně, d = pád, t = věta („_“ = tvar zájmena), z = věta pro zkoušku tebe/tobě, x = past.',
+  `const SHODA=${js(shoda)},MEMNE=${js(memne)};`,
+  ''
+].join('\n');
+fs.mkdirSync(path.dirname(cil), { recursive: true });
+fs.writeFileSync(cil, src);
+console.log(`Zapsáno do ${path.relative(path.join(dir, '..', '..'), cil)}.`);

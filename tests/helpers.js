@@ -9,11 +9,18 @@ const WEB_HTML_PATH = path.join(__dirname, '../pocitani-na-prijimacky.html');
 
 const indexHtmlContent = fs.readFileSync(INDEX_HTML_PATH, 'utf8');
 
-function extractScripts(html) {
-  return [...html.matchAll(/<script\b[^>]*>([\s\S]*?)<\/script>/gi)].map(m => m[1]);
+// <script> z index.html v pořadí dokumentu: vložený blok, nebo soubor podle src (cesta relativně k index.html)
+function pageScripts(html, baseDir) {
+  return [...html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)].map(m => {
+    const src = /\bsrc="([^"]+)"/.exec(m[1]);
+    return src
+      ? { name: src[1], code: fs.readFileSync(path.join(baseDir, src[1]), 'utf8') }
+      : { name: 'inline', code: m[2] };
+  });
 }
 
-const scriptBlocks = extractScripts(indexHtmlContent);
+const pageScriptList = pageScripts(indexHtmlContent, path.dirname(INDEX_HTML_PATH));
+const scriptBlocks = pageScriptList.map(s => s.code);
 
 // Custom evaluator for plain math expressions (^, :, /, *, +, -, √, parens, decimals, implicit mul)
 function evaluateExpr(str, vars = {}) {
@@ -109,11 +116,9 @@ function evaluateExpr(str, vars = {}) {
   return parseExpr();
 }
 
-// Load second script block ('use strict';) via node:vm into an isolated context
-function loadAppContext(htmlPath = INDEX_HTML_PATH) {
-  const content = htmlPath === INDEX_HTML_PATH ? indexHtmlContent : fs.readFileSync(htmlPath, 'utf8');
-  const blocks = htmlPath === INDEX_HTML_PATH ? scriptBlocks : extractScripts(content);
-
+// Načte skripty aplikace (bez rozhraní) přes node:vm do izolovaného kontextu.
+// transform(name, code) umožňuje v testech kód před spuštěním upravit (mutační test).
+function loadAppContext(transform = (name, code) => code) {
   const sandbox = {
     console,
     setTimeout,
@@ -149,11 +154,11 @@ function loadAppContext(htmlPath = INDEX_HTML_PATH) {
 
   const context = vm.createContext(sandbox);
 
-  // Run script 0 (OpenRouter config)
-  vm.runInContext(blocks[0], context);
-
-  // Run script 1 (Core logic starting with 'use strict';)
-  vm.runInContext(blocks[1], context);
+  // Skripty v pořadí z index.html; rozhraní (IIFE na konci) se v testech nespouští
+  for (const s of pageScriptList) {
+    if (/^\s*\(function\s*\(\)\s*\{/.test(s.code)) continue;
+    vm.runInContext(transform(s.name, s.code), context, { filename: s.name });
+  }
 
   // Expose internal references
   vm.runInContext(`
@@ -187,7 +192,7 @@ module.exports = {
   INDEX_HTML_PATH,
   WEB_HTML_PATH,
   scriptBlocks,
-  extractScripts,
+  pageScripts,
   evaluateExpr,
   loadAppContext
 };
